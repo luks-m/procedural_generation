@@ -1,12 +1,12 @@
-function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-}
+const fs = require('fs');
+const { createCanvas, createImageData } = require('canvas');
+const generators = require('generators.js');
 
-function imageGeneration(canvas, width = canvas.width, height = canvas.height, getPixelColor) {
+
+function imageGeneration(canvas, width, height, getPixelColor) {
     let context = canvas.getContext("2d");
-    let image = context.createImageData(width, height);
-    canvas.width = width;
-    canvas.height = height;
+    let image = createImageData(width, height);
+
     let n = 0; // Index inside the image array
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++, n += 4) {
@@ -22,5 +22,7 @@ function imageGeneration(canvas, width = canvas.width, height = canvas.height, g
 }
 
 const width = 500, height = 500;
-let canvas = document.getElementById('drawing_board');
-imageGeneration(canvas, width, height, (x, y) => { return {red: getRandomInt(255), green: getRandomInt(255), blue: getRandomInt(255), alpha: getRandomInt(255)};});
+let canvas = createCanvas(width, height);
+canvas = imageGeneration(canvas, width, height, generators.randGen);
+// let buffer = canvas.toBuffer('image/png');
+// fs.writeFileSync('./canvas.png', buffer);
