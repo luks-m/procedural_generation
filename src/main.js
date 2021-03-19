@@ -1,6 +1,10 @@
 const fs = require('fs');
 const { createCanvas, createImageData } = require('canvas');
+const helpers = require('./helpers.js');
 const generators = require('./generators.js');
+const generatorsLucas = require('./generators_lucas.js');
+
+const filtersLucas = require('./filters_lucas.js');
 
 
 function imageGeneration(canvas, width, height, getPixelColor) {
@@ -21,8 +25,17 @@ function imageGeneration(canvas, width, height, getPixelColor) {
     return canvas;
 }
 
+
 const width = 500, height = 500;
+
+const checkerboard = generatorsLucas.makeCheckerboard(width, height, 50,
+						       helpers.getColor(255,0,0,255),
+						       helpers.getColor(0,255,0,255));
+
+const opacityChanger = filtersLucas.opacityChanger;
+
+
 let canvas = createCanvas(width, height);
-canvas = imageGeneration(canvas, width, height, generators.randGen);
+canvas = imageGeneration(canvas, width, height, opacityChanger(checkerboard, 20));
 let buffer = canvas.toBuffer('image/png');
 fs.writeFileSync('./canvas.png', buffer);
