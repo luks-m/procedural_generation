@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { createCanvas, createImageData } = require('canvas');
-const generators = require('generators.js');
+const generators = require('./generators.js');
 
 
 function imageGeneration(canvas, width, height, getPixelColor) {
@@ -24,5 +24,5 @@ function imageGeneration(canvas, width, height, getPixelColor) {
 const width = 500, height = 500;
 let canvas = createCanvas(width, height);
 canvas = imageGeneration(canvas, width, height, generators.randGen);
-// let buffer = canvas.toBuffer('image/png');
-// fs.writeFileSync('./canvas.png', buffer);
+let buffer = canvas.toBuffer('image/png');
+fs.writeFileSync('./canvas.png', buffer);
