@@ -9,7 +9,11 @@ let randGen = (x, y) => helpers.getColor(getRandomInt(255), getRandomInt(255), g
 //////////////////////////////////////////
 ////////////// PERLIN NOISE //////////////
 
-function perlinNoiseGenerator(width, height, RESOLUTION = 8, COLOR_SCALE = 255, COLORED = false) {
+function perlinNoiseGenerator(width, height, RESOLUTION, COLOR_SCALE, COLORED) {
+
+    RESOLUTION  =   helpers.optionalParameter(RESOLUTION, 8);
+    COLOR_SCALE =   helpers.optionalParameter(COLOR_SCALE, 255);
+    COLORED     =   helpers.optionalParameter(COLORED, false);
 
     let gradients = { };
 
@@ -105,8 +109,16 @@ function perlinNoiseGenerator(width, height, RESOLUTION = 8, COLOR_SCALE = 255, 
 //////////////////////////////////////////
 ///////// FRACTAL BROWNIAN MOTION ////////
 
-function fractalBrownianMotionGenerator(width, height, OCTAVES = 4, PERSISTANCE = 0.5, LACUNARITY = 2,
-                                        RESOLUTION = 8, COLOR_SCALE = 255, COLORED = false) {
+function fractalBrownianMotionGenerator(width, height,
+                                        OCTAVES, PERSISTANCE, LACUNARITY, RESOLUTION, COLOR_SCALE, COLORED) {
+
+    OCTAVES     =   helpers.optionalParameter(OCTAVES, 4);
+    PERSISTANCE =   helpers.optionalParameter(PERSISTANCE, 0.5);
+    LACUNARITY  =   helpers.optionalParameter(LACUNARITY, 2);
+    RESOLUTION  =   helpers.optionalParameter(RESOLUTION, 8);
+    COLOR_SCALE =   helpers.optionalParameter(COLOR_SCALE, 255);
+    COLORED     =   helpers.optionalParameter(COLORED, false);
+
 
     let gradients = { };
     let computed = { };

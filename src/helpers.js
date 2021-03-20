@@ -36,6 +36,11 @@ const compareColor = function (color1, color2) {
         && color2.alpha === color2.alpha);
 }
 
+const optionalParameter = function (parameter, defaultValue) {
+    return typeof(parameter) != 'undefined' ? parameter : defaultValue;
+}
+
 exports.getColor = getColor;
 exports.compareColor = compareColor;
 exports.hsl2rgb = hsl2rgb;
+exports.optionalParameter = optionalParameter;
