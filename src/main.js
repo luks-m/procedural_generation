@@ -35,10 +35,10 @@ const checkerboard = generatorsLucas.makeCheckerboard(width, height, 50,
 const opacityChanger = filtersLucas.opacityChanger;
 
 //const perlin = generators.perlinNoiseGen(width, height)
-const fbm = generators.fractionalBrownianMotionGen(width, height, 8, undefined, undefined, 1);
-
+//const fbm = generators.fractionalBrownianMotionGen(width, height, 8, undefined, undefined, 1);
+const worley = generators.worleyNoiseGen(width, height, false, undefined,undefined, 200, undefined, 200);
 
 let canvas = createCanvas(width, height);
-canvas = imageGeneration(canvas, width, height, fbm);
+canvas = imageGeneration(canvas, width, height, worley);
 let buffer = canvas.toBuffer('image/png');
 fs.writeFileSync('./canvas.png', buffer);
