@@ -314,7 +314,7 @@ function worleyNoiseGenerator(width, height, THREE_DIMENSIONS, COLORED, NUMBER_O
             distances[i] = getDist(x, points[i].x, y, points[i].y, 0, points[i].z);
 
         distances.sort((d1, d2) => { return d1 - d2 });
-        return distances[0];
+        return distances[n - 1];
     }
 
 
@@ -352,7 +352,102 @@ function worleyNoiseGenerator(width, height, THREE_DIMENSIONS, COLORED, NUMBER_O
 
 //////////////////////////////////////////
 
+//////////////////////////////////////////
+///////////// CELLULAR NOISE /////////////
+// TODO: This is a literal duplicate of Worley Noise, hench could be shortened
+
+function cellularNoiseGenerator(width, height, THREE_DIMENSIONS, COLORED, NUMBER_OF_POINTS, RED_SCALE, GREEN_SCALE, BLUE_SCALE) {
+
+    THREE_DIMENSIONS    =   helpers.optionalParameter(THREE_DIMENSIONS, true);
+    COLORED             =   helpers.optionalParameter(COLORED, true);
+    NUMBER_OF_POINTS    =   helpers.optionalParameter(NUMBER_OF_POINTS, width / 10);
+    RED_SCALE           =   helpers.optionalParameter(RED_SCALE, 255);
+    GREEN_SCALE         =   helpers.optionalParameter(GREEN_SCALE, 255);
+    BLUE_SCALE          =   helpers.optionalParameter(BLUE_SCALE, 255);
+
+
+    let points = [ ];
+    let getDist = THREE_DIMENSIONS ? getDistance3D : getDistance2D;
+
+    // Randomly distribute feature points in a 3D volume
+    function generateFeaturePoints() {
+        for (let i = 0; i < NUMBER_OF_POINTS; i++)
+            points.push({ x: getRandomInt(width), y: getRandomInt(height), z: getRandomInt(width) });
+    }
+
+
+    // Returns the distance between two points in a 2D plan
+    function getDistance2D(x1, x2, y1, y2) {
+        let a = x1 - x2;
+        let b = y1 - y2;
+
+        return Math.sqrt(a * a + b * b);
+    }
+
+
+    // Returns the distance between two points in a 3D volume
+    function getDistance3D(x1, x2, y1, y2, z1, z2) {
+        let a = x1 - x2;
+        let b = y1 - y2;
+        let c = z1 - z2;
+
+        return Math.sqrt(a * a + b * b + c * c);
+    }
+
+
+    // Return the nth nearest distance between a point (x, y) and all feature points
+    function getNthNearestDistance(n, x, y) {
+        let distances = [ ];
+
+        // Get distances from the given location to each seed points
+        for (let i = 0; i < NUMBER_OF_POINTS; i++)
+            distances[i] = getDist(x, points[i].x, y, points[i].y, 0, points[i].z);
+
+        distances.sort((d1, d2) => { return d1 - d2 });
+        return distances[n - 1];
+    }
+
+
+    // Convert a value from one range to another
+    function changeRange(n, min_old, max_old, min_new, max_new) {
+        if (n > max_old)
+            return max_new;
+        if (n < min_old)
+            return min_new;
+        return ((n - min_old) / (max_old - min_old)) * (max_new - min_new) + min_new;
+    }
+
+
+    function compute(x, y) {
+        if (COLORED) {
+            let d1 = getNthNearestDistance(1, x, y);
+            let d2 = getNthNearestDistance(2, x, y);
+            let d3 = getNthNearestDistance(3, x, y);
+            let d4 = getNthNearestDistance(4, x, y);
+
+            let R = changeRange(d2 - d1, 0, 1.5 * width, RED_SCALE, 0);
+            let G = changeRange(d3 - d2, 0, width / 2, GREEN_SCALE, 0);
+            let B = changeRange(d4 - d3, 0, 2 * width, BLUE_SCALE, 0);
+
+            return helpers.getColor(R, G, B, 255);
+
+        }
+        else {
+            let noiseValue = changeRange(getNthNearestDistance(2, x, y) - getNthNearestDistance(1, x, y), 0, width / 4, 0, 255);
+            return helpers.getColor(noiseValue, noiseValue, noiseValue, 255);
+        }
+    }
+
+    generateFeaturePoints();
+
+    return (x, y) => compute(x, y);
+}
+
+
+//////////////////////////////////////////
+
 exports.randGen = randGen;
 exports.perlinNoiseGen = perlinNoiseGenerator;
 exports.fractionalBrownianMotionGen = fractalBrownianMotionGenerator;
 exports.worleyNoiseGen = worleyNoiseGenerator;
+exports.cellularNoiseGen = cellularNoiseGenerator;

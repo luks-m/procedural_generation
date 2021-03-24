@@ -36,8 +36,8 @@ const opacityChanger = filtersLucas.opacityChanger;
 
 //const perlin = generators.perlinNoiseGen(width, height)
 //const fbm = generators.fractionalBrownianMotionGen(width, height, 8, undefined, undefined, 1);
-const worley = generators.worleyNoiseGen(width, height, false, undefined,undefined, 200, undefined, 200);
-
+const worley = generators.worleyNoiseGen(width, height, true, true,undefined, 255, 255, 255);
+const cellular = generators.cellularNoiseGen(width, height, false, false,undefined, 255, 255, 255);
 let canvas = createCanvas(width, height);
 canvas = imageGeneration(canvas, width, height, worley);
 let buffer = canvas.toBuffer('image/png');
