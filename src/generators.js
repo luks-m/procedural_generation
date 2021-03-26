@@ -43,18 +43,6 @@ function perlinNoiseGenerator(width, height, RESOLUTION, COLOR_SCALE, COLORED) {
     }
 
 
-    // Use this for to linearly interpolate
-    function lerp(w) {
-        return w;
-    }
-
-
-    // Use this cubic interpolation instead, for a smooth appearance
-    function smoothstep(w) {
-        return (3 - w * 2) * w * w;
-    }
-
-
     // Use for an even smoother result with a second derivative equal to zero on boundaries
     function smootherstep(w) {
         return ((w * (w * 6 - 15) + 10) * w * w * w);
@@ -92,18 +80,20 @@ function perlinNoiseGenerator(width, height, RESOLUTION, COLOR_SCALE, COLORED) {
         return value;
     }
 
-    return (x, y) => {
-        let v;
+    function getPixelColor(x, y) {
+        let v = compute(x / pixelSizeWidth, y / pixelSizeHeight);
         if (COLORED) {
-            v = (compute(x / pixelSizeWidth, y / pixelSizeHeight) + 0.5) * 360;
+            v = (v + 0.5) * 360;
             [R, G, B] = helpers.hsl2rgb(v);
             return helpers.getColor(R, G, B, 255);
         }
         else {
-            let v = (compute(x / pixelSizeWidth, y / pixelSizeHeight) + 1) / 2 * COLOR_SCALE;
-            return helpers.getColor(v, v, v, v);
+            v = (v + 1) / 2 * COLOR_SCALE;
+            return helpers.getColor(v, v, v, 255);
         }
     }
+
+    return getPixelColor;
 }
 
 
@@ -126,9 +116,8 @@ function fractalBrownianMotionGenerator(width, height,
 
     let gradients = { };
     let computed = { };
-    let noiseMap = { };
-    let maxNoiseHeight = Number.MIN_VALUE;
-    let minNoiseHeight = Number.MAX_VALUE;
+    let maxNoiseHeight = 0.2;
+    let minNoiseHeight = -0.2;
 
     let pixelSizeWidth = width / RESOLUTION;
     let pixelSizeHeight = height / RESOLUTION;
@@ -154,20 +143,8 @@ function fractalBrownianMotionGenerator(width, height,
     }
 
 
-    // Use this for to linearly interpolate
-    function lerp(w) {
-        return w;
-    }
-
-
     function inverseLerp(w, a0, a1) {
         return (w - a0) / (a1 - a0);
-    }
-
-
-    // Use this cubic interpolation instead, for a smooth appearance
-    function smoothstep(w) {
-        return (3 - w * 2) * w * w;
     }
 
 
@@ -213,50 +190,47 @@ function fractalBrownianMotionGenerator(width, height,
         return value;
     }
 
-    function generateNoiseMap() {
-        for (let x = 0; x < width; x++) {
-            for (let y = 0; y < height; y++) {
 
-                let amplitude = 1;
-                let frequency = 1;
-                let noiseHeight = 0;
+    function getNoiseHeight(x, y) {
+        let amplitude = 1;
+        let frequency = 1;
 
-                for (let i = 0; i < OCTAVES; i++) {
-                    let sampleX = x / pixelSizeWidth * frequency;
-                    let sampleY = y / pixelSizeHeight * frequency;
-                    let perlinValue = compute(sampleX, sampleY);
 
-                    noiseHeight += perlinValue * amplitude;
+        function getOctaveValue() {
+            let sampleX = x / pixelSizeWidth * frequency;
+            let sampleY = y / pixelSizeHeight * frequency;
+            let perlinValue = compute(sampleX, sampleY);
 
-                    amplitude *= PERSISTANCE;
-                    frequency *= LACUNARITY;
-                }
+            amplitude *= PERSISTANCE;
+            frequency *= LACUNARITY;
 
-                if (noiseHeight > maxNoiseHeight)
-                    maxNoiseHeight = noiseHeight;
-                else if (noiseHeight < minNoiseHeight)
-                    minNoiseHeight = noiseHeight;
-
-                noiseMap[[ x / pixelSizeWidth, y / pixelSizeHeight ]] = noiseHeight;
-
-            }
+            return perlinValue * amplitude;
         }
+
+
+        let noiseHeight = Array.from({length: OCTAVES}, getOctaveValue).reduce((prev, curr) => prev + curr, 0);
+
+        if (noiseHeight > maxNoiseHeight)
+            maxNoiseHeight = noiseHeight;
+        else if (noiseHeight < minNoiseHeight)
+            minNoiseHeight = noiseHeight;
+
+        return noiseHeight;
     }
 
 
-    generateNoiseMap();
-
-
-    return (x, y) => {
-        let v = Math.floor(inverseLerp(noiseMap[[ x / pixelSizeWidth, y / pixelSizeHeight ]], minNoiseHeight, maxNoiseHeight) * COLOR_SCALE);
+    function getPixelColor(x, y) {
+        let v = Math.floor(inverseLerp(getNoiseHeight(x, y), minNoiseHeight, maxNoiseHeight) * COLOR_SCALE);
         if (COLORED) {
             [R, G, B] = helpers.hsl2rgb(v);
             return helpers.getColor(R, G, B, 255);
-        }
-        else {
-            return helpers.getColor(v, v, v, v);
+        } else {
+            return helpers.getColor(v, v, v, 255);
         }
     }
+
+
+    return getPixelColor;
 }
 
 

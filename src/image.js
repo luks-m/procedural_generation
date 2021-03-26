@@ -30,9 +30,9 @@ function getImage(canvas, width, height) {
     ///////////////////// Generators : /////////////////////
 
     // Checkerboard
-    pixel = generatorsLucas.makeCheckerboard(width, height, 50,
-							  helpers.getColor(255,0,0,255),
-							  helpers.getColor(0,255,0,255));
+    //pixel = generatorsLucas.makeCheckerboard(width, height, 50,
+	//						  helpers.getColor(255,0,0,255),
+	//						  helpers.getColor(0,255,0,255));
 
     // Perlin Noise
     //pixel = generators.perlinNoiseGen(width, height);
@@ -41,16 +41,16 @@ function getImage(canvas, width, height) {
     //pixel = generators.fractionalBrownianMotionGen(width, height, 8, undefined, undefined, 1);
 
     // Worley Noise
-    //pixel = generators.worleyNoiseGen(width, height, true, true,undefined, 255, 255, 255);
+    pixel = generators.worleyNoiseGen(width, height, true, true,undefined, 255, 255, 255);
 
-    //Cellular Noise
+    // Cellular Noise
     //pixel = generators.cellularNoiseGen(width, height, false, false,undefined, 255, 255, 255);
 
     
     ///////////////////// Filters : /////////////////////
 
     //Opacity Changer with value
-    pixel = filtersLucas.opacityChanger(pixel, 100);
+    //pixel = filtersLucas.opacityChanger(pixel, 100);
 
     canvas = imageGeneration(canvas, width, height, pixel);
 
