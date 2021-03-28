@@ -12,6 +12,7 @@ function imageGeneration(canvas, width, height, getPixelColor) {
     let n = 0; // Index inside the image array
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++, n += 4) {
+            //console.log(x,y);
             let pixelColor = getPixelColor(x, y);
             image.data[n] = pixelColor.red;
             image.data[n + 1] = pixelColor.green;
@@ -35,16 +36,14 @@ function getImage(canvas, width, height) {
 	//						  helpers.getColor(0,255,0,255));
 
     // Perlin Noise
-    //pixel = generators.perlinNoiseGen(width, height);
+    //pixel = generators.perlinNoiseGen(width, height, undefined, undefined, true);
 
     // Fractional Brownian Motion
-    //pixel = generators.fractionalBrownianMotionGen(width, height, 8, undefined, undefined, 1);
+    //pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", undefined,8, 0.5, 2, 2, 0.1, false);
+    //pixel = generators.fractionalBrownianMotionGen(width, height, "worley", ['f2 - f1', 'euclidean', false], 3, undefined, undefined, undefined, undefined, true)
 
     // Worley Noise
-    pixel = generators.worleyNoiseGen(width, height, true, true,undefined, 255, 255, 255);
-
-    // Cellular Noise
-    //pixel = generators.cellularNoiseGen(width, height, false, false,undefined, 255, 255, 255);
+    pixel = generators.worleyNoiseGen(width, height, 'f2 - f1', 'euclidean', true, true);
 
     
     ///////////////////// Filters : /////////////////////
