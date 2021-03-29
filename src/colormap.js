@@ -122,7 +122,6 @@ function colormapHot(f,min,max,axis){
     return hot;
 }
 */
-
 function colormapHot(f,min,max,axis){
 
     function hot(x,y){

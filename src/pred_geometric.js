@@ -9,11 +9,11 @@ function isOdd(x){
 }
 	
 function sameParity(x,y){
-    return (isEven(x) && isEven(y)) || (isOdd(x) && isOdd(y))    
+    return (isEven(x) && isEven(y)) || (isOdd(x) && isOdd(y)) ;  
 }
 
 function predTrue(x,y,size,width){
-
+ 
     return true;
 }
 
@@ -87,15 +87,15 @@ exports.isOdd = isOdd;
 exports.sameParity = sameParity;
 exports.predTrue = predTrue;
 exports.predFalse = predFalse;
-exports.predTopLine = predTopLine
-exports.predBottomLine = predBottomLine
-exports.predLeftLine = predLeftLine
-exports.predRightLine = predRightLine
-exports.predCornerTopRight = predCornerTopRight
-exports.predCornerTopLeft = predCornerTopLeft
-exports.predCornerBottomRight = predCornerBottomRight
-exports.predCornerBottomLeft = predCornerBottomLeft
-exports.predDiagBottomRightTopLeft = predDiagBottomRightTopLeft
-exports.predDiagBottomLeftTopRight = predDiagBottomLeftTopRight
+exports.predTopLine = predTopLine;
+exports.predBottomLine = predBottomLine;
+exports.predLeftLine = predLeftLine;
+exports.predRightLine = predRightLine;
+exports.predCornerTopRight = predCornerTopRight;
+exports.predCornerTopLeft = predCornerTopLeft;
+exports.predCornerBottomRight = predCornerBottomRight;
+exports.predCornerBottomLeft = predCornerBottomLeft;
+exports.predDiagBottomRightTopLeft = predDiagBottomRightTopLeft;
+exports.predDiagBottomLeftTopRight = predDiagBottomLeftTopRight;
 exports.whichPart = whichPart;
-exports.isSquareDiag = isSquareDiag
+exports.isSquareDiag = isSquareDiag;

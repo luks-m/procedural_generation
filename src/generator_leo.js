@@ -1,21 +1,6 @@
 const helpers = require('./helpers.js');
 const geometric = require('./pred_geometric.js');
-const colormap = require('./colormap.js')
-
-
-function load_object(width,height){
-    let canvas = createCanvas(width, height);
-    let context = canvas.getContext('2d');
-    let image = createImageData(width, height);
-    return [canvas,context,image];
-}
-
-function create_picture(filename,canvas,context,image){
-
-    context.putImageData(image, 0, 0);
-    let buffer = canvas.toBuffer('image/png');
-    fs.writeFileSync(`${filename}.png`, buffer);
-}
+const colormap = require('./colormap.js');
 
 function pred_uni(x,y){
     return true;
@@ -35,14 +20,14 @@ function predRectTriangle(size,color_1,color_2){
 }
 
 function predZigzag(size,color_1,color_2){
-
+    
     function zigzag(x,y){
 
 	if (geometric.isEven((y-y%size)/size)){
 	    if (x%size < (size/2-y%size/2) || x%size > (size/2+y%size/2)){
 		return color_1;
 	    }
-	    return color_2
+	    return color_2;
 	}
 	else if (!(x%size < (size/2-y%size/2) || x%size > (size/2+y%size/2))){
 	    return color_1;
@@ -336,4 +321,4 @@ exports.predHex = predHex;
 exports.predGrandmaTexture = predGrandmaTexture;
 exports.bee = bee;
 exports.predTest = predTest;
-exports.getColormap = getColormap
+exports.getColormap = getColormap;

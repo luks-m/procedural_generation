@@ -2,6 +2,7 @@ const helpers = require('./helpers.js');
 
 const generators = require('./generators.js');
 const generatorsLucas = require('./generators_lucas.js');
+const generatorsleo = require('./generator_leo.js');
 
 const filtersLucas = require('./filters_lucas.js');
 
