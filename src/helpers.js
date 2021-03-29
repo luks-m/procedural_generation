@@ -40,7 +40,17 @@ const optionalParameter = function (parameter, defaultValue) {
     return typeof(parameter) != 'undefined' ? parameter : defaultValue;
 }
 
+// Convert a value from one range to another
+const changeRange = function (n, min_old, max_old, min_new, max_new) {
+    if (n > max_old)
+        return max_new;
+    if (n < min_old)
+        return min_new;
+    return ((n - min_old) / (max_old - min_old)) * (max_new - min_new) + min_new;
+}
+
 exports.getColor = getColor;
 exports.compareColor = compareColor;
 exports.hsl2rgb = hsl2rgb;
 exports.optionalParameter = optionalParameter;
+exports.changeRange = changeRange;
