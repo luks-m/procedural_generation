@@ -43,8 +43,16 @@ function getImage(canvas, width, height) {
     //pixel = generators.fractionalBrownianMotionGen(width, height, "worley", ['f2 - f1', 'euclidean', false], 3, undefined, undefined, undefined, undefined, true)
 
     // Worley Noise
-    pixel = generators.worleyNoiseGen(width, height, 'f2 - f1', 'euclidean', true, true);
+    //pixel = generators.worleyNoiseGen(width, height, 'f2 - f1', 'euclidean', true, true);
 
+    // Colormap
+    function f(x,y){ return Math.sin(x+y**2)*Math.sqrt(x**2+y**2)/(10);}
+    pixel = generatorsleo.getColormap(f,"hot",-40,40,[250,250]);
+
+    //Bee
+    //pixel = generatorsleo.bee(helpers.getColor(0,0,0,255),helpers.getColor(140,120,0,255));
+
+    
     
     ///////////////////// Filters : /////////////////////
 
