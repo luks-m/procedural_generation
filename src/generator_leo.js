@@ -1,5 +1,6 @@
 const helpers = require('./helpers.js');
 const geometric = require('./pred_geometric.js');
+const colormap = require('./colormap.js')
 
 
 function load_object(width,height){
@@ -280,39 +281,32 @@ function bee(color1,color2){
     return generator([pred2,pred3,pred1],[f1,f2,f2],color1,color2);
 
 }
-/*   
-function pred_old_hex(){
 
-    if (x%size < size/3){
-	if (y%size < size/3){
-	    return !pred_diag_bottom_left_top_right((x%size),(y%size),size/3,width[0]);
-	}
-	if (y%size < 2*size/3){
-	    return ! pred_top_line(x,size,width[1]);
-	}
-	return !pred_diag_bottom_right_top_left((x%size),(y%size),size/3,width[2]);
-    }
+function getColormap(f,colormap_,min,max,axis){
 
-    if (x%size < 2*size/3){
-	if (y%size < size/3){
-	    return ! pred_top_line(y,size,width[3]);
-	}
-	if (y%size < 2*size/3){
-	    return true;
-	}
-	return !pred_bottom_line(y,size,width[4]);
-    }
-    if (x%size > 2*size/3){
-	if (y%size < size/3){
-	    return !pred_diag_bottom_right_top_left((x%size),(y%size),size/3,width[5]);
-	}
-	if (y%size < 2*size/3){
-	    return ! pred_bottom_line(x,size,width[6]);
-	}
-	return !pred_diag_bottom_left_top_right((x%size),(y%size),size/3,width[7]);
-    }
+    return colormap.colormaps[colormap_](f,min,max,axis);
 }
-	
+
+    
+
+function predTest(color1,color2){
+
+    let size1 = 20;
+    let size2 = 50;
+    let width = 3;
+    const pred1 = predZigzag(size1,1,color1,color2);
+    const pred2 = predVichy(10,color1,color2);
+    const pred3 = predGrandmaTexture(5*size2/12,size1/7,3,color1,color2);
+    
+
+    const f1 = (x,y) => {return [x,y];};
+    const f2 = (x,y) => {return [x%size1,y%size2];};
+
+    return generator([pred1,pred2,pred3],[f1,f1,f1],color1,color2);
+
+}
+
+/*	
 function pred_holo(x,y,size,width){
 
     if (x%size < size/2){
@@ -340,4 +334,6 @@ exports.predHourglass = predHourglass;
 exports.predUnknown = predUnknown;
 exports.predHex = predHex;
 exports.predGrandmaTexture = predGrandmaTexture;
-exports.test = test;
+exports.bee = bee;
+exports.predTest = predTest;
+exports.getColormap = getColormap
