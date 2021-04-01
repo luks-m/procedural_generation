@@ -14,32 +14,32 @@ function sameParity(x,y){
 
 function predTrue(x,y,size,width){
  
-    return true;
+    return x===x && y===y && size===size && width===width;
 }
 
 function predFalse(x,y,size,width){
 
-    return false;
+    return x!==x && y!==y && size!==size && width!==width;
 }
 
 function predTopLine(x,y,size,width){
 
-    return x%size < width;
+    return x%size < width && y===y ;
 }
 
 function predBottomLine(x,y,size,width){
 
-    return (size-x%size) < width;  
+    return (size-x%size) < width && y===y;  
 }
 
 function predLeftLine(x,y,size,width){
 
-    return y%size < width;
+    return y%size < width && x===x;
 }
 
 function predRightLine(x,y,size,width){
 
-    return (size-y%size) < width;  
+    return (size-y%size) < width && x===x;  
 }
 
 function predCornerTopRight(x,y,size,width){
