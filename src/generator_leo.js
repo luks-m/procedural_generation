@@ -78,7 +78,7 @@ function predEqTriangle(size,color_1,color_2){
 function predQuad(size,color_1,color_2){
 
     function quad(x,y){
-	if (sameParity(x/size,y/size)){
+	if (geometric.sameParity(x/size,y/size)){
             return color_1;
 	}
 	return color_2;

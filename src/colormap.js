@@ -4,7 +4,6 @@ const helpers = require('./helpers.js');
 function gradient(x,min,max,begin,end){
 
     let dist = max-min;
-
     return begin + ((end-begin) * (((x-min)%dist)/dist));
 }
 
@@ -16,12 +15,9 @@ function multiGradient(x,min,max,begin,end){
     let new_val = 0 ;
     let index = 0 ;
     
-    if (val !== 0){
-	
+    if (val !== 0){	
 	index = Math.floor((val%dist)*begin.length/dist);
-
-	new_val = ((val%dist)*begin.length/dist)
-	
+	new_val = ((val%dist)*begin.length/dist);
     }
     else {
 	index  = 0 ;
@@ -38,7 +34,7 @@ function colormapGreys(f,min,max,axis){
 	let res = f(x-axis[0],y-axis[1]);
 	let begin = 255 ;
 	let end  = 0;
-	let color = gradient(res,min,max,begin,end)
+	let color = gradient(res,min,max,begin,end);
 	
 	return helpers.getColor(color,color,color,begin);
     }
@@ -71,7 +67,7 @@ function colormapSpring(f,min,max,axis){
 	let end = 0;
 	let red = gradient(res,min,max,begin,end);
 	let green = begin-gradient(res,min,max,begin,end);
-	let blue = 0
+	let blue = 0;
 	return helpers.getColor(red,green,blue,begin);
     }
     return spring;
@@ -101,8 +97,8 @@ function colormapHSL(f,min,max,axis){
 	let end = 255;
 	let blue = gradient(res,min,max,begin,end);
 	let red = 240;
-	let green = 97
-	return helpers.getColor(red,blue,green,255)
+	let green = 97;
+	return helpers.getColor(red,blue,green,255);
     }
     return hsl;
 }
@@ -127,12 +123,10 @@ function colormapHot(f,min,max,axis){
     function hot(x,y){
 
 	let res = f(x-axis[0],y-axis[1]);
-	let maxIntensity = 255 ;
-
 	let blue = multiGradient(res,min,max,[255,120,0,0],[120,0,0,0]);
-	let red = multiGradient(res,min,max,[0,0,120,240],[0,120,240,110])
-	let green = multiGradient(res,min,max,[0,0,120,0],[0,120,0,0])
-	return helpers.getColor(red,green,blue,255)
+	let red = multiGradient(res,min,max,[0,0,120,240],[0,120,240,110]);
+	let green = multiGradient(res,min,max,[0,0,120,0],[0,120,0,0]);
+	return helpers.getColor(red,green,blue,255);
     }
     return hot;
 }
