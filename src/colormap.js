@@ -102,6 +102,19 @@ function colormapHSL(f,min,max,axis){
     }
     return hsl;
 }
+
+function colormapLight(f,min,max,axis){
+
+    function light(x,y){
+
+	let res = f(x-axis[0],y-axis[1]);
+	let blue = multiGradient(res,min,max,[255,125,0,0,0,0],[125,0,0,0,0,0]);
+	let green = multiGradient(res,min,max,[0,125,255,125,0],[125,255,125,0,0]);
+	let red = multiGradient(res,min,max,[0,0,0,0,125],[0,0,125,255,0]);
+	return helpers.getColor(red,green,blue,255);
+    }
+    return light;
+}
 /*
 function colormapHot(f,min,max,axis){
 
@@ -118,6 +131,7 @@ function colormapHot(f,min,max,axis){
     return hot;
 }
 */
+
 function colormapHot(f,min,max,axis){
 
     function hot(x,y){
@@ -132,7 +146,7 @@ function colormapHot(f,min,max,axis){
 }
 
 
-const colormaps = {greys:colormapGreys,mushroom:colormapMushroom,hot:colormapHot,spring:colormapSpring,jet:colormapJet,hsl:colormapHSL} ;
+const colormaps = {greys:colormapGreys,mushroom:colormapMushroom,hot:colormapHot,spring:colormapSpring,jet:colormapJet,hsl:colormapHSL,light:colormapLight} ;
 
 exports.colormaps = colormaps;
 

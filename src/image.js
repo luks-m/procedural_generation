@@ -4,7 +4,9 @@ const generators = require('./generators.js');
 const generatorsLucas = require('./generators_lucas.js');
 const generatorsleo = require('./generator_leo.js');
 
+
 const filtersLucas = require('./filters_lucas.js');
+const filtersleo = require('./filters_leo.js');
 
 function imageGeneration(canvas, width, height, getPixelColor) {
     let context = canvas.getContext("2d");
@@ -47,10 +49,17 @@ function getImage(canvas, width, height) {
     //pixel = generators.worleyNoiseGen(width, height, 'f2 - f1', 'euclidean', true, true);
 
     // Colormap
-    function f(x,y){ return Math.sin(x+y**2)*Math.sqrt(x**2+y**2)/(10);}
-    pixel = generatorsleo.getColormap(f,"hot",-40,40,[250,250]);
-
+    //function f(x,y){ return Math.log(Math.sin(x*x+y*y)/x);}
+    //function f(x,y){ return Math.sin(x+y**2)*Math.sqrt(x**2+y**2)/(10);}
+    //function f(x,y){ return Math.log(Math.abs(x))+Math.sin(y);}
+    //function f(x,y){ return Math.cos(x*y)*Math.sqrt(x**2+y**2)/(x*y-2*x**2-y**2);}
+    
+    function f(x,y){ return y;}
+    
+    pixel = generatorsleo.getColormap(f,"light",0,500,[0,0]);
+    
     //Bee
+   
     //pixel = generatorsleo.bee(helpers.getColor(0,0,0,255),helpers.getColor(140,120,0,255));
 
     
@@ -62,6 +71,11 @@ function getImage(canvas, width, height) {
 
     canvas = imageGeneration(canvas, width, height, pixel);
 
+    
+    //let matrices = filtersleo.canvasToMatrix(canvas,height,width);
+    //let matricesfiltered = filtersleo.reverseImg(matrices,"","");
+    //canvas = filtersleo.MatrixToCanvas(matricesfiltered,height,width);
+    
     return canvas;
 }
 
