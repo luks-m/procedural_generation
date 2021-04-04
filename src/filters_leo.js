@@ -74,7 +74,7 @@ function multiply(A,B){
 }
 
 
-function reverseImg(image,axe,where){
+function reverseImg_old(image,axe,where){
 
     let length = image["red"].length;
     let width = image["red"][0].length;
@@ -92,6 +92,36 @@ function reverseImg(image,axe,where){
     return {red:redM , green:greenM , blue:blueM , opacity:opacityM };
 }
 
+
+function reverseImg(generator,axe,height,width){
+
+    if ( axe === "x"){
+	return (x,y) => generator(width-x,y);
+    }
+    if ( axe === "y"){
+	return (x,y) => generator(x,height-y);
+    }
+    if ( axe === "xy"){
+	return (x,y) => generator(width-x,height-y);
+    }
+}
+
+function filters(filters){
+
+    function getfilters(x,y){
+	function getColor(acc,curr){
+            acc = (x,y) => curr(acc(x,y));
+            return acc;
+	}
+	let filter = filters.reduce((acc,curr) => getColor(acc,curr),(x,y)=>{return [x,y];})
+	
+	return filter(x,y);
+	
+    }
+    return getfilters;
+}
+
 exports.canvasToMatrix = canvasToMatrix;
 exports.MatrixToCanvas = MatrixToCanvas;
 exports.reverseImg = reverseImg;
+exports.filters = filters;
