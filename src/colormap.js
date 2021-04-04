@@ -115,6 +115,19 @@ function colormapLight(f,min,max,axis){
     }
     return light;
 }
+
+function colormapIsland(f,min,max,axis){
+
+    function island(x,y){
+
+	let res = f(x-axis[0],y-axis[1]);
+	let red = multiGradient(res,min,max,[0,135,249,127,154,128],[0,135,249,127,154,128]);
+	let green = multiGradient(res,min,max,[0,206,228,255,205,128],[0,206,228,255,205,128]);
+	let blue = multiGradient(res,min,max,[255,235,183,0,50,0],[255,235,183,0,50,0]);	
+	return helpers.getColor(red,green,blue,255);
+    }
+    return island;
+}
 /*
 function colormapHot(f,min,max,axis){
 
@@ -146,7 +159,7 @@ function colormapHot(f,min,max,axis){
 }
 
 
-const colormaps = {greys:colormapGreys,mushroom:colormapMushroom,hot:colormapHot,spring:colormapSpring,jet:colormapJet,hsl:colormapHSL,light:colormapLight} ;
+const colormaps = {greys:colormapGreys,mushroom:colormapMushroom,hot:colormapHot,spring:colormapSpring,jet:colormapJet,hsl:colormapHSL,light:colormapLight,island:colormapIsland} ;
 
 exports.colormaps = colormaps;
 
