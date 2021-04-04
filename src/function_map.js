@@ -79,6 +79,7 @@ function fractale(max,f){
     return mandel;
 }
 
+
 function focused(f,height,width,xmin,xmax,ymin,ymax){
 
     let rapport_x = (xmax-xmin)/width;

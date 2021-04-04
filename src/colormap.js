@@ -27,11 +27,11 @@ function multiGradient(x,min,max,begin,end){
     return begin[index] + ((end[index]-begin[index]) * (new_val-Math.floor(new_val)));
 }
 
-function colormapGreys(f,min,max,axis){
+function colormapGreys(f,min,max){
 
     function greys(x,y){
 	
-	let res = f(x-axis[0],y-axis[1]);
+	let res = f(x,y);
 	let begin = 255 ;
 	let end  = 0;
 	let color = gradient(res,min,max,begin,end);
@@ -42,11 +42,11 @@ function colormapGreys(f,min,max,axis){
 }
 
 
-function colormapMushroom(f,min,max,axis){
+function colormapMushroom(f,min,max){
 
     function mushroom(x,y){
 
-	let res = f(x-axis[0],y-axis[1]);
+	let res = f(x,y);
 	let begin = 255 ;
 	let end = 0 ;
 	let red = gradient(res,min,max,begin,end);
@@ -58,11 +58,11 @@ function colormapMushroom(f,min,max,axis){
     return mushroom;
 }
 
-function colormapSpring(f,min,max,axis){
+function colormapSpring(f,min,max){
 
     function spring(x,y){
 
-	let res = f(x-axis[0],y-axis[1]);
+	let res = f(x,y);
 	let begin = 255 ;
 	let end = 0;
 	let red = gradient(res,min,max,begin,end);
@@ -73,11 +73,11 @@ function colormapSpring(f,min,max,axis){
     return spring;
 }
 
-function colormapJet(f,min,max,axis){
+function colormapJet(f,min,max){
 
     function jet(x,y){
 
-	let res = f(x-axis[0],y-axis[1]);
+	let res = f(x,y);
 	let begin = 255 ;
 	let end = 0;
 	let red = gradient(res,min,max,begin,end);
@@ -88,11 +88,11 @@ function colormapJet(f,min,max,axis){
     return jet;
 }
 
-function colormapHSL(f,min,max,axis){
+function colormapHSL(f,min,max){
 
     function hsl(x,y){
 
-	let res = f(x-axis[0],y-axis[1]);
+	let res = f(x,y);
 	let begin = 0 ;
 	let end = 255;
 	let blue = gradient(res,min,max,begin,end);
@@ -103,11 +103,11 @@ function colormapHSL(f,min,max,axis){
     return hsl;
 }
 
-function colormapLight(f,min,max,axis){
+function colormapLight(f,min,max){
 
     function light(x,y){
 
-	let res = f(x-axis[0],y-axis[1]);
+	let res = f(x,y);
 	let blue = multiGradient(res,min,max,[255,125,0,0,0,0],[125,0,0,0,0,0]);
 	let green = multiGradient(res,min,max,[0,125,255,125,0],[125,255,125,0,0]);
 	let red = multiGradient(res,min,max,[0,0,0,0,125],[0,0,125,255,0]);
@@ -116,11 +116,11 @@ function colormapLight(f,min,max,axis){
     return light;
 }
 
-function colormapIsland(f,min,max,axis){
+function colormapIsland(f,min,max){
 
     function island(x,y){
 
-	let res = f(x-axis[0],y-axis[1]);
+	let res = f(x,y);
 	let red = multiGradient(res,min,max,[0,135,249,127,154,128],[0,135,249,127,154,128]);
 	let green = multiGradient(res,min,max,[0,206,228,255,205,128],[0,206,228,255,205,128]);
 	let blue = multiGradient(res,min,max,[255,235,183,0,50,0],[255,235,183,0,50,0]);	
@@ -145,11 +145,11 @@ function colormapHot(f,min,max,axis){
 }
 */
 
-function colormapHot(f,min,max,axis){
+function colormapHot(f,min,max){
 
     function hot(x,y){
 
-	let res = f(x-axis[0],y-axis[1]);
+	let res = f(x,y);
 	let blue = multiGradient(res,min,max,[255,120,0,0],[120,0,0,0]);
 	let red = multiGradient(res,min,max,[0,0,120,240],[0,120,240,110]);
 	let green = multiGradient(res,min,max,[0,0,120,0],[0,120,0,0]);

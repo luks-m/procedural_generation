@@ -50,7 +50,8 @@ function getImage(canvas, width, height) {
     //pixel = generators.worleyNoiseGen(width, height, 'f2 - f1', 'euclidean', true, true);
 
     // Colormap
-    pixel = generatorsleo.getColormap(functionMap.focused(functionMap.juliaDragon(50),500,500,-2,5,-2,5),"greys",0,10,[0,0]);
+    
+    pixel = generatorsleo.getColormap(functionMap.focused(functionMap.juliaDragon(50),height,width,-1,1,-1,1),"light",0,1);
     
     //Bee
    
