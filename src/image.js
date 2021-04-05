@@ -3,6 +3,7 @@ const helpers = require('./helpers.js');
 const generators = require('./generators.js');
 const generatorsLucas = require('./generators_lucas.js');
 const generatorsleo = require('./generator_leo.js');
+const colormaps = require('./colormap.js');
 const functionMap = require('./function_map.js');
 
 
@@ -50,8 +51,7 @@ function getImage(canvas, width, height) {
     //pixel = generators.worleyNoiseGen(width, height, 'f2 - f1', 'euclidean', true, true);
 
     // Colormap
-    
-    pixel = generatorsleo.getColormap(functionMap.focused(functionMap.juliaDragon(50),height,width,-1,1,-1,1),"light",0,1);
+    pixel = generatorsleo.getColormap(functionMap.focused(functionMap.juliaSpi(50),height,width,-1,1,-1,1),"islandD",0,7);
     
     //Bee
    
