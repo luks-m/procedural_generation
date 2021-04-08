@@ -51,7 +51,17 @@ function getImage(canvas, width, height) {
     //pixel = generators.worleyNoiseGen(width, height, 'f2 - f1', 'euclidean', true, true);
 
     // Colormap
-    pixel = generatorsleo.getColormap(functionMap.focused(functionMap.juliaSpi(50),height,width,-1,1,-1,1),"islandD",0,7);
+    pixel = generatorsleo.getColormap(functionMap.focused(functionMap.juliaDragon(50),height,width,-1,1,-1,1),"hot",7,0);
+    //function f1(z){return [0,0.16*z[1]];}
+    //function f2(z){return [0.85*z[0]+0.04*z[1],-0.04*z[0]+0.85*z[1]+1.60];}
+    //function f3(z){return [0.2*z[0]-0.26*z[1],0.23*z[0]+0.22*z[1]+1.60];}
+    //function f4(z){return [-0.15*z[0]+0.28*z[1],0.26*z[0]+0.24*z[1]+0.44];}
+    //let p = [0.01,0.86,0.93,1]
+    //pixel = generatorsleo.getColormap(functionMap.focused(functionMap.IFS([f1,f2,f3,f4],p,4,500,0.5),height,width,-5,5,-5,5),"island",0,6);
+
+
+    //voronoi
+    //pixel = generatorsleo.voronoi([[200,200],[120,140],[70,155]],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255)])
     
     //Bee
    

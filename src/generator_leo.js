@@ -265,36 +265,34 @@ function predTest(color1,color2){
     return generator([pred1,pred2,pred3],[f1,f1,f1],color1,color2);
 }
 
-/*	
-function pred_holo(x,y,size,width){
+function voronoi(center,color){
 
-    if (x%size < size/2){
-	if (y%size < size/2){
-	    return !pred_diag_bottom_left_top_right(x%(size/20),y%(size/20),size/20,2);
+
+    function voronoi_(x,y){
+
+	function norm(vec1,vec2){
+	    return Math.sqrt((vec1[0]-vec2[0])**2+(vec1[1]-vec2[1])**2);
 	}
-	return !pred_diag_bottom_right_top_left(x%(size/20),y%(size/20),size/20,2);
+
+	let array = center.map((i)=>{return norm(i,[x,y]);})
+	let min;
+	let index;
+	for (let i =0  ; i<array.length ; i++){
+	    if (i==0) {
+		min = array[i];
+		index = 0;
+	    }
+	    else if (array[i] < min){
+		min = array[i];
+		index = i ;
+	    }
+	}
+	return color[index];
     }
+    return voronoi_;
+}
+
     
-    if (y%size < size/2){
-	return !pred_diag_bottom_right_top_left(x%(size/20),y%(size/20),size/20,2);
-	}
-    return !pred_diag_bottom_left_top_right(x%(size/20),y%(size/20),size/20,2);
-   	
-		
-}
-
-
-function pred_holo_1(x,y,size){
-    if (x%size > y%size && x<(size-y%size/2)){
-	return (x%size)%(size-(2*y)%size/2)%2 === 0;
-    }
-    if (x%size > y%size && x>(size-y%size/2)){
-	return (x%size)%(size-(2*y)%size/2)%2 === 0;
-    }
-    return true;
-}
-
-*/	    
 
 
 
@@ -312,3 +310,4 @@ exports.bee = bee;
 exports.predTest = predTest;
 exports.getColormap = getColormap;
 exports.generator = generator ;
+exports.voronoi = voronoi ;

@@ -87,28 +87,34 @@ function focused(f,height,width,xmin,xmax,ymin,ymax){
     return (x,y)=>{return f(xmin+x*rapport_x,ymin+y*rapport_y);};
 }
 
-function IFS(f,prob,length,N){
+function IFS(f,prob,length,N,p){
 
-    function ifs(x,y){
-	let i = 0;
-	
-	let z = [0,0];
-	while (i<N){
-	    let r = Math.random();
-	    for (let i = 0 ; i<length;i++){
-		if (r<=prob[i]){
-		    z=f[i](z);
+    let array = [[0,0]];
+    let z = [0,0];
+    for (let i = 0; i < N ; i++){
+	let r = Math.random();
+	    for (let j = 0 ; j<length;j++){
+		if (r<=prob[j]){
+		    z=f[j](z);
 		}
 	    }
-	    if (Math.abs(x-z[0]) < 0.5 && Math.abs(z[1]-y) < 0.5){
-		return 1;
+	array.push(z);
+    }
+    function ifs(x,y){
+	function norm(vec1,vec2){
+	    return Math.sqrt((vec1[0]-vec2[0])**2+(vec1[1]-vec2[1])**2);
+	}
+	
+	for (let i = 0 ; i<array.length ; i++){
+	    if (norm(array[i],[x,y]) < p){
+		return 5;
 	    }
-	    i+=1;
-	}   
-	return 2;
+	}
+	return 0;
     }
     return ifs;
 }
+
 
 exports.mandelbrot = mandelbrot;
 exports.julia = julia;
