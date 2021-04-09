@@ -49,8 +49,14 @@ const changeRange = function (n, min_old, max_old, min_new, max_new) {
     return ((n - min_old) / (max_old - min_old)) * (max_new - min_new) + min_new;
 }
 
+// Return the euclidian distance between two points
+function norm(vec1,vec2){
+    return Math.sqrt((vec1[0]-vec2[0])**2+(vec1[1]-vec2[1])**2);
+}
+
 exports.getColor = getColor;
 exports.compareColor = compareColor;
 exports.hsl2rgb = hsl2rgb;
 exports.optionalParameter = optionalParameter;
 exports.changeRange = changeRange;
+exports.norm = norm;

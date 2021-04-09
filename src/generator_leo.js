@@ -269,12 +269,7 @@ function voronoi(center,color){
 
 
     function voronoi_(x,y){
-
-	function norm(vec1,vec2){
-	    return Math.sqrt((vec1[0]-vec2[0])**2+(vec1[1]-vec2[1])**2);
-	}
-
-	let array = center.map((i)=>{return norm(i,[x,y]);})
+	let array = center.map((i)=>{return halpers.norm(i,[x,y]);})
 	let min;
 	let index;
 	for (let i =0  ; i<array.length ; i++){
