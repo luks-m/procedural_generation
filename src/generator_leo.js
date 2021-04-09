@@ -297,6 +297,24 @@ function voronoiRandom(height,width,number){
     }
     return voronoi(array,color);
 }
+
+function hexagone(height,width,size){
+
+    let array=[];
+    let color=[];
+    for (let i = 0 ; i < 1.5*Math.floor(height/size) ; i++){
+	for (let j = 0 ; j < 1.5*Math.floor(width/size) ; j++){
+	    if (geometric.isEven(i)){
+		array.push([-1*size+j*size,i*size]);
+	    }
+	    else {
+		array.push([-1*3/2*size+j*size,i*size]);
+	    }
+	    color.push(helpers.getColor(255*Math.random(),255*Math.random(),255*Math.random(),255));
+	}
+    }
+    return voronoi(array,color);
+}
     
 	
     
@@ -320,3 +338,4 @@ exports.getColormap = getColormap;
 exports.generator = generator ;
 exports.voronoi = voronoi ;
 exports.voronoiRandom = voronoiRandom ;
+exports.hexagone = hexagone;
