@@ -117,7 +117,7 @@ function perlinNoiseGenerator(width, height, RESOLUTION, COLOR_SCALE, COLORED, G
 //////////////////////////////////////////
 ///////// FRACTAL BROWNIAN MOTION ////////
 
-function fractalBrownianMotionGenerator(width, height, noiseGen, argsList, OCTAVES, PERSISTENCE, LACUNARITY, INITIAL_AMPLIUTUDE, INITIAL_FREQUENCY, COLORED) {
+function fractalBrownianMotionGenerator(width, height, noiseGen, argsList, OCTAVES, PERSISTENCE, LACUNARITY, INITIAL_AMPLIUTUDE, INITIAL_FREQUENCY, COLORED,GET_NOISE) {
 
     argsList    =   helpers.optionalParameter(argsList, [ ]);
     OCTAVES     =   helpers.optionalParameter(OCTAVES, 4);
@@ -126,7 +126,7 @@ function fractalBrownianMotionGenerator(width, height, noiseGen, argsList, OCTAV
     INITIAL_AMPLIUTUDE  =   helpers.optionalParameter(INITIAL_AMPLIUTUDE, 1);
     INITIAL_FREQUENCY   =   helpers.optionalParameter(INITIAL_FREQUENCY, 1);
     COLORED             =   helpers.optionalParameter(COLORED, true);
-
+    GET_NOISE = helpers.optionalParameter(GET_NOISE,false);
 
     // Return a list of generator to use for each octave
     // according to user's input
@@ -191,8 +191,12 @@ function fractalBrownianMotionGenerator(width, height, noiseGen, argsList, OCTAV
         }
     }
 
-
-    return getPixelColor;
+    if (GET_NOISE){
+	return getNoiseHeight;
+    }
+    else {
+	return getPixelColor;
+    }
 }
 
 //////////////////////////////////////////
