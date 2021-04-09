@@ -269,7 +269,7 @@ function voronoi(center,color){
 
 
     function voronoi_(x,y){
-	let array = center.map((i)=>{return halpers.norm(i,[x,y]);})
+	let array = center.map((i)=>{return helpers.norm(i,[x,y]);})
 	let min;
 	let index;
 	for (let i =0  ; i<array.length ; i++){
@@ -287,6 +287,19 @@ function voronoi(center,color){
     return voronoi_;
 }
 
+function voronoiRandom(height,width,number){
+
+    let array=[];
+    let color=[];
+    for (let i = 0 ; i < number ; i++){
+	array.push([Math.random()*width,Math.random()*height]);
+	color.push(helpers.getColor(255*Math.random(),255*Math.random(),255*Math.random(),255));
+    }
+    return voronoi(array,color);
+}
+    
+	
+    
     
 
 
@@ -306,3 +319,4 @@ exports.predTest = predTest;
 exports.getColormap = getColormap;
 exports.generator = generator ;
 exports.voronoi = voronoi ;
+exports.voronoiRandom = voronoiRandom ;
