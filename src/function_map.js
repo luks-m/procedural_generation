@@ -115,7 +115,7 @@ function IFS(f,prob,length,N,p){
     return ifs;
 }
 
-
+exports.wave = wave;
 exports.mandelbrot = mandelbrot;
 exports.julia = julia;
 exports.juliaSquare = juliaSquare;
