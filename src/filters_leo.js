@@ -1,4 +1,5 @@
 const { createCanvas } = require('canvas');
+const helpers = require('./helpers.js');
 
 function canvasToMatrix(canvas,height,width) {
 
@@ -106,6 +107,152 @@ function reverseImg(generator,axe,height,width){
     }
 }
 
+function Xor(generator1,generator2,color){
+
+    function xor(x,y){
+
+	if ( ! helpers.compareColor(generator1(x,y),color) && helpers.compareColor(generator2(x,y),color)){
+	    return generator1(x,y);
+	}
+	else if ( helpers.compareColor(generator1(x,y),color) && !helpers.compareColor(generator2(x,y),color)){
+	    return generator2(x,y);
+	}
+	return color;
+    }
+    return xor;
+}
+
+function Over(generator1,generator2,color){
+
+    function over(x,y){
+
+	if ( ! helpers.compareColor(generator1(x,y),color)){
+	    return generator1(x,y);
+	}
+	return generator2(x,y);
+    }
+    return over;
+}
+
+function In(generator1,generator2,color){
+    
+    function inte(x,y){
+
+	if ( ! helpers.compareColor(generator1(x,y),color) && ! helpers.compareColor(generator2(x,y),color)){
+	    return generator1(x,y);
+	}
+	return color;
+    }
+    return inte;
+}
+
+function Out(generator1,generator2,color){
+    
+    function out(x,y){
+
+	if ( ! helpers.compareColor(generator1(x,y),color) && helpers.compareColor(generator2(x,y),color)){
+	    return generator1(x,y);
+	}
+	return color;
+    }
+    return out;
+}
+
+function Atop(generator1,generator2,color){
+    
+    function atop(x,y){
+
+	if ( ! helpers.compareColor(generator1(x,y),color) && ! helpers.compareColor(generator2(x,y),color)){
+	    return generator1(x,y);
+	}
+	else if (! helpers.compareColor(generator2(x,y),color)){
+	    return generator2(x,y);
+	}
+	return color;
+    }
+    return atop;
+}
+
+function Operation(generator1,generator2,operation){
+
+    if (operation==="Multiply"){
+	function op(a,b){ return ((a/255)*(b/255)*255);};
+    }
+    else if (operation==="Screen"){
+	function op(a,b){return (1-(1-a/255)*(1-b/255))*255;};
+    }
+    else if (operation==="SrcDivide"){
+	function op(a,b){return ((((b+1)/(a+1))*255));};
+    }
+    else if (operation==="DstDivide"){
+	function op(a,b){return ((((a+1)/(b+1))*255));};
+    }
+    else if (operation==="Add"){
+	function op(a,b){return (a+b);};
+    }
+    else if (operation==="SrcMinus"){
+	function op(a,b){if (a > b){ return 0;};return (b-a);};
+    }
+    else if (operation==="DstMinus"){
+	function op(a,b){if (b > a){ return 0;} ; return (a-b);};
+    }
+
+    function Op(x,y){
+	let red = op(generator1(x,y).red,generator2(x,y).red)
+	let green = op(generator1(x,y).green,generator2(x,y).green)
+	let blue = op(generator1(x,y).blue,generator2(x,y).blue)
+	let alpha = op(generator1(x,y).alpha,generator2(x,y).alpha)
+	return helpers.getColor(red,green,blue,alpha);
+    }
+    return Op;
+}
+
+
+function composition(generator1,generator2,operation,color){
+
+    if (operation==="Src"){
+	return generator1;
+    }
+    else if (operation==="Dst"){
+	return generator2;
+    }
+    else if (operation==="Xor"){
+	return Xor(generator1,generator2,color);
+    }
+    else if (operation==="Over"){
+	return Over(generator1,generator2,color);
+    }
+    else if (operation==="In"){
+	return In(generator1,generator2,color);
+    }
+    else if (operation==="Out"){
+	return Out(generator1,generator2,color);
+    }
+    else if (operation==="Atop"){
+	return Atop(generator1,generator2,color);
+    }
+    else if (operation==="DstOver"){
+	return Over(generator2,generator1,color);
+    }
+    else if (operation==="DstIn"){
+	return In(generator2,generator1,color);
+    }
+    else if (operation==="DstOut"){
+	return Out(generator2,generator1,color);
+    }
+    else if (operation==="DstAtop"){
+	return Atop(generator2,generator1,color);
+    }
+    else if (operation==="Multiply" || operation==="Screen" || operation==="SrcDivide" || operation==="DstDivide" || operation==="Add" || operation==="SrcMinus" || operation==="DstMinus"){
+	return Operation(generator1,generator2,operation);
+    }
+    else {
+	return (x,y) => color;
+    }
+}
+    
+    
+
 function filters(filters){
 
     function getfilters(x,y){
@@ -125,3 +272,4 @@ exports.canvasToMatrix = canvasToMatrix;
 exports.MatrixToCanvas = MatrixToCanvas;
 exports.reverseImg = reverseImg;
 exports.filters = filters;
+exports.composition = composition;
