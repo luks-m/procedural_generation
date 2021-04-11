@@ -250,7 +250,7 @@ function composition(generator1,generator2,operation,color){
 	return (x,y) => color;
     }
 }
-    
+
     
 
 function filters(filters){
@@ -268,8 +268,40 @@ function filters(filters){
     return getfilters;
 }
 
+function smooth(generator,height,width){
+
+    
+    function add(color1,color2){
+	let red = color1.red+color2.red;
+	let green = color1.green+color2.green;
+	let blue = color1.blue+color2.blue;
+	let alpha = color1.alpha//+color2.alpha;
+	return helpers.getColor(red,green,blue,alpha);
+    }
+    function mul(color1,color2){
+	let red = color1.red*color2.red;
+	let green = color1.green*color2.green;
+	let blue = color1.blue*color2.blue;
+	let alpha = color1.alpha//*color2.alpha;
+	return helpers.getColor(red,green,blue,alpha);
+    }
+    function Smooth(x,y){
+	let x_r = Math.random()*width
+	let y_r = Math.random()*height
+	let theta = -1*3.14/2+Math.random()*2*3.14;
+	let new_x = x_r*Math.cos(theta);
+	let new_y = y_r*Math.sin(theta);
+	let norm = Math.sqrt((x-new_x)**2+(y-new_y)**2);
+	let color = helpers.getColor(norm,norm,norm,norm);
+	let new_color = mul(generator(new_x,new_y),color);
+	return helpers.getColor(Math.random()*generator(x,y).red,Math.random()*generator(x,y).green,Math.random()*generator(x,y).blue,255);
+    }
+    return Smooth;
+}
+
 exports.canvasToMatrix = canvasToMatrix;
 exports.MatrixToCanvas = MatrixToCanvas;
 exports.reverseImg = reverseImg;
 exports.filters = filters;
 exports.composition = composition;
+exports.smooth = smooth

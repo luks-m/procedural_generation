@@ -315,6 +315,34 @@ function hexagone(height,width,size){
     }
     return voronoi(array,color);
 }
+
+function pentagone(height,width,size){
+
+    let array=[];
+    let color=[];
+    for (let i = 0 ; i < 3*Math.floor(height/size) ; i++){
+	for (let j = 0 ; j < 1.5*Math.floor(width/size) ; j++){
+	    if (geometric.isEven(i)){
+		array.push([-1*size+j*size+size/3,i*size/2]);
+		array.push([-1*size+j*size-size/3,i*size/2]);
+		array.push([-1*size+j*size,i*size/2-size/4]);
+		array.push([-1*size+j*size,i*size/2+size/4]);
+	    }
+	    else {
+		array.push([-1*3/2*size+j*size,i*size/2+size/4]);
+		array.push([-1*3/2*size+j*size,i*size/2-size/4]);
+		array.push([-1*3/2*size+j*size-size/3,i*size/2]);
+		array.push([-1*3/2*size+j*size+size/3,i*size/2]);
+		
+	    }
+	    color.push(helpers.getColor(255*Math.random(),255*Math.random(),255*Math.random(),255));
+	    color.push(helpers.getColor(255*Math.random(),255*Math.random(),255*Math.random(),255));
+	    color.push(helpers.getColor(255*Math.random(),255*Math.random(),255*Math.random(),255));
+	    color.push(helpers.getColor(255*Math.random(),255*Math.random(),255*Math.random(),255));
+	}
+    }
+    return voronoi(array,color);
+}
     
 	
     
@@ -339,3 +367,4 @@ exports.generator = generator ;
 exports.voronoi = voronoi ;
 exports.voronoiRandom = voronoiRandom ;
 exports.hexagone = hexagone;
+exports.pentagone = pentagone;

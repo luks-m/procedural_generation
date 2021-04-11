@@ -93,13 +93,13 @@ function IFS(f,prob,length,N,p){
     let z = [0,0];
     for (let i = 0; i < N ; i++){
 	let r = Math.random();
-	    for (let j = 0 ; j<length;j++){
-		if (r<=prob[j]){
-		    z=f[j](z);
-		}
+	for (let j = 0 ; j<length;j++){
+	    if (r<=prob[j]){
+		array = array.concat([f[j](array[array.length-1])]);
 	    }
-	array.push(z);
+	}
     }
+    console.log(array)
     function ifs(x,y){
 	function norm(vec1,vec2){
 	    return Math.sqrt((vec1[0]-vec2[0])**2+(vec1[1]-vec2[1])**2);
@@ -115,7 +115,9 @@ function IFS(f,prob,length,N,p){
     return ifs;
 }
 
+exports.dentelle = dentelle;
 exports.wave = wave;
+exports.streched = streched;
 exports.mandelbrot = mandelbrot;
 exports.julia = julia;
 exports.juliaSquare = juliaSquare;
