@@ -1,13 +1,13 @@
 const getColor = function (_red, _green, _blue, _alpha) {
     return {red : _red, green : _green, blue : _blue, alpha : _alpha};
-}
+};
 
 const hsl2rgb = function(_h) {
-    L = 0.5;
-    S = 0.5;
-    C = (1 - Math.abs(2 * L - 1)) * S;
-    X = C * (1 - Math.abs(((_h / 60) % 2) - 1))
-    m = L - C / 2;
+    let L = 0.5;
+    let S = 0.5;
+    let C = (1 - Math.abs(2 * L - 1)) * S;
+    let X = C * (1 - Math.abs(((_h / 60) % 2) - 1));
+    let m = L - C / 2;
 
 
     function _hsl2rgb(_h) {
@@ -24,21 +24,21 @@ const hsl2rgb = function(_h) {
         return [C, 0, X];
     }
 
-    [Rp, Gp, Bp] = _hsl2rgb(_h);
+    let [Rp, Gp, Bp] = _hsl2rgb(_h);
 
     return [(Rp + m) * 255, (Gp + m) * 255, (Bp + m) * 255];
-}
+};
 
 const compareColor = function (color1, color2) {
     return (color1.red === color2.red
         && color1.green === color2.green
         && color1.blue === color2.blue
         && color2.alpha === color2.alpha);
-}
+};
 
 const optionalParameter = function (parameter, defaultValue) {
-    return typeof(parameter) != 'undefined' ? parameter : defaultValue;
-}
+    return typeof(parameter) !== 'undefined' ? parameter : defaultValue;
+};
 
 // Convert a value from one range to another
 const changeRange = function (n, min_old, max_old, min_new, max_new) {
@@ -47,7 +47,7 @@ const changeRange = function (n, min_old, max_old, min_new, max_new) {
     if (n < min_old)
         return min_new;
     return ((n - min_old) / (max_old - min_old)) * (max_new - min_new) + min_new;
-}
+};
 
 // Return the euclidian distance between two points
 function norm(vec1,vec2){
