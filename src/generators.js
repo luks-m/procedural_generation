@@ -1,4 +1,4 @@
-const helpers = require('./helpers.js')
+const helpers = require('./helpers.js');
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
@@ -10,25 +10,42 @@ const randGen = (x, y) => helpers.getColor(getRandomInt(255), getRandomInt(255),
 //////////////////////////////////////////
 ////////////// PERLIN NOISE //////////////
 
-
-function perlinNoiseGenerator(width, height, NOISE, RESOLUTION, COLOR_SCALE, COLORED, GET_NOISE) {
+/**
+ * Perlin noise generator
+ * @param {number} width - Width of the image
+ * @param {number} height - Height of the image
+ * @param {number} [SEED=42] - Random generator's seed
+ * @param {('value'|'gradient'|'simplex')} [NOISE='simplex] - Variant of Perlin Noise to use
+ * @param {number} [SCALE=8] - Scale of the image (can be assimilated with a zoom)
+ * @param {boolean} [COLORED=false] - Put to true to have a colored image, else it will be B&W
+ * @param {boolean} [GET_NOISE=false] - Used only for FBM computation. Returns a noise value in [-1, 1]
+ * @returns {function} - RGBA quadruplet for coordinates (x, y)
+ */
+function perlinNoiseGenerator(width, height, NOISE, SEED, SCALE, COLORED, GET_NOISE) {
 
     NOISE       =   helpers.optionalParameter(NOISE, "simplex");
-    RESOLUTION  =   helpers.optionalParameter(RESOLUTION, 8);
-    COLOR_SCALE =   helpers.optionalParameter(COLOR_SCALE, 255);
+    SEED        =   helpers.optionalParameter(SEED, 42);
+    SCALE       =   helpers.optionalParameter(SCALE, 8);
     COLORED     =   helpers.optionalParameter(COLORED, false);
     GET_NOISE   =   helpers.optionalParameter(GET_NOISE, false);
 
+
+    const random = helpers.makeRandom(SEED);
+
+
     let gradients = { };
 
-    let pixelSizeWidth = width / RESOLUTION;
-    let pixelSizeHeight = height / RESOLUTION;
+    let pixelSizeWidth = width / SCALE;
+    let pixelSizeHeight = height / SCALE;
 
 
     let compute = loadNoiseType();
 
 
-    // Return the type of distance to compute according to user's input
+    /**
+     * Returns the type of distance to compute according to user's input
+     * @returns {function} - Function to use to compute the noise value
+     */
     function loadNoiseType() {
         if (NOISE === 'value')
             return valueNoise();
@@ -41,33 +58,62 @@ function perlinNoiseGenerator(width, height, NOISE, RESOLUTION, COLOR_SCALE, COL
     }
 
 
-    // Use for an even smoother result with a second derivative equal to zero on boundaries
-    function smootherStep(w) {
-        return ((w * (w * 6 - 15) + 10) * w * w * w);
+    /**
+     * Used for an even smoother result with a second derivative equal to zero on boundaries
+     * @param {number} x - Must be equal to or between 0 and 1
+     * @returns {number} - Polynomial evaluation at x
+     */
+    function smootherStep(x) {
+        return ((x * (x * 6 - 15) + 10) * x * x * x);
     }
 
 
-    // Return the interpolation of w between a0 and a1 using Ken Perlin's smootherStep
-    function interpolate(w, a0, a1) {
-        return (a1 - a0) * smootherStep(w) + a0
+    /**
+     * Returns the interpolation of x between a0 and a1 using Ken Perlin's smootherStep
+     * @param x - Value to interpolate
+     * @param a0 - Lower bound
+     * @param a1 - Upper bound
+     * @returns {number} - Interpolated value
+     */
+    function interpolate(x, a0, a1) {
+        return (a1 - a0) * smootherStep(x) + a0;
     }
 
-
+    /**
+     * Tools to compute value noise
+     * @returns {function} - Function returning a noise value for coordinates (x, y) according to a value noise
+     */
     function valueNoise() {
+
+        /**
+         * Returns a random value in range ]-1, 1[
+         * @returns {number} - Random value
+         */
         function randomValue() {
-            return helpers.changeRange(Math.random(), 0, 1, -1, 1);
+            return random();
         }
 
-        // Computes the dot product of the distance and gradient vectors
+        /**
+         * Computes the dot product of the distance and gradient vectors
+         * @param {number} ix - Integer x coordinate to get gradient from
+         * @param {number} iy - Integer y coordinate to get gradient from
+         * @returns {number} - A value in range ]-1, 1[
+         */
         function dotGridValue(ix, iy) {
             // Get value from integer coordinate
-            if (!gradients[[ix, iy]])
-                gradients[[ix, iy]] = randomValue();
+            if (!gradients[[ ix, iy ]])
+                gradients[[ ix, iy ]] = randomValue();
 
             // Compute the dot-product
-            return gradients[[ix, iy]];
+            return gradients[[ ix, iy ]];
         }
 
+        /**
+         * Compute the noise value for value noise
+         * @param {number} x - x coordinate to compute the value from
+         * @param {number} y - y coordinate to compute the value from
+         * @returns {number} - The value noise value
+         */
         function computeValue(x, y) {
             // Determine grid cell coordinates
             let x0 = Math.floor(x);
@@ -80,11 +126,11 @@ function perlinNoiseGenerator(width, height, NOISE, RESOLUTION, COLOR_SCALE, COL
             let sy = y - y0;
 
             // Interpolate between grid point gradients
-            let n0 = dotGridValue(x0, y0, x, y);
-            let n1 = dotGridValue(x1, y0, x, y);
+            let n0 = dotGridValue(x0, y0);
+            let n1 = dotGridValue(x1, y0);
             let ix0 = interpolate(sx, n0, n1);
-            n0 = dotGridValue(x0, y1, x, y);
-            n1 = dotGridValue(x1, y1, x, y);
+            n0 = dotGridValue(x0, y1);
+            n1 = dotGridValue(x1, y1);
             let ix1 = interpolate(sx, n0, n1);
 
             let value = interpolate(sy, ix0, ix1);
@@ -96,16 +142,30 @@ function perlinNoiseGenerator(width, height, NOISE, RESOLUTION, COLOR_SCALE, COL
         return computeValue;
     }
 
-
+    /**
+     * Tools to compute gradient noise
+     * @returns {function} - Function returning a noise value for coordinates (x, y) according to a gradient noise
+     */
     function gradientNoise() {
-        // Create random direction vector
+
+        /**
+         * Returns a random 2D normalized vector
+         * @returns {{x: number, y: number}} - Random vector
+         */
         function randomGradient() {
-            let angle = (2 * Math.PI) * Math.random();
+            let angle = (2 * Math.PI) * random();
             return {x: Math.cos(angle), y: Math.sin(angle)}; // Polar coordinates, Norm = 1
         }
 
 
-        // Computes the dot product of the distance and gradient vectors
+        /**
+         * Computes the dot product of the distance and gradient vectors
+         * @param {number} ix - Integer x coordinate to get gradient
+         * @param {number} iy - Integer y coordinate to get gradient
+         * @param {number} x - Input x coordinate
+         * @param {number} y - Input y coordinate
+         * @returns {number} - Value in range [-1, 1]
+         */
         function dotGridGradient(ix, iy, x, y) {
             // Get gradient from integer coordinate
             if (!gradients[[ix, iy]])
@@ -115,12 +175,17 @@ function perlinNoiseGenerator(width, height, NOISE, RESOLUTION, COLOR_SCALE, COL
             let dx = x - ix;
             let dy = y - iy;
 
-            // Compute the dot-product
+            // Compute the dot-product (changeRange used to broaden spectrum)
             return helpers.changeRange(dx * gradients[[ix, iy]].x + dy * gradients[[ix, iy]].y, -0.7, 0.7, -1, 1);
         }
 
 
-        // Compute Perlin noise at coordinates x, y
+        /**
+         * Compute the noise value for gradient noise
+         * @param {number} x - x coordinate to compute the value from
+         * @param {number} y - y coordinate to compute the value from
+         * @returns {number} - The gradient noise value
+         */
         function computeGradient(x, y) {
             // Determine grid cell coordinates
             let x0 = Math.floor(x);
@@ -151,6 +216,10 @@ function perlinNoiseGenerator(width, height, NOISE, RESOLUTION, COLOR_SCALE, COL
     }
 
 
+    /**
+     * Tools to compute simplex noise
+     * @returns {function} - Function returning a noise value for coordinates (x, y) according to a simplex noise
+     */
     function simplexNoise() {
         let r = 0.5;
 
@@ -175,6 +244,13 @@ function perlinNoiseGenerator(width, height, NOISE, RESOLUTION, COLOR_SCALE, COL
             93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180];
 
 
+        /**
+         * Computes the dot product with (x, y)
+         * @param {number} hash - hash code gotten with the permutation table
+         * @param {number} x - Input x coordinate
+         * @param {number} y - Input y coordinate
+         * @returns {number} - the dot product with (x,y)
+         */
         function dotGridGradient(hash, x, y) {
             let h = hash & 7;      // Convert low 3 bits of hash code
             let u = h < 4 ? x : y;  // into 8 simple gradient directions,
@@ -183,12 +259,26 @@ function perlinNoiseGenerator(width, height, NOISE, RESOLUTION, COLOR_SCALE, COL
         }
 
 
+        /**
+         * Returns skewed coordinate in 2D simplex grid
+         * @param {number} x - Input x coordinate
+         * @param {number} y - Input y coordinate
+         * @returns {number[]} - Skewed (x, y) coordinates
+         */
         function skew(x, y) {
             let s = (x + y) * F2; // 2D Hairy factor
             return [ x + s, y + s ];
         }
 
 
+        /**
+         * Returns the unskewed displacement vector
+         * @param {number} x - Input x coordinate
+         * @param {number} y - Input y coordinate
+         * @param {number} ixSkewed - Skewed unit hypercube cell the input x coordinate lie
+         * @param {number} iySkewed - Skewed unit hypercube cell the input y coordinate lie
+         * @returns {number[]} - Unskewed displacement vector
+         */
         function getUnskewedDisplacementVector(x, y, ixSkewed, iySkewed) {
             let us = (ixSkewed + iySkewed) * G2;
             return [ x - ixSkewed + us, y - iySkewed + us ];
@@ -196,11 +286,22 @@ function perlinNoiseGenerator(width, height, NOISE, RESOLUTION, COLOR_SCALE, COL
         }
 
 
+        /**
+         * Similar to the interpolation between corners in the 2D simplex grid
+         * @param {number} x - x coordinate
+         * @param {number} y - y coordinate
+         * @returns {number} - Contribution of the corner
+         */
         function falloff(x, y) {
             return r - x * x - y * y;
         }
 
-
+        /**
+         * Compute the simplex value for simplex noise
+         * @param {number} x - x coordinate to compute the value from
+         * @param {number} y - y coordinate to compute the value from
+         * @returns {number} - The simplex noise value
+         */
         function computeSimplex(x, y) {
             // Coordinate Skewing
 
@@ -254,11 +355,11 @@ function perlinNoiseGenerator(width, height, NOISE, RESOLUTION, COLOR_SCALE, COL
 
             // We add the largest coordinate
             let f1 = falloff(x1, y1);
-            n1 = Math.max(0, f1) ** 4 * dotGridGradient(permutation[ii + xi + permutation[jj + yi]], x1, y1)
+            n1 = Math.max(0, f1) ** 4 * dotGridGradient(permutation[ii + xi + permutation[jj + yi]], x1, y1);
 
             // Then we add the second largest coordinate
             let f2 = falloff(x2, y2);
-            n2 = Math.max(0, f2) ** 4 * dotGridGradient(permutation[ii + 1 + permutation[jj + 1]], x2, y2)
+            n2 = Math.max(0, f2) ** 4 * dotGridGradient(permutation[ii + 1 + permutation[jj + 1]], x2, y2);
 
             // Add contributions from each corner to get the final noise value.
             // The result is scaled to return values in the interval [-1,1].
@@ -270,22 +371,33 @@ function perlinNoiseGenerator(width, height, NOISE, RESOLUTION, COLOR_SCALE, COL
         return computeSimplex;
     }
 
-    // Return the noise value at given coordinate
+
+    /**
+     * Returns the noise value at given coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {number} - noise value between -1 and 1
+     */
     function getNoiseHeight(x, y) {
         return compute(x / pixelSizeWidth, y / pixelSizeHeight);
     }
 
 
-    // Return a RGBA pixel according to a coordinate
+    /**
+     * Returns a RGBA pixel according to a coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
+     */
     function getPixelColor(x, y) {
         let v = getNoiseHeight(x, y);
         if (COLORED) {
             v = (v + 0.5) * 360;
-            [R, G, B] = helpers.hsl2rgb(v);
+            let [R, G, B] = helpers.hsl2rgb(v);
             return helpers.getColor(R, G, B, 255);
         }
         else {
-            v = (v + 1) / 2 * COLOR_SCALE;
+            v = (v + 1) / 2 * 255;
             return helpers.getColor(v, v, v, 255);
         }
     }
@@ -379,9 +491,9 @@ function fractalBrownianMotionGenerator(width, height, noiseGen, argsList, OCTAV
     }
 
     if (GET_NOISE)
-	    return getNoiseHeight;
+        return getNoiseHeight;
     else
-	    return getPixelColor;
+        return getPixelColor;
 }
 
 //////////////////////////////////////////
@@ -394,7 +506,7 @@ function fractalBrownianMotionGenerator(width, height, noiseGen, argsList, OCTAV
 function worleyNoiseGenerator(width, height, TYPE, DISTANCE, THREE_DIMENSIONS, COLORED, NUMBER_OF_POINTS, RED_SCALE, GREEN_SCALE, BLUE_SCALE, GET_NOISE) {
 
     TYPE                =   helpers.optionalParameter(TYPE, 'f2 - f1');
-    DISTANCE            =   helpers.optionalParameter(DISTANCE, 'euclidean')
+    DISTANCE            =   helpers.optionalParameter(DISTANCE, 'euclidean');
     THREE_DIMENSIONS    =   helpers.optionalParameter(THREE_DIMENSIONS, false);
     COLORED             =   helpers.optionalParameter(COLORED, false);
     NUMBER_OF_POINTS    =   helpers.optionalParameter(NUMBER_OF_POINTS, width / 3);

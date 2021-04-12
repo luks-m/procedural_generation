@@ -54,9 +54,14 @@ function norm(vec1,vec2){
     return Math.sqrt((vec1[0]-vec2[0])**2+(vec1[1]-vec2[1])**2);
 }
 
+function makeRandom(seed=101) {
+    return () => (123456791 * Math.sin(seed * seed * seed++)) % 1;
+}
+
 exports.getColor = getColor;
 exports.compareColor = compareColor;
 exports.hsl2rgb = hsl2rgb;
 exports.optionalParameter = optionalParameter;
 exports.changeRange = changeRange;
 exports.norm = norm;
+exports.makeRandom = makeRandom;
