@@ -41,7 +41,7 @@ function getImage(canvas, width, height) {
 	//						  helpers.getColor(0,255,0,255));
 
     // Perlin Noise
-    //pixel = generators.perlinNoiseGen(width, height, undefined, 'simplex', 8, undefined, false);
+    //pixel = generators.perlinNoiseGen(width, height, 'simplex', undefined, 8, undefined, false);
 
     // Fractional Brownian Motion
     //pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex'], 8, 0.5, 2, 2, 0.1, false);
