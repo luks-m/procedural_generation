@@ -11,14 +11,14 @@ const randGen = (x, y) => helpers.getColor(getRandomInt(255), getRandomInt(255),
 ////////////// PERLIN NOISE //////////////
 
 /**
- * Perlin noise generator
+ * Perlin Noise Generator
  * @param {number} width - Width of the image
  * @param {number} height - Height of the image
  * @param {number} [SEED=42] - Random generator's seed
  * @param {('value'|'gradient'|'simplex')} [NOISE='simplex] - Variant of Perlin Noise to use
  * @param {number} [SCALE=8] - Scale of the image (can be assimilated with a zoom)
  * @param {boolean} [COLORED=false] - Put to true to have a colored image, else it will be B&W
- * @param {boolean} [GET_NOISE=false] - Used only for FBM computation. Returns a noise value in [-1, 1]
+ * @param {boolean} [GET_NOISE=false] - Returns a noise value in [-1, 1]
  * @returns {function} - RGBA quadruplet for coordinates (x, y)
  */
 function perlinNoiseGenerator(width, height, NOISE, SEED, SCALE, COLORED, GET_NOISE) {
@@ -415,24 +415,45 @@ function perlinNoiseGenerator(width, height, NOISE, SEED, SCALE, COLORED, GET_NO
 //////////////////////////////////////////
 ///////// FRACTAL BROWNIAN MOTION ////////
 
+/**
+ * Fractal Brownian Motion Generator
+ * @param {number} width - Width of the image
+ * @param {number} height - Height of the image
+ * @param {('perlin'|'worley')} noiseGen - Noise generator to compute the fbm with
+ * @param {*[]} [argsList=[ ]] - Optional arguments for the noise generator, starting at the third argument of the noise generator function
+ * @param {number} [OCTAVES=2|4] - Number of frequency octaves to generate the noise with
+ * @param {number} [PERSISTENCE=0.5] - A multiplier that determines how quickly the amplitude increases for each successive octave.
+ * @param {number} [LACUNARITY=2] - A multiplier that determines how quickly the frequency increases for each successive octave.
+ * @param {number} [INITIAL_AMPLIUTUDE=1] - Initial amplitude for the first octave
+ * @param {number} [INITIAL_FREQUENCY=1] - Initial frequency for the first octave
+ * @param {boolean} [COLORED=false] - Put to true to have a colored image, else it will be B&W
+ * @param {boolean} [GET_NOISE=false] - Returns a noise value in [-1, 1]
+ * @returns {function} - RGBA quadruplet for coordinates (x, y)
+ */
 function fractalBrownianMotionGenerator(width, height, noiseGen, argsList, OCTAVES, PERSISTENCE, LACUNARITY, INITIAL_AMPLIUTUDE, INITIAL_FREQUENCY, COLORED,GET_NOISE) {
 
+    noiseGen    =   helpers.optionalParameter(noiseGen, 'perlin')
     argsList    =   helpers.optionalParameter(argsList, [ ]);
-    OCTAVES     =   helpers.optionalParameter(OCTAVES, 4);
+    OCTAVES     =   helpers.optionalParameter(OCTAVES, noiseGen === 'worley' ? 2 : 4);
     PERSISTENCE =   helpers.optionalParameter(PERSISTENCE, 0.5);
     LACUNARITY  =   helpers.optionalParameter(LACUNARITY, 2);
     INITIAL_AMPLIUTUDE  =   helpers.optionalParameter(INITIAL_AMPLIUTUDE, 1);
     INITIAL_FREQUENCY   =   helpers.optionalParameter(INITIAL_FREQUENCY, 1);
-    COLORED             =   helpers.optionalParameter(COLORED, true);
+    COLORED             =   helpers.optionalParameter(COLORED, false);
     GET_NOISE = helpers.optionalParameter(GET_NOISE,false);
 
-    // Return a list of generator to use for each octave
-    // according to user's input
+
+    /**
+     * Returns a list of generator to use for each octave according to user's input
+     * @returns {function[]} - Array of generators for each of the octave
+     */
     function getOctaveGenerator() {
-        if (noiseGen === "worley")
+        if (noiseGen === 'worley')
             return Array.from({length: OCTAVES}, (v, i) => worleyNoiseGenerator(width * (LACUNARITY ** i), height * (LACUNARITY ** i), ...argsList,...Array(worleyNoiseGenerator.length - argsList.length - 3), true));
-        else
+        else if (noiseGen === 'perlin')
             return Array.from({length: OCTAVES}, () => perlinNoiseGenerator(width, height, ...argsList, ...Array(perlinNoiseGenerator.length - argsList.length - 3), true));
+        else
+            throw Error(`${noiseGen} is not a valid noise generator. Valid noise generators are 'worley' and 'perlin'`);
     }
 
 
@@ -443,13 +464,22 @@ function fractalBrownianMotionGenerator(width, height, noiseGen, argsList, OCTAV
     let octaveGenerator = getOctaveGenerator();
 
 
-    // Return the noise value at given coordinate
+    /**
+     * Returns the noise value at given coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {number} - noise value between -1 and 1
+     */
     function getNoiseHeight(x, y) {
         let amplitude = INITIAL_AMPLIUTUDE;
         let frequency = INITIAL_FREQUENCY;
 
 
-        // Return the noise value at given octave
+        /**
+         * Returns the noise value at given octave
+         * @param {number} i - ith octave to compute the noise value from
+         * @returns {number} - The noise value at the ith octave
+         */
         function getOctaveValue(i) {
             let sampleX = x * frequency;
             let sampleY = y * frequency;
@@ -474,7 +504,12 @@ function fractalBrownianMotionGenerator(width, height, noiseGen, argsList, OCTAV
     }
 
 
-    // Return a RGBA pixel according to a coordinate
+    /**
+     * Returns a RGBA pixel according to a coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
+     */
     function getPixelColor(x, y) {
         let v = getNoiseHeight(x, y);
         //if (v > 0.5) console.log(v);

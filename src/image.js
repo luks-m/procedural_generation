@@ -45,7 +45,8 @@ function getImage(canvas, width, height) {
 
     // Fractional Brownian Motion
     //pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex'], 8, 0.5, 2, 2, 0.1, false);
-    //pixel = generators.fractionalBrownianMotionGen(width, height, "worley", ['f2', 'euclidean', false], 1, undefined, undefined, undefined, undefined, false)
+    //pixel = generators.fractionalBrownianMotionGen(width, height, "worley", ['f2', 'euclidean', false], 2, undefined, undefined, undefined, undefined, false)
+    pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", ['gradient'])
 
     // Worley Noise
     //pixel = generators.worleyNoiseGen(width, height, 'f2 - f1', 'euclidean', false, false);
@@ -54,7 +55,7 @@ function getImage(canvas, width, height) {
     //function f(z){return [z[0]*(z[0]**2-z[1]**2)-2*z[0]*z[1]**2+0.23,2*z[0]**2*z[1]+z[1]*(z[0]**2-z[1]**2)-0.970];}
     //pixel = generatorsleo.getColormap(functionMap.focused(functionMap.juliaSpi(15),height,width,-1,1,-1,1),"hot",0,2);
 
-    pixel = generatorsleo.getColormap(generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex'],8, 0.6, 2, 2, 0.07, false,true),"hot",-1,1);
+    //pixel = generatorsleo.getColormap(generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex'],8, 0.6, 2, 2, 0.07, false,true),"hot",-1,1);
 
     
     //function f1(z){return [0,0.16*z[1]];}
