@@ -3,8 +3,8 @@ const helpers = require('./helpers.js');
 const generators = require('./generators.js');
 const generatorsLucas = require('./generators_lucas.js');
 const generatorsleo = require('./generator_leo.js');
-const colormaps = require('./colormap.js');
-const functionMap = require('./function_map.js');
+const colorMaps = require('./colorMaps.js');
+const colorMapPredicate = require('./colorMapPredicate.js');
 
 
 const filtersLucas = require('./filters_lucas.js');
@@ -52,9 +52,9 @@ function getImage(canvas, width, height) {
 
     // Colormap
     //function f(z){return [z[0]*(z[0]**2-z[1]**2)-2*z[0]*z[1]**2+0.23,2*z[0]**2*z[1]+z[1]*(z[0]**2-z[1]**2)-0.970];}
-    //pixel = generatorsleo.getColormap(functionMap.focused(functionMap.juliaSpi(15),height,width,-1,1,-1,1),"hot",0,2);
+    //pixel = colorMaps.colormaps.jet(colorMapPredicate.focused(colorMapPredicate.juliaSpi(15), height, width, -1, 1, -1, 1), 0,2);
 
-    pixel = generatorsleo.getColormap(generators.fractionalBrownianMotionGen(width, height, "perlin", undefined,8, 0.6, 2, 2, 0.07, false,true),"hot",-0.5,0.8);
+    //pixel = generatorsleo.getColormap(generators.fractionalBrownianMotionGen(width, height, "perlin", undefined,8, 0.6, 2, 2, 0.07, false,true),"hot",-0.5,0.8);
 
     
     //function f1(z){return [0,0.16*z[1]];}
@@ -62,22 +62,25 @@ function getImage(canvas, width, height) {
     //function f3(z){return [0.2*z[0]-0.26*z[1],0.23*z[0]+0.22*z[1]+1.60];}
     //function f4(z){return [-0.15*z[0]+0.28*z[1],0.26*z[0]+0.24*z[1]+0.44];}
     //let p = [0.01,0.86,0.93,1]
-    //pixel = generatorsleo.getColormap(functionMap.focused(functionMap.IFS([f1,f2,f3,f4],p,4,500,0.5),height,width,-5,5,-5,5),"island",0,6);
+    //pixel = generatorsleo.getColormap(colorMapPredicate.focused(colorMapPredicate.IFS([f1,f2,f3,f4],p,4,500,0.5),height,width,-5,5,-5,5),"island",0,6);
 
 
     //voronoi
 
     //function f(t){return [Math.sin(t)/(1+Math.cos(t)**2),Math.sin(t)*Math.cos(t)/(1+Math.cos(t)**2)];}
-    //pixel = generatorsleo.voronoi([[200,200],[120,140],[70,155]],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255)])
-    //pixel = generatorsleo.voronoi([[0,0],[50,0],[100,0],[25,50],[75,50]],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255),helpers.getColor(120,200,0,255),helpers.getColor(0,50,80,255)])
-    //pixel = functionMap.focused(generatorsleo.voronoi([f(-1*Math.pi),f(-1*Math.pi+1.5),f(-1*Math.pi+3),f(-1*Math.pi+4.5),f(-1*Math.pi+6)],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255),helpers.getColor(120,200,0,255),helpers.getColor(0,50,80,255)]),height,width,-10,10,-10,10)
+    //pixel = generatorsleo.generatorVoronoi([[200,200],[120,140],[70,155]],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255)])
+    //pixel = generatorsleo.generatorVoronoi([[0,0],[50,0],[100,0],[25,50],[75,50]],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255),helpers.getColor(120,200,0,255),helpers.getColor(0,50,80,255)])
+    //pixel = colorMapPredicate.focused(generatorsleo.voronoi([f(-1*Math.pi),f(-1*Math.pi+1.5),f(-1*Math.pi+3),f(-1*Math.pi+4.5),f(-1*Math.pi+6)],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255),helpers.getColor(120,200,0,255),helpers.getColor(0,50,80,255)]),height,width,-10,10,-10,10)
 		  
     
     //Bee
    
-    //pixel = generatorsleo.bee(helpers.getColor(0,0,0,255),helpers.getColor(140,120,0,255));
-
-    
+    //pixel = generatorsleo.generatorBeePattern({color1:helpers.getColor(0,0,0,255),color2:helpers.getColor(140,120,0,255)});
+    pixel = generatorsleo.generatorBeePattern({
+                                              
+                                              color1: helpers.getColor(250, 200, 100, 255),
+                                              color2: helpers.getColor(25, 42, 1, 255)
+                                            });
     
     ///////////////////// Filters : /////////////////////
 

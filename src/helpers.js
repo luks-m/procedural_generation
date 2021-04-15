@@ -49,6 +49,19 @@ const changeRange = function (n, min_old, max_old, min_new, max_new) {
     return ((n - min_old) / (max_old - min_old)) * (max_new - min_new) + min_new;
 }
 
+function scalarProduct(arr1, arr2) {
+    return arr1.map((value, index) => value * arr2[index]).reduce((result, value) => result + value, 0);
+}
+
+function multiply(A, B) {
+    return A.map((x) => B.map((y) => scalarProduct(x, y)));
+}
+
+function norm(A) {
+    return Math.sqrt(productScalar(A, A));
+}
+
+
 exports.getColor = getColor;
 exports.compareColor = compareColor;
 exports.hsl2rgb = hsl2rgb;
