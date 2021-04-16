@@ -1,5 +1,5 @@
 const getColor = function (_red, _green, _blue, _alpha) {
-    return {red : _red, green : _green, blue : _blue, alpha : _alpha};
+    return {red : _red%256, green : _green%256, blue : _blue%256, alpha : _alpha%256};
 };
 
 const hsl2rgb = function(_h) {
@@ -50,13 +50,22 @@ const changeRange = function (n, min_old, max_old, min_new, max_new) {
 };
 
 // Return the euclidian distance between two points
-function norm(vec1,vec2){
-    return Math.sqrt((vec1[0]-vec2[0])**2+(vec1[1]-vec2[1])**2);
+function norm(vec1, vec2){
+    return Math.sqrt((vec1[0] - vec2[0]) ** 2 + (vec1[1] - vec2[1]) ** 2);
 }
 
 function makeRandom(seed=101) {
     return () => (123456791 * Math.sin(seed * seed * seed++)) % 1;
 }
+
+function scalarProduct(arr1, arr2) {
+    return arr1.map((value, index) => value * arr2[index]).reduce((result, value) => result + value, 0);
+}
+
+function multiply(A, B) {
+    return A.map((x) => B.map((y) => scalarProduct(x, y)));
+}
+
 
 exports.getColor = getColor;
 exports.compareColor = compareColor;
