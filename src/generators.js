@@ -4,7 +4,9 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
-const randGen = (x, y) => helpers.getColor(getRandomInt(255), getRandomInt(255), getRandomInt(255), getRandomInt(255));
+function singleColorRandomGenerator(color) {
+    return (x, y) => helpers.getColor(getRandomInt(255), getRandomInt(255), getRandomInt(255), getRandomInt(255));
+}
 
 
 //////////////////////////////////////////
@@ -40,8 +42,13 @@ function perlinNoiseGenerator(width, height, NOISE, SEED, SCALE, COLORED, GET_NO
 
 
     let compute = loadNoiseType();
+<<<<<<< HEAD
 
 
+=======
+
+
+>>>>>>> refs/remotes/origin/master
     /**
      * Returns the type of distance to compute according to user's input
      * @returns {function} - Function to use to compute the noise value
@@ -269,6 +276,7 @@ function perlinNoiseGenerator(width, height, NOISE, SEED, SCALE, COLORED, GET_NO
             let s = (x + y) * F2; // 2D Hairy factor
             return [ x + s, y + s ];
         }
+<<<<<<< HEAD
 
 
         /**
@@ -367,6 +375,106 @@ function perlinNoiseGenerator(width, height, NOISE, SEED, SCALE, COLORED, GET_NO
             return scaleFactor * (n0 + n1 + n2);
         }
 
+=======
+
+
+        /**
+         * Returns the unskewed displacement vector
+         * @param {number} x - Input x coordinate
+         * @param {number} y - Input y coordinate
+         * @param {number} ixSkewed - Skewed unit hypercube cell the input x coordinate lie
+         * @param {number} iySkewed - Skewed unit hypercube cell the input y coordinate lie
+         * @returns {number[]} - Unskewed displacement vector
+         */
+        function getUnskewedDisplacementVector(x, y, ixSkewed, iySkewed) {
+            let us = (ixSkewed + iySkewed) * G2;
+            return [ x - ixSkewed + us, y - iySkewed + us ];
+
+        }
+
+
+        /**
+         * Similar to the interpolation between corners in the 2D simplex grid
+         * @param {number} x - x coordinate
+         * @param {number} y - y coordinate
+         * @returns {number} - Contribution of the corner
+         */
+        function falloff(x, y) {
+            return r - x * x - y * y;
+        }
+
+        /**
+         * Compute the simplex value for simplex noise
+         * @param {number} x - x coordinate to compute the value from
+         * @param {number} y - y coordinate to compute the value from
+         * @returns {number} - The simplex noise value
+         */
+        function computeSimplex(x, y) {
+            // Coordinate Skewing
+
+            // Skew the input space to determine which simplex cell we're in
+            let [ xSkewed, ySkewed ]  = skew(x, y);
+            let ixSkewed = Math.floor(xSkewed);
+            let iySkewed = Math.floor(ySkewed);
+
+            // Simplicial subdivision
+
+            // For the 2D case, the simplex shape is an equilateral triangle.
+            // Determine which simplex we're in
+            let xi, yi; // Offsets for second (middle) corner of simplex in (i, j) coords
+            if (xSkewed - ixSkewed > ySkewed - iySkewed) {
+                // The x internal coordinate is the largest, so it is added first, then followed by the y internal coordinate
+                xi = 1;
+                yi = 0;
+            } else {
+                // The y internal coordinate is the largest, so it is added first, then followed by the x internal coordinate
+                xi = 0;
+                yi = 1;
+            }
+
+            // Gradient selection
+
+            // Unskew the cell origin back to (x, y) space
+            // The x, y distances from the cell origin
+            let [ xUnskewed, yUnskewed ] = getUnskewedDisplacementVector(x, y, ixSkewed, iySkewed);
+
+            // Adding (1,0) to unskewed coordinates implies adding (1 - G2, -G2) to input coordinates
+            // Adding (0,1) to unskewed coordinates implies adding (-G2, 1 - G2) to input coordinates
+            // Offsets with the first largest coordinate added
+            let x1 = xUnskewed - xi + G2;
+            let y1 = yUnskewed - yi + G2;
+
+            // Offsets with the second largest coordinate added
+            let x2 = xUnskewed - 1 + 2 * G2;
+            let y2 = yUnskewed - 1 + 2 * G2;
+
+            // Kernel summation
+
+            // Majors the indices to 256, so as not to exceed the size of the array of permutations.
+            let ii = ixSkewed % 256;
+            let jj = iySkewed % 256;
+
+            let n0, n1, n2; // Noise contributions from each of the three corners
+
+            // Calculate the contribution from the three corners
+            let f0 = falloff(xUnskewed, yUnskewed);
+            n0 = Math.max(0, f0) ** 4 * dotGridGradient(permutation[ii + permutation[jj]], xUnskewed, yUnskewed);
+
+            // We add the largest coordinate
+            let f1 = falloff(x1, y1);
+            n1 = Math.max(0, f1) ** 4 * dotGridGradient(permutation[ii + xi + permutation[jj + yi]], x1, y1);
+
+            // Then we add the second largest coordinate
+            let f2 = falloff(x2, y2);
+            n2 = Math.max(0, f2) ** 4 * dotGridGradient(permutation[ii + 1 + permutation[jj + 1]], x2, y2);
+
+            // Add contributions from each corner to get the final noise value.
+            // The result is scaled to return values in the interval [-1,1].
+            let scaleFactor = 2916 * Math.sqrt(2) / 125;
+            return scaleFactor * (n0 + n1 + n2);
+        }
+
+>>>>>>> refs/remotes/origin/master
 
         return computeSimplex;
     }
@@ -726,10 +834,7 @@ function worleyNoiseGenerator(width, height, TYPE, DISTANCE, THREE_DIMENSIONS, C
 
 //////////////////////////////////////////
 
-
-//////////////////////////////////////////
-
-exports.randGen = randGen;
+exports.singleColorRandomGenerator = singleColorRandomGenerator;
 exports.perlinNoiseGen = perlinNoiseGenerator;
 exports.fractionalBrownianMotionGen = fractalBrownianMotionGenerator;
 exports.worleyNoiseGen = worleyNoiseGenerator;
