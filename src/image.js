@@ -46,7 +46,7 @@ function getImage(canvas, width, height) {
     // Fractional Brownian Motion
     //pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex'], 8, 0.5, 2, 2, 0.1, false);
     //pixel = generators.fractionalBrownianMotionGen(width, height, "worley", ['f2', 'euclidean', false], 2, undefined, undefined, undefined, undefined, false)
-    pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", ['gradient'])
+    //pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", ['gradient'])
 
     // Worley Noise
     //pixel = generators.worleyNoiseGen(width, height, 'f2 - f1', 'euclidean', false, false);
@@ -72,6 +72,20 @@ function getImage(canvas, width, height) {
     //pixel = generatorsleo.voronoi([[200,200],[120,140],[70,155]],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255)])
     //pixel = generatorsleo.voronoi([[0,0],[50,0],[100,0],[25,50],[75,50]],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255),helpers.getColor(120,200,0,255),helpers.getColor(0,50,80,255)])
     //pixel = functionMap.focused(generatorsleo.voronoi([f(-1*Math.pi),f(-1*Math.pi+1.5),f(-1*Math.pi+3),f(-1*Math.pi+4.5),f(-1*Math.pi+6)],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255),helpers.getColor(120,200,0,255),helpers.getColor(0,50,80,255)]),height,width,-10,10,-10,10)
+    //pixel = filtersleo.smooth2(generatorsleo.getColormap(functionMap.focused((x,y)=>{return functionMap.mandelbrot(50)(x%0.5-1,y%1-0.4);},height,width,0,5,0,5),"hot",0,10),height,width);
+
+    //pixel = (x,y)=>{let noise = generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex'],8, 0.6, 2, 2, 0.07, false,true);return generatorsleo.predEqTriangle(50,helpers.getColor(255,0,0,255),helpers.getColor(0,0,255,255))(x+20*noise(x,y),y-20*noise(x,y));};
+
+    //pixel = (x,y)=>{let noise = generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex'],8, 0.6, 2, 2, 0.07, false,true);return generatorsleo.getColormap(functionMap.focused(functionMap.juliaDragon(15),height,width,-1,1,-1,1),"hot",0,2)(x+10*noise(x,y),y-10*noise(x,y));};
+
+    let generator = generatorsleo.getColormap(functionMap.focused(functionMap.juliaDragon(25),height,width,-1,1,-1,1),"light",0,10);
+    let generator3 = generatorsleo.getColormap(generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex',78],4, 0.6, 2, 2, 0.07, false,true),"hot",-1,0.8);
+    let f = (x,y)=>{let value = (x%4-2)**2+(y%4-2)**2 ; if (value > 2) {return value;}; return -2 ;};
+    let f1 = (x,y)=>{let value = (2*x)**2+(2*y)**2 ; if (value < 5 ) {return value;}; return 6.99;};
+    let generator2 = generatorsleo.getColormap(functionMap.focused(f1,height,width,-2,2,-2,2),"greys",-2,7);
+    pixel = filtersleo.smooth2(filtersleo.composition(filtersleo.composition(generator3,generatorsleo.getColormap(f1,"greys",0,5),"Multiply"),generator2,"Multiply",),height,width);
+    //pixel = filtersleo.composition(generator,generator3,"Multiply");
+    pixel = generatorsleo.voronoiRandom(height,width,20);
 		  
     
     //Bee
