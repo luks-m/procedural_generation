@@ -22,8 +22,6 @@ function pic(x, y) {
     return Math.sin(x ** 2 + 3 * y ** 2) / (0.1 + Math.sqrt(x ** 2 + y ** 2)) + (x ** 2 + 5 * y ** 2) * Math.exp(1 - (x ** 2 + y ** 2)) / 2;
 };
 
-//function f(x,y) {return 1/2*(1-Math.cos(1/(Math.sqrt(x**2+y**2))*Math.sin(x)));}
-
 function mandelbrotSet(max) {
     function mandel(x, y) {
         let c = [x, y];
@@ -99,33 +97,6 @@ function focused(f, height, width, xmin, xmax, ymin, ymax) {
     return (x, y) => f(xmin + x * rapport_x, ymin + y * rapport_y);
 }
 
-function IFS(f, prob, length, N, p) {
-
-    let array = [[0, 0]];
-    let z = [0, 0];
-    for (let i = 0; i < N; i++) {
-        let r = Math.random();
-        for (let j = 0; j < length; j++) {
-            if (r <= prob[j]) {
-                z = f[j](z);
-            }
-        }
-        array.push(z);
-    }
-    function ifs(x, y) {
-        function norm(vec1, vec2) {
-            return Math.sqrt((vec1[0] - vec2[0]) ** 2 + (vec1[1] - vec2[1]) ** 2);
-        }
-
-        for (let i = 0; i < array.length; i++) {
-            if (norm(array[i], [x, y]) < p) {
-                return 5;
-            }
-        }
-        return 0;
-    }
-    return ifs;
-}
 
 const juliaShapes = {
                         juliaSquare : juliaSquare,
@@ -142,5 +113,4 @@ exports.mandelbrotSet = mandelbrotSet;
 exports.julia = julia;
 exports.juliaShapes = juliaShapes;
 exports.fractale = fractale;
-exports.IFS = IFS;
 exports.focused = focused;

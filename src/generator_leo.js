@@ -152,7 +152,6 @@ function generatorVichy(options) {//size, color_1, color_2) {
 function generatorDoubleVichy(options) {//size, color_1, color_2) {
     function doubleVichy(x, y) {
         const baseColor = generatorSquare(options)(x, y);//size, color_1, color_2)(x, y);
-        //options.size = options.size / 2;
         if (helpers.compareColor(baseColor, options.color1)) {
             return generatorVichy({ size: options.size / 2, color1: options.color2, color2: options.color1 })(x, y);
         }
@@ -186,13 +185,13 @@ function generatorHourglass(options) {//size, color_1, color_2) {
  * @param {*} color2 
  * @returns 
  */
-function generatorHexagonal(options) {//size, width, color1, color2) {
+function generatorOctagonal(options) {//size, width, color1, color2) {
     const pred = [
         [geometric.predDiagBottomLeftTopRight, geometric.predTopLine, geometric.predDiagBottomRightTopLeft],
         [geometric.predLeftLine, geometric.predFalse, geometric.predRightLine],
         [geometric.predDiagBottomRightTopLeft, geometric.predBottomLine, geometric.predDiagBottomLeftTopRight]
     ];
-    function hexagonale(x, y) {
+    function octagonale(x, y) {
         const predOptions = { x: x % options.size, y: y % options.size, size: options.size / 3, width: options.width };
         const [index1, index2] = geometric.whichPart(predOptions);
         if (pred[index1][index2](predOptions)) {
@@ -200,7 +199,7 @@ function generatorHexagonal(options) {//size, width, color1, color2) {
         }
         return options.color2;
     }
-    return hexagonale;
+    return octagonale;
 }
 
 /**
@@ -214,7 +213,7 @@ function generatorHexagonal(options) {//size, width, color1, color2) {
  */
 function generatorGrandmaTexture(options) {//size1, size2, width, color1, color2
     const pred1 = generatorDoubleVichy({ size: options.size1, color1: options.color1, color2: options.color2 });
-    const pred2 = generatorHexagonal({ size: options.size2, width: options.width, color1: options.color1, color2: options.color2 });
+    const pred2 = generatorOctagonal({ size: options.size2, width: options.width, color1: options.color1, color2: options.color2 });
 
 
     function grandma(x, y) {
@@ -234,7 +233,7 @@ function generatorGrandmaTexture(options) {//size1, size2, width, color1, color2
  */
 function generatorBeePattern(options) {//color1, color2) {
     let size1 = 20;
-    let size2 = 50 / 6;
+    let size2 = 8.33;
     const pred = generatorGrandmaTexture({ size1: size1, size2: size2, width: 1, color1: options.color1, color2: options.color2 });
     const f = (x, y) => { return [x % size1, y % size1]; };
     return generator([pred], [f], options.color1, options.color2);
@@ -247,17 +246,92 @@ function generatorBeePattern(options) {//color1, color2) {
  * @returns 
  */
 function generatorVoronoi(center, color) {
-    function norm(vec1, vec2) {
-        return Math.sqrt((vec1[0] - vec2[0]) ** 2 + (vec1[1] - vec2[1]) ** 2);
-    }
     function voronoi(x, y) {
-        let array = center.map((i) => { return norm(i, [x, y]); })
-        let min = array.reduce((acc, val, index) => { return acc.value > val ? { value: val, index: index } : acc }, { value: array[0], index: 0 });
+        let array = center.map((i) => { return helpers.norm(i, [x, y]); })
+        let min = array.reduce((acc, val, index) => { return acc.value > val ? { value: val, index: index } : acc },
+                              { value: array[0], index: 0 });
         return color[min.index];
     }
     return voronoi;
 }
 
+/**
+ * @todo Refactor to erase for loop
+ * @param {*} height 
+ * @param {*} width 
+ * @param {*} number 
+ * @returns 
+ */
+function generatorVoronoiRandom(height, width, number) {
+
+    let array = [];
+    let color = [];
+    for (let i = 0; i < number; i++) {
+        array.push([Math.random() * width, Math.random() * height]);
+        color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+    }
+
+    return generatorVoronoi(array, color);
+}
+
+/**
+ * @todo Move to example of generator using voronoi ?
+ * @todo Refactor to erase for loop
+ * @param {*} height 
+ * @param {*} width 
+ * @param {*} size 
+ * @returns 
+ */
+function generatorHexagonal(height, width, size) {
+    let array = [];
+    let color = [];
+    for (let i = 0; i < 1.5 * Math.floor(height / size); i++) {
+        for (let j = 0; j < 1.5 * Math.floor(width / size); j++) {
+            if (geometric.isEven(i)) {
+                array.push([-1 * size + j * size, i * size]);
+            }
+            else {
+                array.push([-1 * 3 / 2 * size + j * size, i * size]);
+            }
+            color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+        }
+    }
+    return generatorVoronoi(array, color);
+}
+
+/**
+ * @todo refactor to use function and not for
+ * @param {*} height 
+ * @param {*} width 
+ * @param {*} size 
+ * @returns 
+ */
+function pentagone(height, width, size) {
+    let array = [];
+    let color = [];
+    for (let i = 0; i < 3 * Math.floor(height / size); i++) {
+        for (let j = 0; j < 1.5 * Math.floor(width / size); j++) {
+            if (geometric.isEven(i)) {
+                array.push([-1 * size + j * size + size / 3, i * size / 2]);
+                array.push([-1 * size + j * size - size / 3, i * size / 2]);
+                array.push([-1 * size + j * size, i * size / 2 - size / 4]);
+                array.push([-1 * size + j * size, i * size / 2 + size / 4]);
+            }
+            else {
+                array.push([-1 * 3 / 2 * size + j * size, i * size / 2 + size / 4]);
+                array.push([-1 * 3 / 2 * size + j * size, i * size / 2 - size / 4]);
+                array.push([-1 * 3 / 2 * size + j * size - size / 3, i * size / 2]);
+                array.push([-1 * 3 / 2 * size + j * size + size / 3, i * size / 2]);
+
+            }
+            color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+            color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+            color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+            color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+        }
+    }
+    return generatorVoronoi(array, color);
+}
 
 
 /////////////////////////////////////////////////////
@@ -302,9 +376,12 @@ exports.generatorGrid = generatorGrid;
 exports.generatorSquare = generatorSquare;
 exports.generatorDoubleVichy = generatorDoubleVichy;
 exports.generatorHourglass = generatorHourglass;
-exports.generatorHexagonal = generatorHexagonal;
+exports.generatorOctagonal = generatorOctagonal;
 exports.generatorZigzag = generatorZigzag;
 exports.generatorGrandmaTexture = generatorGrandmaTexture;
 exports.generatorBeePattern = generatorBeePattern;
 exports.generatorVoronoi = generatorVoronoi;
+exports.generatorVoronoiRandom = generatorVoronoiRandom;
+exports.generatorHexagonal = generatorHexagonal;
+exports.pentagone = pentagone;
 exports.generator = generator;
