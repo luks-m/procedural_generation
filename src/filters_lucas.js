@@ -19,11 +19,12 @@ function gaussianBlur(image, width, height, kernel, kernelSize) {
 
     function scalarProduct(v1, v2) {
 	return v1.reduce((acc, array, index) =>
-			 [acc[0] + array[0]*v2[index],
-			  acc[1] + array[1]*v2[index],
-			  acc[2] + array[2]*v2[index],
-			  acc[3] + array[3]*v2[index]]
-			 , [0,0,0,0]);
+	    [acc[0] + array.red*v2[index],
+	     acc[1] + array.green*v2[index],
+	     acc[2] + array.blue*v2[index],
+	     acc[3] + array.alpha*v2[index]]
+	    , [0,0,0,0]);
+			
     }
     
     function convolution(matrix1, matrix2) {
@@ -36,10 +37,12 @@ function gaussianBlur(image, width, height, kernel, kernelSize) {
     }
     
     function copyFunction(image, x, y) {
-	let tab = []
+	let tab = [];
 	for (let i = 0; i < kernelSize; i++) {
+	    let line = [];
 	    for (let j = 0; j < kernelSize; j++) {
-		tab[i,j] = image(x - kernelSize/2 + i, y - kernelSize/2 + j);
+		line[j] = image(x - kernelSize/2 + i, y - kernelSize/2 + j);
+		tab[i] = line;
 	    }
 	}
 	return tab;
@@ -48,7 +51,6 @@ function gaussianBlur(image, width, height, kernel, kernelSize) {
     function blurIntern(x,y) {
 	if (x > kernelSize/2 && x < width-kernelSize/2 &&
 	    y > kernelSize && y < height-kernelSize/2) {
-	    console.log("ok");
 	    let copy = copyFunction(image, x, y);
 	    let results = convolution(copy, kernel);
 	   
