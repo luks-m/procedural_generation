@@ -36,9 +36,9 @@ function getImage(canvas, width, height) {
     ///////////////////// Generators : /////////////////////
 
     // Checkerboard
-    //pixel = generatorsLucas.makeCheckerboard(width, height, 50,
-	//						  helpers.getColor(255,0,0,255),
-	//						  helpers.getColor(0,255,0,255));
+    pixel = generatorsLucas.makeCheckerboard(width, height, 50,
+					     helpers.getColor(255,0,0,255),
+					     helpers.getColor(0,255,0,255));
 
     // Perlin Noise
     //pixel = generators.perlinNoiseGen(width, height, 'simplex', undefined, 8, undefined, false);
@@ -46,7 +46,7 @@ function getImage(canvas, width, height) {
     // Fractional Brownian Motion
     //pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex'], 8, 0.5, 2, 2, 0.1, false);
     //pixel = generators.fractionalBrownianMotionGen(width, height, "worley", ['f2', 'euclidean', false], 2, undefined, undefined, undefined, undefined, false)
-    pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", ['gradient'])
+    //pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", ['gradient'])
 
     // Worley Noise
     //pixel = generators.worleyNoiseGen(width, height, 'f2 - f1', 'euclidean', false, false);
@@ -85,12 +85,27 @@ function getImage(canvas, width, height) {
     //Opacity Changer with value
     //pixel = filtersLucas.opacityChanger(pixel, 100);
 
-    canvas = imageGeneration(canvas, width, height, pixel);
+    
+    //Gaussian Blur
+    const gaussianKernel = [[1/256,  4/256,  6/256,  4/256, 1/256],
+			    [4/256, 16/256, 24/256, 16/256, 4/256],
+			    [6/256, 24/256, 36/256, 24/256, 6/256],
+			    [4/256, 16/256, 24/256, 16/256, 4/256],
+			    [1/256,  4/256,  6/256,  4/256, 1/256]];
+
+    const size = 5;
+
+    pixel = filtersLucas.gaussianBlur(pixel, width, height, gaussianKernel, size);
+    
+    
+
 
     
     //let matrices = filtersleo.canvasToMatrix(canvas,height,width);
     //let matricesfiltered = filtersleo.reverseImg(matrices,"","");
     //canvas = filtersleo.MatrixToCanvas(matricesfiltered,height,width);
+
+    canvas = imageGeneration(canvas, width, height, pixel);
     
     return canvas;
 }
