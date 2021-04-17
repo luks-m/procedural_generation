@@ -718,7 +718,7 @@ function worleyNoiseGenerator(width, height, SEED, TYPE, DISTANCE, THREE_DIMENSI
             return helpers.getColor(R, G, B, 255);
         }
         else {
-            let noiseValue = helpers.changeRange(distance, 0, width / 6, 0, 255);
+            let noiseValue = helpers.changeRange(distance, 0, width / 7, 0, 255);
 
             return helpers.getColor(noiseValue, noiseValue, noiseValue, 255);
         }
@@ -727,7 +727,7 @@ function worleyNoiseGenerator(width, height, SEED, TYPE, DISTANCE, THREE_DIMENSI
     generateFeaturePoints();
 
     if (GET_NOISE)
-        return (x, y) => helpers.changeRange(getDist(x, y), 0, width / 4, -2, 2);
+        return (x, y) => helpers.changeRange(getDist(x, y), 0, width / 7, -2, 2);
     return getPixelColor;
 }
 
