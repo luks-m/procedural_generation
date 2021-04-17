@@ -538,6 +538,254 @@ function fractalBrownianMotionGenerator(width, height, noiseGen, noiseSeed, args
 
 
 //////////////////////////////////////////
+//////////// TURBULENCE NOISE ////////////
+
+/**
+ * Turbulence Noise Generator
+ * @param {number} width - Width of the image
+ * @param {number} height - Height of the image
+ * @param {('perlin'|'worley')} [noiseGen='perlin'] - Noise generator to compute the fbm with
+ * @param {number} [noiseSeed=42] - Noise generator seed
+ * @param {*[]} [argsList=[ ]] - Optional arguments for the noise generator, starting at the third argument of the noise generator function
+ * @param {number} [OCTAVES=2|4] - Number of frequency octaves to generate the noise with
+ * @param {number} [PERSISTENCE=0.5] - A multiplier that determines how quickly the amplitude increases for each successive octave.
+ * @param {number} [LACUNARITY=2] - A multiplier that determines how quickly the frequency increases for each successive octave.
+ * @param {number} [INITIAL_AMPLIUTUDE=1] - Initial amplitude for the first octave
+ * @param {number} [INITIAL_FREQUENCY=1] - Initial frequency for the first octave
+ * @param {boolean} [COLORED=false] - Put to true to have a colored image, else it will be B&W
+ * @param {boolean} [GET_NOISE=false] - Returns a noise value in [-1, 1]
+ * @returns {function} - RGBA quadruplet for coordinates (x, y)
+ */
+function turbulenceNoiseGenerator(width, height, noiseGen, noiseSeed, argsList, OCTAVES, PERSISTENCE, LACUNARITY, INITIAL_AMPLIUTUDE, INITIAL_FREQUENCY, COLORED,GET_NOISE) {
+
+    noiseGen    =   helpers.optionalParameter(noiseGen, 'perlin');
+    noiseSeed   =   helpers.optionalParameter(noiseSeed, 42);
+    argsList    =   helpers.optionalParameter(argsList, [ ]);
+    OCTAVES     =   helpers.optionalParameter(OCTAVES, noiseGen === 'worley' ? 2 : 4);
+    PERSISTENCE =   helpers.optionalParameter(PERSISTENCE, 0.5);
+    LACUNARITY  =   helpers.optionalParameter(LACUNARITY, 2);
+    INITIAL_AMPLIUTUDE  =   helpers.optionalParameter(INITIAL_AMPLIUTUDE, 1);
+    INITIAL_FREQUENCY   =   helpers.optionalParameter(INITIAL_FREQUENCY, 1);
+    COLORED             =   helpers.optionalParameter(COLORED, false);
+    GET_NOISE = helpers.optionalParameter(GET_NOISE,false);
+
+
+    /**
+     * Returns a list of generator to use for each octave according to user's input
+     * @returns {function[]} - Array of generators for each of the octave
+     */
+    function getOctaveGenerator() {
+        if (noiseGen === 'worley')
+            return Array.from({length: OCTAVES}, (v, i) => worleyNoiseGenerator(width * (LACUNARITY ** i), height * (LACUNARITY ** i), i + noiseSeed, ...argsList, ...Array(worleyNoiseGenerator.length - argsList.length - 4), true));
+        else if (noiseGen === 'perlin')
+            return Array.from({length: OCTAVES}, () => perlinNoiseGenerator(width, height, noiseSeed, ...argsList, ...Array(perlinNoiseGenerator.length - argsList.length - 4), true));
+        else
+            throw Error(`${noiseGen} is not a valid noise generator. Valid noise generators are 'worley' and 'perlin'`);
+    }
+
+
+    let maxNoiseHeight = 1;
+    let minNoiseHeight = 0;
+
+
+    let octaveGenerator = getOctaveGenerator();
+
+
+    /**
+     * Returns the noise value at given coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {number} - noise value between -1 and 1
+     */
+    function getNoiseHeight(x, y) {
+        let amplitude = INITIAL_AMPLIUTUDE;
+        let frequency = INITIAL_FREQUENCY;
+
+
+        /**
+         * Returns the noise value at given octave
+         * @param {number} i - ith octave to compute the noise value from
+         * @returns {number} - The noise value at the ith octave
+         */
+        function getOctaveValue(i) {
+            let sampleX = x * frequency;
+            let sampleY = y * frequency;
+
+            let noiseValue = octaveGenerator[i](sampleX, sampleY);
+
+            amplitude *= PERSISTENCE;
+            frequency *= LACUNARITY;
+
+            return Math.abs(noiseValue) * amplitude;
+        }
+
+
+        let noiseHeight = Array.from({length: OCTAVES}, (v, i) => getOctaveValue(i)).reduce((prev, curr) => prev + curr, 0);
+
+        if (noiseHeight > maxNoiseHeight)
+            maxNoiseHeight = noiseHeight;
+        else if (noiseHeight < minNoiseHeight)
+            minNoiseHeight = noiseHeight;
+
+        return noiseHeight;
+    }
+
+
+    /**
+     * Returns a RGBA pixel according to a coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
+     */
+    function getPixelColor(x, y) {
+        let v = getNoiseHeight(x, y);
+        if (COLORED) {
+            let R = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 20, 87);
+            let G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
+            let B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
+
+            return helpers.getColor(R, G, B, 255);
+        } else {
+            v = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
+            return helpers.getColor(v, v, v, 255);
+        }
+    }
+
+    if (GET_NOISE)
+        return (x, y) => helpers.changeRange(getNoiseHeight(x, y), minNoiseHeight, maxNoiseHeight, -1, 1);
+    else
+        return getPixelColor;
+}
+
+//////////////////////////////////////////
+
+
+//////////////////////////////////////////
+//////// RIDGED MULTIFRACTAL NOISE ///////
+
+/**
+ * Ridged Multifractal Noise
+ * @param {number} width - Width of the image
+ * @param {number} height - Height of the image
+ * @param {('perlin'|'worley')} [noiseGen='perlin'] - Noise generator to compute the fbm with
+ * @param {number} [noiseSeed=42] - Noise generator seed
+ * @param {*[]} [argsList=[ ]] - Optional arguments for the noise generator, starting at the third argument of the noise generator function
+ * @param {number} [OCTAVES=2|4] - Number of frequency octaves to generate the noise with
+ * @param {number} [PERSISTENCE=0.5] - A multiplier that determines how quickly the amplitude increases for each successive octave.
+ * @param {number} [LACUNARITY=2] - A multiplier that determines how quickly the frequency increases for each successive octave.
+ * @param {number} [INITIAL_AMPLIUTUDE=1] - Initial amplitude for the first octave
+ * @param {number} [INITIAL_FREQUENCY=1] - Initial frequency for the first octave
+ * @param {boolean} [COLORED=false] - Put to true to have a colored image, else it will be B&W
+ * @param {boolean} [GET_NOISE=false] - Returns a noise value in [-1, 1]
+ * @returns {function} - RGBA quadruplet for coordinates (x, y)
+ */
+function ridgedMultifractalNoiseGenerator(width, height, noiseGen, noiseSeed, argsList, OCTAVES, PERSISTENCE, LACUNARITY, INITIAL_AMPLIUTUDE, INITIAL_FREQUENCY, COLORED,GET_NOISE) {
+
+    noiseGen    =   helpers.optionalParameter(noiseGen, 'perlin');
+    noiseSeed   =   helpers.optionalParameter(noiseSeed, 42);
+    argsList    =   helpers.optionalParameter(argsList, [ ]);
+    OCTAVES     =   helpers.optionalParameter(OCTAVES, noiseGen === 'worley' ? 2 : 4);
+    PERSISTENCE =   helpers.optionalParameter(PERSISTENCE, 0.5);
+    LACUNARITY  =   helpers.optionalParameter(LACUNARITY, 2);
+    INITIAL_AMPLIUTUDE  =   helpers.optionalParameter(INITIAL_AMPLIUTUDE, 1);
+    INITIAL_FREQUENCY   =   helpers.optionalParameter(INITIAL_FREQUENCY, 1);
+    COLORED             =   helpers.optionalParameter(COLORED, false);
+    GET_NOISE = helpers.optionalParameter(GET_NOISE,false);
+
+
+    /**
+     * Returns a list of generator to use for each octave according to user's input
+     * @returns {function[]} - Array of generators for each of the octave
+     */
+    function getOctaveGenerator() {
+        if (noiseGen === 'worley')
+            return Array.from({length: OCTAVES}, (v, i) => worleyNoiseGenerator(width * (LACUNARITY ** i), height * (LACUNARITY ** i), i + noiseSeed, ...argsList, ...Array(worleyNoiseGenerator.length - argsList.length - 4), true));
+        else if (noiseGen === 'perlin')
+            return Array.from({length: OCTAVES}, () => perlinNoiseGenerator(width, height, noiseSeed, ...argsList, ...Array(perlinNoiseGenerator.length - argsList.length - 4), true));
+        else
+            throw Error(`${noiseGen} is not a valid noise generator. Valid noise generators are 'worley' and 'perlin'`);
+    }
+
+
+    let visualClarityOffset = noiseGen === 'worley' ? OCTAVES/10 : 0;
+
+    let maxNoiseHeight = -0.5 + visualClarityOffset;
+    let minNoiseHeight = -1;
+
+    let octaveGenerator = getOctaveGenerator();
+
+
+    /**
+     * Returns the noise value at given coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {number} - noise value between -1 and 1
+     */
+    function getNoiseHeight(x, y) {
+        let amplitude = INITIAL_AMPLIUTUDE;
+        let frequency = INITIAL_FREQUENCY;
+
+
+        /**
+         * Returns the noise value at given octave
+         * @param {number} i - ith octave to compute the noise value from
+         * @returns {number} - The noise value at the ith octave
+         */
+        function getOctaveValue(i) {
+            let sampleX = x * frequency;
+            let sampleY = y * frequency;
+
+            let noiseValue = octaveGenerator[i](sampleX, sampleY);
+
+            amplitude *= PERSISTENCE;
+            frequency *= LACUNARITY;
+
+            return (1 - Math.abs(noiseValue)) ** 2 * amplitude;
+        }
+
+
+        let noiseHeight = Array.from({length: OCTAVES}, (v, i) => getOctaveValue(i)).reduce((prev, curr) => prev + curr, -1);
+
+        if (noiseHeight > maxNoiseHeight)
+            maxNoiseHeight = noiseHeight;
+        else if (noiseHeight < minNoiseHeight)
+            minNoiseHeight = noiseHeight;
+
+        return noiseHeight;
+    }
+
+
+    /**
+     * Returns a RGBA pixel according to a coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
+     */
+    function getPixelColor(x, y) {
+        let v = getNoiseHeight(x, y);
+        if (COLORED) {
+            let R = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 20, 87);
+            let G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
+            let B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
+
+            return helpers.getColor(R, G, B, 255);
+        } else {
+            v = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
+            return helpers.getColor(v, v, v, 255);
+        }
+    }
+
+    if (GET_NOISE)
+        return (x, y) => helpers.changeRange(getNoiseHeight(x, y), minNoiseHeight, maxNoiseHeight, -1, 1);
+    else
+        return getPixelColor;
+}
+
+//////////////////////////////////////////
+
+
+
+//////////////////////////////////////////
 ////////////// WORLEY NOISE //////////////
 
 
@@ -737,4 +985,6 @@ function worleyNoiseGenerator(width, height, SEED, TYPE, DISTANCE, THREE_DIMENSI
 exports.singleColorRandomGenerator = singleColorRandomGenerator;
 exports.perlinNoiseGen = perlinNoiseGenerator;
 exports.fractionalBrownianMotionGen = fractalBrownianMotionGenerator;
+exports.turbulenceNoiseGen = turbulenceNoiseGenerator;
+exports.ridgedMultifractalNoiseGen = ridgedMultifractalNoiseGenerator;
 exports.worleyNoiseGen = worleyNoiseGenerator;

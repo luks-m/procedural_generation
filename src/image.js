@@ -46,16 +46,25 @@ function getImage(canvas, width, height) {
 	//				     helpers.getColor(0,255,0,255));
 
     // Perlin Noise
-    //pixel = generators.perlinNoiseGen(width, height, 2567, 'simplex', undefined, false);
+    //pixel = generators.perlinNoiseGen(width, height, 1338, 'simplex');
 
     // Fractional Brownian Motion
     //pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", 2567, ['simplex'], 5, 0.5, 2, 2, 0.2, true);
-    pixel = generators.fractionalBrownianMotionGen(width, height, "worley", 44, ['f2 - f1', 'euclidean', true], 2, undefined, undefined, undefined, undefined, true)
+    //pixel = generators.fractionalBrownianMotionGen(width, height, "worley", 44, ['f2 - f1', 'euclidean', true], 2, undefined, undefined, undefined, undefined, true)
     //pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", 42, ['value']);
+    //pixel = generators.fractionalBrownianMotionGen(width, height, "worley", 1338, ['f2 - f1', 'euclidean', false, false], 2)
+
+    // Turbulence Noise
+    //pixel = generators.turbulenceNoiseGen(width, height, "perlin", 1338, ['simplex'], 6)
+    //pixel = generators.turbulenceNoiseGen(width, height, "worley", 1338, ['f2 - f1', 'euclidean', false], 2);
+
+    // Ridged Multifractal Noise
+    pixel = generators.ridgedMultifractalNoiseGen(width, height, "perlin", 1338, ['simplex', 4], 6);
+    //pixel = generators.ridgedMultifractalNoiseGen(width, height, "worley", 1338, ['f2 - f1', 'euclidean', false], 2);
 
     // Worley Noise
-
     //pixel = generators.worleyNoiseGen(width, height, 43, 'f2 - f1', 'euclidean', true, true);
+    //pixel = generators.worleyNoiseGen(width, height, 1338, 'f2 - f1', 'euclidean', false, false)
 
     // Colormap
     //function f(z){return [z[0]*(z[0]**2-z[1]**2)-2*z[0]*z[1]**2+0.23,2*z[0]**2*z[1]+z[1]*(z[0]**2-z[1]**2)-0.970];}
