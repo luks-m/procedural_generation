@@ -284,16 +284,9 @@ function setOpacity(generator,factor){
     return opacity;
 }
     
-	
-	
-
-exports.canvasToMatrix = canvasToMatrix;
-exports.MatrixToCanvas = MatrixToCanvas;
-exports.reverseImg = reverseImg;
 exports.mirror = mirror;
 exports.filters = filters;
 exports.composition = composition;
 exports.smooth = smooth;
-exports.smooth2 = smooth2;
 exports.setOpacity = setOpacity;
 

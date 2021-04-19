@@ -1,6 +1,6 @@
 const helpers = require('./helpers.js');
 
-const generators = require('./generators.js');
+const generators = require('./gen.js');
 const generatorsLucas = require('./generators_lucas.js');
 const generatorsleo = require('./generator_leo.js');
 const colorMaps = require('./colorMaps.js');
@@ -36,9 +36,9 @@ function getImage(canvas, width, height) {
     ///////////////////// Generators : /////////////////////
 
     // Checkerboard
-    pixel = generatorsLucas.makeCheckerboard(width, height, 50,
-					     helpers.getColor(255,0,0,255),
-					     helpers.getColor(0,255,0,255));
+    // pixel = generatorsLucas.makeCheckerboard(width, height, 50,
+	// 				     helpers.getColor(255,0,0,255),
+	// 				     helpers.getColor(0,255,0,255));
 
     // Perlin Noise
     //pixel = generators.perlinNoiseGen(width, height, 'simplex', undefined, 8, undefined, false);
@@ -78,14 +78,14 @@ function getImage(canvas, width, height) {
 
     //pixel = (x,y)=>{let noise = generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex'],8, 0.6, 2, 2, 0.07, false,true);return generatorsleo.getColormap(functionMap.focused(functionMap.juliaDragon(15),height,width,-1,1,-1,1),"hot",0,2)(x+10*noise(x,y),y-10*noise(x,y));};
 
-    let generator = generatorsleo.getColormap(functionMap.focused(functionMap.juliaDragon(25),height,width,-1,1,-1,1),"light",0,10);
-    let generator3 = generatorsleo.getColormap(generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex',78],4, 0.6, 2, 2, 0.07, false,true),"hot",-1,0.8);
-    let f = (x,y)=>{let value = (x%4-2)**2+(y%4-2)**2 ; if (value > 2) {return value;}; return -2 ;};
-    let f1 = (x,y)=>{let value = (2*x)**2+(2*y)**2 ; if (value < 5 ) {return value;}; return 6.99;};
-    let generator2 = generatorsleo.getColormap(functionMap.focused(f1,height,width,-2,2,-2,2),"greys",-2,7);
-    pixel = filtersleo.smooth2(filtersleo.composition(filtersleo.composition(generator3,generatorsleo.getColormap(f1,"greys",0,5),"Multiply"),generator2,"Multiply",),height,width);
-    //pixel = filtersleo.composition(generator,generator3,"Multiply");
-    pixel = generatorsleo.voronoiRandom(height,width,20);
+    // let generator = generatorsleo.getColormap(functionMap.focused(functionMap.juliaDragon(25),height,width,-1,1,-1,1),"light",0,10);
+    // let generator3 = generatorsleo.getColormap(generators.fractionalBrownianMotionGen(width, height, "perlin", ['simplex',78],4, 0.6, 2, 2, 0.07, false,true),"hot",-1,0.8);
+    // let f = (x,y)=>{let value = (x%4-2)**2+(y%4-2)**2 ; if (value > 2) {return value;}; return -2 ;};
+    // let f1 = (x,y)=>{let value = (2*x)**2+(2*y)**2 ; if (value < 5 ) {return value;}; return 6.99;};
+    // let generator2 = generatorsleo.getColormap(functionMap.focused(f1,height,width,-2,2,-2,2),"greys",-2,7);
+    // pixel = filtersleo.smooth2(filtersleo.composition(filtersleo.composition(generator3,generatorsleo.getColormap(f1,"greys",0,5),"Multiply"),generator2,"Multiply",),height,width);
+    // //pixel = filtersleo.composition(generator,generator3,"Multiply");
+    // pixel = generatorsleo.voronoiRandom(height,width,20);
     //pixel = generatorsleo.generatorVoronoi([[200,200],[120,140],[70,155]],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255)])
     //pixel = generatorsleo.generatorVoronoi([[0,0],[50,0],[100,0],[25,50],[75,50]],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255),helpers.getColor(120,200,0,255),helpers.getColor(0,50,80,255)])
     //pixel = colorMapPredicate.focused(generatorsleo.voronoi([f(-1*Math.pi),f(-1*Math.pi+1.5),f(-1*Math.pi+3),f(-1*Math.pi+4.5),f(-1*Math.pi+6)],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255),helpers.getColor(120,200,0,255),helpers.getColor(0,50,80,255)]),height,width,-10,10,-10,10)
@@ -169,30 +169,31 @@ function getImage(canvas, width, height) {
     //pixel = filtersLucas.gaussianBlur(pixel, width, height, gaussianKernel, size);
 
     //Gaussian Blur Size 13
-    const gaussianKernel = [[0,0,0,0,0,0,0,0,0,0,0,0,0],
-			    [0,0,0,0,0,0.000001,0.000001,0.000001,0,0,0,0,0],
-			    [0,0,0,0.000001,0.000014,0.000055,0.000088,0.000055,0.000014,0.000001,0,0,0],
-			    [0,0,0.000001,0.000036,0.000362,0.001445,0.002289,0.001445,0.000362,0.000036,0.000001,0,0],
-			    [0,0,0.000014,0.000362,0.003672,0.014648,0.023204,0.014648,0.003672,0.000362,0.000014,0,0],
-			    [0,	0.000001,0.000055,0.001445,0.014648,0.058433,0.092564,0.058433,0.014648,0.001445,0.000055,0.000001,0],
-			    [0,0.000001,0.000088,0.002289,0.023204,0.092564,0.146632,0.092564,0.023204,0.002289,0.000088,0.000001,0],
-			    [0,0.000001,0.000055,0.001445,0.014648,0.058433,0.092564,0.058433,0.014648,0.001445,0.000055,0.000001,0],
-			    [0,0,0.000014,0.000362,0.003672,0.014648,0.023204,0.014648,0.003672,0.000362,0.000014,0,0],
-			    [0,0,0.000001,0.000036,0.000362,0.001445,0.002289,0.001445,0.000362,0.000036,0.000001,0,0],
-			    [0,0,0,0.000001,0.000014,0.000055,0.000088,0.000055,0.000014,0.000001,0,0,0],
-			    [0,0,0,0,0,0.000001,0.000001,0.000001,0,0,0,0,0],
-			    [0,	0,0,0,0,0,0,0,0,0,0,0,0]];
+    // const gaussianKernel = [[0,0,0,0,0,0,0,0,0,0,0,0,0],
+	// 		    [0,0,0,0,0,0.000001,0.000001,0.000001,0,0,0,0,0],
+	// 		    [0,0,0,0.000001,0.000014,0.000055,0.000088,0.000055,0.000014,0.000001,0,0,0],
+	// 		    [0,0,0.000001,0.000036,0.000362,0.001445,0.002289,0.001445,0.000362,0.000036,0.000001,0,0],
+	// 		    [0,0,0.000014,0.000362,0.003672,0.014648,0.023204,0.014648,0.003672,0.000362,0.000014,0,0],
+	// 		    [0,	0.000001,0.000055,0.001445,0.014648,0.058433,0.092564,0.058433,0.014648,0.001445,0.000055,0.000001,0],
+	// 		    [0,0.000001,0.000088,0.002289,0.023204,0.092564,0.146632,0.092564,0.023204,0.002289,0.000088,0.000001,0],
+	// 		    [0,0.000001,0.000055,0.001445,0.014648,0.058433,0.092564,0.058433,0.014648,0.001445,0.000055,0.000001,0],
+	// 		    [0,0,0.000014,0.000362,0.003672,0.014648,0.023204,0.014648,0.003672,0.000362,0.000014,0,0],
+	// 		    [0,0,0.000001,0.000036,0.000362,0.001445,0.002289,0.001445,0.000362,0.000036,0.000001,0,0],
+	// 		    [0,0,0,0.000001,0.000014,0.000055,0.000088,0.000055,0.000014,0.000001,0,0,0],
+	// 		    [0,0,0,0,0,0.000001,0.000001,0.000001,0,0,0,0,0],
+	// 		    [0,	0,0,0,0,0,0,0,0,0,0,0,0]];
 
-    const size = 13;
+    // const size = 13;
 
-    pixel = filtersLucas.gaussianBlur(pixel, width, height, gaussianKernel, size);
+    // pixel = filtersLucas.gaussianBlur(pixel, width, height, gaussianKernel, size);
 
 
     
     //let matrices = filtersleo.canvasToMatrix(canvas,height,width);
     //let matricesfiltered = filtersleo.reverseImg(matrices,"","");
     //canvas = filtersleo.MatrixToCanvas(matricesfiltered,height,width);
-
+    let options = { min: -2, max: 0 , f: (x,y) => x };
+    pixel = colorMaps.colorMaps.greys(options);
     canvas = imageGeneration(canvas, width, height, pixel);
     
     return canvas;

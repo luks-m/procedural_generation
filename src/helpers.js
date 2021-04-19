@@ -1,6 +1,3 @@
-const getColor = function (_red, _green, _blue, _alpha) {
-    return {red : _red%256, green : _green%256, blue : _blue%256, alpha : _alpha%256};
-};
 
 const hsl2rgb = function(_h) {
     let L = 0.5;
@@ -29,12 +26,6 @@ const hsl2rgb = function(_h) {
     return [(Rp + m) * 255, (Gp + m) * 255, (Bp + m) * 255];
 };
 
-const compareColor = function (color1, color2) {
-    return (color1.red === color2.red
-        && color1.green === color2.green
-        && color1.blue === color2.blue
-        && color2.alpha === color2.alpha);
-};
 
 const optionalParameter = function (parameter, defaultValue) {
     return typeof(parameter) !== 'undefined' ? parameter : defaultValue;
@@ -67,8 +58,6 @@ function multiply(A, B) {
 }
 
 
-exports.getColor = getColor;
-exports.compareColor = compareColor;
 exports.hsl2rgb = hsl2rgb;
 exports.optionalParameter = optionalParameter;
 exports.changeRange = changeRange;
