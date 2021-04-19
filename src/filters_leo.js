@@ -289,4 +289,3 @@ exports.filters = filters;
 exports.composition = composition;
 exports.smooth = smooth;
 exports.setOpacity = setOpacity;
-

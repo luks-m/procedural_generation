@@ -8,7 +8,7 @@ const geometric = require('./geometricPredicate.js');
  * @param {*} color2 
  * @returns 
  */
-function generatorRectangleTriangle(options) {//size, color1, color2) {
+function generatorRectangleTriangle(options) {
     function rectangleTriangle(x, y) {
         if (x % options.size < y % options.size) {
             return color1;
@@ -25,7 +25,7 @@ function generatorRectangleTriangle(options) {//size, color1, color2) {
  * @param {*} color_2 
  * @returns 
  */
-function generatorIsoscelesTriangle(options) {//size, color_1, color_2) {
+function generatorIsoscelesTriangle(options) {
     function isoscelesTriangle(x, y) {
         const halfSize = options.size / 2;
         if (geometric.isEven({ x: (y - y % options.size) / options.size })) {
@@ -49,7 +49,7 @@ function generatorIsoscelesTriangle(options) {//size, color_1, color_2) {
  * @param {*} color_2 
  * @returns 
  */
-function generatorEquilateralTriangle(options) {//size, color_1, color_2) {
+function generatorEquilateralTriangle(options) {
     function equilateralTriangle(x, y) {
         const halfSize = options.size / 2;
         if (geometric.isEven({ x: (y - y % options.size) / options.size })) {
@@ -73,7 +73,7 @@ function generatorEquilateralTriangle(options) {//size, color_1, color_2) {
  * @param {*} color_2 
  * @returns 
  */
-function generatorZigzag(options) {//size, color_1, color_2) {
+function generatorZigzag(options) {
     function zigzag(x, y) {
         const predicate = x % options.size < (options.size / 2 - y % options.size / 2) || x % options.size > (options.size / 2 + y % options.size / 2);
         if (geometric.isEven({ x: (y - y % options.size) / options.size })) {
@@ -97,7 +97,7 @@ function generatorZigzag(options) {//size, color_1, color_2) {
  * @param {*} color_2 
  * @returns 
  */
-function generatorGrid(options) {//size, color_1, color_2) {
+function generatorGrid(options) {
     function grid(x, y) {
         if (geometric.sameParity({ x: x / options.size, y: y / options.size })) {
             return options.color1;
@@ -115,7 +115,7 @@ function generatorGrid(options) {//size, color_1, color_2) {
  * @param {*} color_2 
  * @returns 
  */
-function generatorSquare(options) {//size, color_1, color_2) {
+function generatorSquare(options) {
     function square(x, y) {
         if (geometric.sameParity({ x: (x - x % options.size) / options.size, y: (y - y % options.size) / options.size })) {
             return options.color1;
@@ -132,7 +132,7 @@ function generatorSquare(options) {//size, color_1, color_2) {
  * @param {*} color_2 
  * @returns 
  */
-function generatorVichy(options) {//size, color_1, color_2) {
+function generatorVichy(options) {
     function vichy(x, y) {
         if (geometric.sameParity({ x: x % options.size, y: y % options.size })) {
             return options.color1;
@@ -149,9 +149,9 @@ function generatorVichy(options) {//size, color_1, color_2) {
  * @param {*} color_2 
  * @returns 
  */
-function generatorDoubleVichy(options) {//size, color_1, color_2) {
+function generatorDoubleVichy(options) {
     function doubleVichy(x, y) {
-        const baseColor = generatorSquare(options)(x, y);//size, color_1, color_2)(x, y);
+        const baseColor = generatorSquare(options)(x, y);
         if (helpers.compareColor(baseColor, options.color1)) {
             return generatorVichy({ size: options.size / 2, color1: options.color2, color2: options.color1 })(x, y);
         }
@@ -167,10 +167,10 @@ function generatorDoubleVichy(options) {//size, color_1, color_2) {
  * @param {*} color_2 
  * @returns 
  */
-function generatorHourglass(options) {//size, color_1, color_2) {
+function generatorHourglass(options) {
     function hourglass(x, y) {
         if (y % options.size < options.size / 4 || y % options.size > (3 * options.size / 4)) {
-            return generatorEquilateralTriangle(options)(x, y);//size, color_1, color_2)(x, y);
+            return generatorEquilateralTriangle(options)(x, y);
         }
         return options.color1;
     }
@@ -185,7 +185,7 @@ function generatorHourglass(options) {//size, color_1, color_2) {
  * @param {*} color2 
  * @returns 
  */
-function generatorOctagonal(options) {//size, width, color1, color2) {
+function generatorOctagonal(options) {
     const pred = [
         [geometric.predDiagBottomLeftTopRight, geometric.predTopLine, geometric.predDiagBottomRightTopLeft],
         [geometric.predLeftLine, geometric.predFalse, geometric.predRightLine],
@@ -211,7 +211,7 @@ function generatorOctagonal(options) {//size, width, color1, color2) {
  * @param {*} color2 
  * @returns 
  */
-function generatorGrandmaTexture(options) {//size1, size2, width, color1, color2
+function generatorGrandmaTexture(options) {
     const pred1 = generatorDoubleVichy({ size: options.size1, color1: options.color1, color2: options.color2 });
     const pred2 = generatorOctagonal({ size: options.size2, width: options.width, color1: options.color1, color2: options.color2 });
 
@@ -231,7 +231,7 @@ function generatorGrandmaTexture(options) {//size1, size2, width, color1, color2
  * @param {*} color2 
  * @returns 
  */
-function generatorBeePattern(options) {//color1, color2) {
+function generatorBeePattern(options) {
     let size1 = 20;
     let size2 = 8.33;
     const pred = generatorGrandmaTexture({ size1: size1, size2: size2, width: 1, color1: options.color1, color2: options.color2 });
