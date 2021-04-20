@@ -342,15 +342,12 @@ function repeat(options){
 	
 function anaglyphe(options){
 
-    let origin = (x,y)=>{return options.generator(x,y)};
+    let origin = options.generator;
     let redImage = takeColor({generator:origin,red:true,green:false,blue:false});
     let cyanImage = takeColor({generator:origin,red:false,green:true,blue:true});
     let dxRedImage = translate({generator:redImage,dx:options.dx,dy:0});
     let dxCyanImage = translate({generator:cyanImage,dx:-options.dx,dy:0});
-    let alphaRed = setOpacity(dxRedImage,0.5);
-    let alphaCyan = setOpacity(dxCyanImage,0.5);
-    let effect_3d = composition(alphaCyan,alphaRed,"Add");
-    return effect_3d;
+    return composition(dxRedImage,dxCyanImage,"Add");
 }
 
     
