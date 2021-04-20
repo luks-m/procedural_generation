@@ -1,11 +1,12 @@
 const helpers = require('./helpers.js');
+const colors = require('./colors.js');
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
 function singleColorRandomGenerator(color) {
-    return (x, y) => helpers.getColor(getRandomInt(255), getRandomInt(255), getRandomInt(255), getRandomInt(255));
+    return (x, y) => colors.createColor(getRandomInt(255), getRandomInt(255), getRandomInt(255), getRandomInt(255));
 }
 
 
@@ -396,11 +397,11 @@ function perlinNoiseGenerator(width, height, SEED, NOISE, SCALE, COLORED, GET_NO
         if (COLORED) {
             v = (v + 0.5) * 360;
             let [R, G, B] = helpers.hsl2rgb(v);
-            return helpers.getColor(R, G, B, 255);
+            return colors.createColor(R, G, B, 255);
         }
         else {
             v = (v + 1) / 2 * 255;
-            return helpers.getColor(v, v, v, 255);
+            return colors.createColor(v, v, v, 255);
         }
     }
 
@@ -521,10 +522,10 @@ function fractalBrownianMotionGenerator(width, height, noiseGen, noiseSeed, args
             let G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
             let B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
 
-            return helpers.getColor(R, G, B, 255);
+            return colors.createColor(R, G, B, 255);
         } else {
             v = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
-            return helpers.getColor(v, v, v, 255);
+            return colors.createColor(v, v, v, 255);
         }
     }
 
@@ -644,10 +645,10 @@ function turbulenceNoiseGenerator(width, height, noiseGen, noiseSeed, argsList, 
             let G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
             let B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
 
-            return helpers.getColor(R, G, B, 255);
+            return colors.createColor(R, G, B, 255);
         } else {
             v = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
-            return helpers.getColor(v, v, v, 255);
+            return colors.createColor(v, v, v, 255);
         }
     }
 
@@ -768,10 +769,10 @@ function ridgedMultifractalNoiseGenerator(width, height, noiseGen, noiseSeed, ar
             let G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
             let B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
 
-            return helpers.getColor(R, G, B, 255);
+            return colors.createColor(R, G, B, 255);
         } else {
             v = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
-            return helpers.getColor(v, v, v, 255);
+            return colors.createColor(v, v, v, 255);
         }
     }
 
@@ -963,12 +964,12 @@ function worleyNoiseGenerator(width, height, SEED, TYPE, DISTANCE, THREE_DIMENSI
             let G = helpers.changeRange(distance, 0, width / 6, 45, 154);
             let B = helpers.changeRange(distance, 0 , width / 6, 70, 216);
 
-            return helpers.getColor(R, G, B, 255);
+            return colors.createColor(R, G, B, 255);
         }
         else {
             let noiseValue = helpers.changeRange(distance, 0, width / 7, 0, 255);
 
-            return helpers.getColor(noiseValue, noiseValue, noiseValue, 255);
+            return colors.createColor(noiseValue, noiseValue, noiseValue, 255);
         }
     }
 
@@ -982,9 +983,97 @@ function worleyNoiseGenerator(width, height, SEED, TYPE, DISTANCE, THREE_DIMENSI
 
 //////////////////////////////////////////
 
+//////////////////////////////////////////
+///////// DOMAIN WARPING FRACTAL /////////
+
+function domainWarpingFractalGenerator(width, height, fractalGen, noiseGen, noiseSeed, argsList, qMultiplier, rMultiplier, OCTAVES, PERSISTENCE, LACUNARITY, INITIAL_AMPLIUTUDE, INITIAL_FREQUENCY, COLORED,GET_NOISE) {
+
+    fractalGen  =   helpers.optionalParameter(fractalGen, 'fbm');
+    noiseGen    =   helpers.optionalParameter(noiseGen, 'perlin');
+    noiseSeed   =   helpers.optionalParameter(noiseSeed, 42);
+    argsList    =   helpers.optionalParameter(argsList, [ ]);
+    qMultiplier =   helpers.optionalParameter(qMultiplier, 4);
+    rMultiplier =   helpers.optionalParameter(rMultiplier, 4);
+    OCTAVES     =   helpers.optionalParameter(OCTAVES, noiseGen === 'worley' ? 2 : 4);
+    PERSISTENCE =   helpers.optionalParameter(PERSISTENCE, 0.5);
+    LACUNARITY  =   helpers.optionalParameter(LACUNARITY, 2);
+    INITIAL_AMPLIUTUDE  =   helpers.optionalParameter(INITIAL_AMPLIUTUDE, 1);
+    INITIAL_FREQUENCY   =   helpers.optionalParameter(INITIAL_FREQUENCY, 1);
+    COLORED             =   helpers.optionalParameter(COLORED, false);
+    GET_NOISE = helpers.optionalParameter(GET_NOISE,false);
+
+
+
+    let maxNoiseHeight = 1;
+    let minNoiseHeight = -1;
+
+    let fractal = loadFractalGen();
+
+    // Return the type of distance to compute according to user's input
+    function loadFractalGen() {
+        if (fractalGen === 'fbm')
+            return fractalGen = fractalBrownianMotionGenerator(width, height, noiseGen, noiseSeed, argsList, OCTAVES, PERSISTENCE, LACUNARITY, INITIAL_AMPLIUTUDE, INITIAL_FREQUENCY, false, true);
+        else if (fractalGen === 'turbulence')
+            return turbulenceNoiseGenerator(width, height, noiseGen, noiseSeed, argsList, OCTAVES, PERSISTENCE, LACUNARITY, INITIAL_AMPLIUTUDE, INITIAL_FREQUENCY, false, true);
+        else if (fractalGen === 'ridged')
+            return ridgedMultifractalNoiseGenerator(width, height, noiseGen, noiseSeed, argsList, OCTAVES, PERSISTENCE, LACUNARITY, INITIAL_AMPLIUTUDE, INITIAL_FREQUENCY, false, true);
+        else
+            throw Error(`${fractalGen} is not a fractal generator. Valid fractal generator are 'fbm', 'turbulence' and 'ridged'.`);
+    }
+
+    /**
+     * Returns the noise value at given coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {number} - noise value between -1 and 1
+     */
+    function getNoiseHeight(x, y) {
+        // Offsets gotten from https://iquilezles.org/www/articles/warp/warp.htm
+        let q = [   fractal(x, y),
+                    fractal(x + 5.2, y + 1.3)
+                ];
+
+        let r = [   fractal(x + qMultiplier*q[0] + 1.7, y + qMultiplier*q[0] + 9.2),
+                    fractal(x + qMultiplier*q[0] + 8.3, y + qMultiplier*q[0] + 2.8)
+                ]
+
+        return fractal(x + rMultiplier*r[0], y + rMultiplier*r[1]);
+        //return fbmGenerator(x + 80*q[0], y + 80*q[1]);
+    }
+
+
+    /**
+     * Returns a RGBA pixel according to a coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
+     */
+    function getPixelColor(x, y) {
+        let v = getNoiseHeight(x, y);
+        if (COLORED) {
+            let R = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 20, 87);
+            let G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
+            let B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
+
+            return colors.createColor(R, G, B, 255);
+        } else {
+            v = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
+            return colors.createColor(v, v, v, 255);
+        }
+    }
+
+    if (GET_NOISE)
+        return (x, y) => helpers.changeRange(getNoiseHeight(x, y), minNoiseHeight, maxNoiseHeight, -1, 1);
+    else
+        return getPixelColor;
+}
+
+//////////////////////////////////////////
+
 exports.singleColorRandomGenerator = singleColorRandomGenerator;
 exports.perlinNoiseGen = perlinNoiseGenerator;
 exports.fractionalBrownianMotionGen = fractalBrownianMotionGenerator;
 exports.turbulenceNoiseGen = turbulenceNoiseGenerator;
 exports.ridgedMultifractalNoiseGen = ridgedMultifractalNoiseGenerator;
 exports.worleyNoiseGen = worleyNoiseGenerator;
+exports.domainWarpingFractalGen = domainWarpingFractalGenerator;
