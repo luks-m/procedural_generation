@@ -1,6 +1,6 @@
 const helpers = require('./helpers.js');
 
-const generators = require('./gen.js');
+const generators = require('./generators.js');
 const generatorsLucas = require('./generators_lucas.js');
 const generatorsleo = require('./generator_leo.js');
 const colorMaps = require('./colorMaps.js');
@@ -59,12 +59,17 @@ function getImage(canvas, width, height) {
     //pixel = generators.turbulenceNoiseGen(width, height, "worley", 1338, ['f2 - f1', 'euclidean', false], 2);
 
     // Ridged Multifractal Noise
-    // pixel = generators.ridgedMultifractalNoiseGen(width, height, "perlin", 1338, ['simplex', 4], 6);
-    //pixel = generators.ridgedMultifractalNoiseGen(width, height, "worley", 1338, ['f2 - f1', 'euclidean', false], 2);
+    //pixel = generators.ridgedMultifractalNoiseGen(width, height, "perlin", 1338, ['simplex', 4], 6, undefined, undefined, undefined, undefined, true);
+    //pixel = generators.ridgedMultifractalNoiseGen(width, height, "worley", 1338, ['f2 - f1', 'euclidean', false], 3, undefined, undefined, undefined, undefined, true);
 
     // Worley Noise
     //pixel = generators.worleyNoiseGen(width, height, 43, 'f2 - f1', 'euclidean', true, true);
     //pixel = generators.worleyNoiseGen(width, height, 1338, 'f2 - f1', 'euclidean', false, false)
+
+    // Domain Warping
+    pixel = generators.domainWarpingFractalGen(width, height, 'ridged', "perlin", 1338, ['simplex'], 6, 4, 6);
+    //pixel = generators.domainWarpingFractalGen(width, height, 'turbulence', "worley", 1338, ['f2 - f1', 'euclidean'], 8, 4, 2, undefined, undefined, undefined, undefined, true);
+    //pixel = generators.domainWarpingFractalGen(width, height, 'turbulence', "perlin", 44, undefined, 10, 10, undefined, undefined, undefined, undefined, undefined, true);
 
     // Colormap
     //function f(z){return [z[0]*(z[0]**2-z[1]**2)-2*z[0]*z[1]**2+0.23,2*z[0]**2*z[1]+z[1]*(z[0]**2-z[1]**2)-0.970];}
@@ -198,17 +203,17 @@ function getImage(canvas, width, height) {
 	// 		    [0,0,0,0,0,0.000001,0.000001,0.000001,0,0,0,0,0],
 	// 		    [0,	0,0,0,0,0,0,0,0,0,0,0,0]];
 
-    // const size = 13;
+    const size = 13;
 
-    // pixel = filtersLucas.gaussianBlur(pixel, width, height, gaussianKernel, size);
+    //pixel = filtersLucas.gaussianBlur(pixel, width, height, gaussianKernel, size);
 
 
     
     //let matrices = filtersleo.canvasToMatrix(canvas,height,width);
     //let matricesfiltered = filtersleo.reverseImg(matrices,"","");
     //canvas = filtersleo.MatrixToCanvas(matricesfiltered,height,width);
-    let options = { min: -2, max: 0 , f: (x,y) => x };
-    pixel = colorMaps.colorMaps.greys(options);
+    //let options = { min: -2, max: 0 , f: (x,y) => x };
+    //pixel = colorMaps.colorMaps.greys(options);
     canvas = imageGeneration(canvas, width, height, pixel);
     
     return canvas;
