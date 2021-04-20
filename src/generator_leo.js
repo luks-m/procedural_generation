@@ -153,7 +153,7 @@ function generatorVichy(options) {
 function generatorDoubleVichy(options) {
     function doubleVichy(x, y) {
         const baseColor = generatorSquare(options)(x, y);
-        if (helpers.compareColor(baseColor, options.color1)) {
+        if (genColor.compareColor(baseColor, options.color1)) {
             return generatorVichy({ size: options.size / 2, color1: options.color2, color2: options.color1 })(x, y);
         }
         return generatorVichy({ size: options.size / 2, color1: options.color2, color2: options.color1 })(x, y);
@@ -218,7 +218,7 @@ function generatorGrandmaTexture(options) {
 
 
     function grandma(x, y) {
-        if (helpers.compareColor(pred1(x, y), pred2(x, y))) {
+        if (genColor.compareColor(pred1(x, y), pred2(x, y))) {
             return options.color1;
         }
         return options.color2;
@@ -344,7 +344,7 @@ function pentagone(options) {
 /////////////////////////////////////////////////////
 function generator(generators, size, color1, color2) {
     function getOtherColor(actualColor, color1, color2) {
-        if (helpers.compareColor(actualColor, color1)) {
+        if (genColor.compareColor(actualColor, color1)) {
             return color2;
         }
         return color1;
@@ -352,17 +352,17 @@ function generator(generators, size, color1, color2) {
     function getGenerators(x, y) {
         function getColor(acc, curr) {
             if (acc) {
-                acc = helpers.compareColor(color1, curr);
+                acc = genColor.compareColor(color1, curr);
             }
             else {
                 let new_color = getOtherColor(curr, color1, color2);
-                acc = helpers.compareColor(color1, new_color);
+                acc = genColor.compareColor(color1, new_color);
             }
             return acc;
         }
         let color = generators.map((f, i) => { let [x1, y1] = size[i](x, y); return f(x1, y1); });
         let bool = color.reduce((acc, curr) => getColor(acc, curr), true);
-        if ((bool && helpers.compareColor(color[color.length - 1], color1)) || (!bool && !helpers.compareColor(color[color.length - 1], color1))) {
+        if ((bool && genColor.compareColor(color[color.length - 1], color1)) || (!bool && !genColor.compareColor(color[color.length - 1], color1))) {
             return color[color.length - 1];
         }
         return getOtherColor(color[color.length - 1], color1, color2);
