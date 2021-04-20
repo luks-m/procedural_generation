@@ -11,9 +11,9 @@ const geometric = require('./geometricPredicate.js');
 function generatorRectangleTriangle(options) {
     function rectangleTriangle(x, y) {
         if (x % options.size < y % options.size) {
-            return color1;
+            return options.color1;
         }
-        return color2;
+        return options.color2;
     }
     return rectangleTriangle;
 }
