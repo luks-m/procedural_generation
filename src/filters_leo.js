@@ -1,4 +1,5 @@
 const helpers = require('./helpers.js');
+const genColor = require('./colors.js');
 
 /**
  * 
@@ -31,10 +32,10 @@ function Xor(generator1, generator2, color) {
 
     function xor(x, y) {
 
-        if (!helpers.compareColor(generator1(x, y), color) && helpers.compareColor(generator2(x, y), color)) {
+        if (!genColor.compareColor(generator1(x, y), color) && genColor.compareColor(generator2(x, y), color)) {
             return generator1(x, y);
         }
-        else if (helpers.compareColor(generator1(x, y), color) && !helpers.compareColor(generator2(x, y), color)) {
+        else if (genColor.compareColor(generator1(x, y), color) && !genColor.compareColor(generator2(x, y), color)) {
             return generator2(x, y);
         }
         return color;
@@ -53,7 +54,7 @@ function Over(generator1, generator2, color) {
 
     function over(x, y) {
 
-        if (!helpers.compareColor(generator1(x, y), color)) {
+        if (!genColor.compareColor(generator1(x, y), color)) {
             return generator1(x, y);
         }
         return generator2(x, y);
@@ -72,7 +73,7 @@ function In(generator1, generator2, color) {
 
     function inte(x, y) {
 
-        if (!helpers.compareColor(generator1(x, y), color) && !helpers.compareColor(generator2(x, y), color)) {
+        if (!genColor.compareColor(generator1(x, y), color) && !genColor.compareColor(generator2(x, y), color)) {
             return generator1(x, y);
         }
         return color;
@@ -91,7 +92,7 @@ function Out(generator1, generator2, color) {
 
     function out(x, y) {
 
-        if (!helpers.compareColor(generator1(x, y), color) && helpers.compareColor(generator2(x, y), color)) {
+        if (!genColor.compareColor(generator1(x, y), color) && genColor.compareColor(generator2(x, y), color)) {
             return generator1(x, y);
         }
         return color;
@@ -110,10 +111,10 @@ function Atop(generator1, generator2, color) {
 
     function atop(x, y) {
 
-        if (!helpers.compareColor(generator1(x, y), color) && !helpers.compareColor(generator2(x, y), color)) {
+        if (!genColor.compareColor(generator1(x, y), color) && !genColor.compareColor(generator2(x, y), color)) {
             return generator1(x, y);
         }
-        else if (!helpers.compareColor(generator2(x, y), color)) {
+        else if (!genColor.compareColor(generator2(x, y), color)) {
             return generator2(x, y);
         }
         return color;
@@ -157,7 +158,7 @@ function Operation(generator1, generator2, operation) {
         let green = op(generator1(x, y).green, generator2(x, y).green)
         let blue = op(generator1(x, y).blue, generator2(x, y).blue)
         let alpha = op(generator1(x, y).alpha, generator2(x, y).alpha)
-        return helpers.getColor(red, green, blue, alpha);
+        return genColor.createColor(red, green, blue, alpha);
     }
     return Op;
 }
@@ -240,14 +241,14 @@ function smooth(generator,height,width){
 	let green = color1.green+color2.green;
 	let blue = color1.blue+color2.blue;
 	let alpha = color1.alpha//+color2.alpha;
-	return helpers.getColor(red,green,blue,alpha);
+	return genColor.createColor(red,green,blue,alpha);
     }
     function mul(color1,color2){
 	let red = color1.red*color2.red;
 	let green = color1.green*color2.green;
 	let blue = color1.blue*color2.blue;
 	let alpha = color1.alpha//*color2.alpha;
-	return helpers.getColor(red,green,blue,alpha);
+	return genColor.createColor(red,green,blue,alpha);
     }
     function Smooth(x,y){
 	let r = Math.random();
@@ -263,9 +264,9 @@ function smooth(generator,height,width){
 	    y_r = x*Math.sin(theta)+y*Math.cos(theta);
 	}
 	let norm = Math.sqrt((x-x_r)**2+(y-y_r)**2);
-	let color = helpers.getColor(1/norm,1/norm,1/norm,1/norm);
+	let color = genColor.createColor(1/norm,1/norm,1/norm,1/norm);
 	let new_color = mul(generator(x_r,y_r),color);
-	return new_color;//helpers.getColor(Math.random()*generator(x,y).red,Math.random()*generator(x,y).green,Math.random()*generator(x,y).blue,255);
+	return new_color;//genColor.createColor(Math.random()*generator(x,y).red,Math.random()*generator(x,y).green,Math.random()*generator(x,y).blue,255);
     }
     return Smooth;
 }
@@ -279,13 +280,85 @@ function setOpacity(generator,factor){
 	let blue = generator(x,y).blue;
 	let alpha = generator(x,y).alpha * factor;
 
-	return helpers.getColor(red,green,blue,alpha);
+	return genColor.createColor(red,green,blue,alpha);
     }
     return opacity;
 }
+
+function translate(options){
+
+    return (x,y)=>options.generator(x+options.dx,y+options.dy);
+}
+
+function takeColor(options){
+
+    let red = 0;
+    let green = 0;
+    let blue = 0;
+
+    function takeColorGenerator(x,y){
+	
+	let color = options.generator(x,y);
+
+	if (options.red){
+	    red = color.red;
+	}
+	if (options.green){
+	    green = color.green;
+	}
+	if (options.blue){
+	    blue = color.blue;
+	}
+	return genColor.createColor(red,green,blue,255);
+    }
+    return takeColorGenerator;
+}
+
+function BlackWhite(options){
+
+    let color = options.generator;
+
+    function filterBW(x,y){
+
+	let red = color(x,y).red;
+	let green = color(x,y).green;
+	let blue = color(x,y).blue;
+
+	let value = (red+green+blue)/3
+
+	return genColor.createColor(value,value,value,255);
+    }
+    return filterBW;
+}
+
+function repeat(options){
+
+    let color = options.generator;
+    let size = options.size;
+    let x_scale = options.width/size;
+    let y_scale = options.height/size;
+    return (x,y)=>color((x*x_scale)%(size*x_scale),(y*y_scale)%(size*y_scale));
+}
+	
+function anaglyphe(options){
+
+    let origin = options.generator;
+    let redImage = takeColor({generator:origin,red:true,green:false,blue:false});
+    let cyanImage = takeColor({generator:origin,red:false,green:true,blue:true});
+    let dxRedImage = translate({generator:redImage,dx:options.dx,dy:0});
+    let dxCyanImage = translate({generator:cyanImage,dx:-options.dx,dy:0});
+    return composition(dxRedImage,dxCyanImage,"Add");
+}
+
+    
     
 exports.mirror = mirror;
 exports.filters = filters;
 exports.composition = composition;
 exports.smooth = smooth;
 exports.setOpacity = setOpacity;
+exports.translate = translate;
+exports.takeColor = takeColor;
+exports.BlackWhite = BlackWhite;
+exports.anaglyphe = anaglyphe;
+exports.repeat = repeat;

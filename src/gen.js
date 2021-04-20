@@ -8,7 +8,7 @@ const helpers = require('./colors.js');
  */
 function multiGradient(min, max) {
     const dist = Math.abs(max - min) * 1.01; //distance intervalle
-    const sign = 1;
+    let sign = 1;
     if (min > max) { // si les bornes sont inversée on inverse tout ainsi que x
         min = -min;
         max = -max;
@@ -31,11 +31,13 @@ function multiGradient(min, max) {
         else { // si x est après l'intervalle
             value = Math.abs(x - max) % dist; // calcul de l'écart à la borne modulo la taille de l'intervalle
         }
-        index = Math.floor(value / dist);
+        
         step = dist / variations.length;
+	index = Math.floor(value / step);
         normedValue = (value - index * step) / step;
-        if (variations[index].length === 1)
+        if (variations[index].length === 1){
             return variations[index][0];
+	}
         return variations[index][0] + (variations[index][1] - variations[index][0]) * normedValue;
     }
     return _gradient;
