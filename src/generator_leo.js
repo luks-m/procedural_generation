@@ -1,5 +1,6 @@
 const helpers = require('./helpers.js');
 const geometric = require('./geometricPredicate.js');
+const genColor = require('./colors.js');
 
 /**
  * 
@@ -245,12 +246,12 @@ function generatorBeePattern(options) {
  * @param {*} color 
  * @returns 
  */
-function generatorVoronoi(center, color) {
+function generatorVoronoi(options) {
     function voronoi(x, y) {
-        let array = center.map((i) => { return helpers.norm(i, [x, y]); })
+        let array = options.center.map((i) => { return helpers.norm(i, [x, y]); })
         let min = array.reduce((acc, val, index) => { return acc.value > val ? { value: val, index: index } : acc },
                               { value: array[0], index: 0 });
-        return color[min.index];
+        return options.color[min.index];
     }
     return voronoi;
 }
@@ -262,16 +263,16 @@ function generatorVoronoi(center, color) {
  * @param {*} number 
  * @returns 
  */
-function generatorVoronoiRandom(height, width, number) {
-
+function generatorVoronoiRandom(options) {
+    
     let array = [];
     let color = [];
-    for (let i = 0; i < number; i++) {
-        array.push([Math.random() * width, Math.random() * height]);
-        color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+    for (let i = 0; i < options.number; i++) {
+        array.push([Math.random() * options.width, Math.random() * options.height]);
+        color.push(genColor.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
     }
-
-    return generatorVoronoi(array, color);
+    let optionVoronoi = {center:array,color:color};
+    return generatorVoronoi(optionVoronoi);
 }
 
 /**
@@ -282,21 +283,22 @@ function generatorVoronoiRandom(height, width, number) {
  * @param {*} size 
  * @returns 
  */
-function generatorHexagonal(height, width, size) {
+function generatorHexagonal(options) {
     let array = [];
     let color = [];
-    for (let i = 0; i < 1.5 * Math.floor(height / size); i++) {
-        for (let j = 0; j < 1.5 * Math.floor(width / size); j++) {
-            if (geometric.isEven(i)) {
-                array.push([-1 * size + j * size, i * size]);
+    for (let i = 0; i < 1.5 * Math.floor(options.height / options.size); i++) {
+        for (let j = 0; j < 1.5 * Math.floor(options.width / options.size); j++) {
+            if (geometric.isEven({x:i})) {
+                array.push([-1 * options.size + j * options.size, i * options.size]);
             }
             else {
-                array.push([-1 * 3 / 2 * size + j * size, i * size]);
+                array.push([-1 * 3 / 2 * options.size + j * options.size, i * options.size]);
             }
-            color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+            color.push(genColor.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
         }
     }
-    return generatorVoronoi(array, color);
+    let optionVoronoi = {center:array,color:color};
+    return generatorVoronoi(optionVoronoi);
 }
 
 /**
@@ -306,31 +308,32 @@ function generatorHexagonal(height, width, size) {
  * @param {*} size 
  * @returns 
  */
-function pentagone(height, width, size) {
+function pentagone(options) {
     let array = [];
     let color = [];
-    for (let i = 0; i < 3 * Math.floor(height / size); i++) {
-        for (let j = 0; j < 1.5 * Math.floor(width / size); j++) {
-            if (geometric.isEven(i)) {
-                array.push([-1 * size + j * size + size / 3, i * size / 2]);
-                array.push([-1 * size + j * size - size / 3, i * size / 2]);
-                array.push([-1 * size + j * size, i * size / 2 - size / 4]);
-                array.push([-1 * size + j * size, i * size / 2 + size / 4]);
+    for (let i = 0; i < 3 * Math.floor(options.height / options.size); i++) {
+        for (let j = 0; j < 3 * Math.floor(options.width / options.size); j++) {
+            if (geometric.isEven({x:i})) {
+                array.push([-1 * options.size + j * options.size + options.size / 3, i * options.size / 2]);
+                array.push([-1 * options.size + j * options.size - options.size / 3, i * options.size / 2]);
+                array.push([-1 * options.size + j * options.size, i * options.size / 2 - options.size / 4]);
+                array.push([-1 * options.size + j * options.size, i * options.size / 2 + options.size / 4]);
             }
             else {
-                array.push([-1 * 3 / 2 * size + j * size, i * size / 2 + size / 4]);
-                array.push([-1 * 3 / 2 * size + j * size, i * size / 2 - size / 4]);
-                array.push([-1 * 3 / 2 * size + j * size - size / 3, i * size / 2]);
-                array.push([-1 * 3 / 2 * size + j * size + size / 3, i * size / 2]);
+                array.push([-1 * 3 / 2 * options.size + j * options.size, i * options.size / 2 + options.size / 4]);
+                array.push([-1 * 3 / 2 * options.size + j * options.size, i * options.size / 2 - options.size / 4]);
+                array.push([-1 * 3 / 2 * options.size + j * options.size - options.size / 3, i * options.size / 2]);
+                array.push([-1 * 3 / 2 * options.size + j * options.size + options.size / 3, i * options.size / 2]);
 
             }
-            color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
-            color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
-            color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
-            color.push(helpers.getColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+            color.push(genColor.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+            color.push(genColor.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+            color.push(genColor.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
+            color.push(genColor.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255));
         }
     }
-    return generatorVoronoi(array, color);
+    let optionVoronoi = {center:array,color:color};
+    return generatorVoronoi(optionVoronoi);
 }
 
 
