@@ -1,6 +1,7 @@
 const helpers = require('./helpers.js');
 
-const generators = require('./generators.js');
+const noiseGenerators = require('./generators.js');
+const generators = require('./gen.js');
 const generatorsLucas = require('./generators_lucas.js');
 const generatorsleo = require('./generator_leo.js');
 const colorMaps = require('./colorMaps.js');
@@ -42,35 +43,311 @@ function getImage(canvas, width, height) {
     ///////////////////// Generators : /////////////////////
 
     // Checkerboard
-    /*pixel = generatorsLucas.makeCheckerboard(width, height, 50,
-					     colors.createColor(255,0,0,255),
-					     colors.createColor(0,255,0,255));
-					     */
-    // Perlin Noise
-    //pixel = generators.perlinNoiseGen(width, height, 1338, 'simplex');
+    //pixel = generatorsLucas.makeCheckerboard(width, height, 50,
+	//				     helpers.getColor(255,0,0,255),
+	//				     helpers.getColor(0,255,0,255));
 
-    // Fractional Brownian Motion
-    //pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", 2567, ['simplex'], 5, 0.5, 2, 2, 0.2, true);
-    //pixel = generators.fractionalBrownianMotionGen(width, height, "worley", 44, ['f2 - f1', 'euclidean', true], 2, undefined, undefined, undefined, undefined, true)
-    //pixel = generators.fractionalBrownianMotionGen(width, height, "perlin", 42, ['value']);
-    //pixel = generators.fractionalBrownianMotionGen(width, height, "worley", 1338, ['f2 - f1', 'euclidean', false, false], 2)
+    // Perlin Noise
+
+    /*
+    pixel = generators.noiseGen(
+        {
+            noise: noiseGenerators.noiseGenerators.perlinNoise,
+            noiseOptions: {
+                width: width,
+                height: height,
+                seed: 1338,
+                variant: 'simplex'
+            }
+        }
+    );
+    */
+
+    // Fractal Brownian Motion
+
+    /*
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.fbm,
+            fractalOptions: {
+                width: width,
+                height: height,
+                noiseGen: "perlin",
+                noiseSeed: 2567,
+                argsList: {
+                    variant: "simplex"
+                },
+                octaves: 5,
+                persistence: 0.5,
+                lacunarity: 2,
+                initial_amplitude: 2,
+                initial_frequency: 0.2,
+                colored: true
+            }
+        }
+    );
+    */
+
+    /*
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.fbm,
+            fractalOptions: {
+                width: width,
+                height: height,
+                noiseGen: "worley",
+                noiseSeed: 44,
+                argsList: {
+                    type: "f2 - f1",
+                    distance: "euclidean",
+                    three_dimensions: true
+                },
+                octaves: 2,
+                colored: true
+            }
+        }
+    );
+    */
+
+    /*
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.fbm,
+            fractalOptions: {
+                width: width,
+                height: height,
+                noiseGen: "perlin",
+                noiseSeed: 42,
+                argsList: {
+                    variant: "value"
+                },
+            }
+        }
+    );
+    */
+
+    /*
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.fbm,
+            fractalOptions: {
+                width: width,
+                height: height,
+                noiseGen: "worley",
+                noiseSeed: 1338,
+                argsList: {
+                    type: "f2 - f1",
+                    distance: "euclidean",
+                    three_dimensions: false
+                },
+                octaves: 2,
+            }
+        }
+    );
+    */
 
     // Turbulence Noise
-    //pixel = generators.turbulenceNoiseGen(width, height, "perlin", 1338, ['simplex'], 6)
-    //pixel = generators.turbulenceNoiseGen(width, height, "worley", 1338, ['f2 - f1', 'euclidean', false], 2);
+
+    /*
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.turbulence,
+            fractalOptions: {
+                width: width,
+                height: height,
+                noiseGen: "perlin",
+                noiseSeed: 1338,
+                argsList: {
+                    variant: "simplex"
+                },
+                octaves: 6,
+            }
+        }
+    );
+    */
+
+    /*
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.turbulence,
+            fractalOptions: {
+                width: width,
+                height: height,
+                noiseGen: "worley",
+                noiseSeed: 1338,
+                argsList: {
+                    type: "f2 - f1",
+                    distance: "euclidean",
+                    three_dimensions: "false"
+                },
+                octaves: 2,
+            }
+        }
+    );
+    */
+
 
     // Ridged Multifractal Noise
-    //pixel = generators.ridgedMultifractalNoiseGen(width, height, "perlin", 1338, ['simplex', 4], 6, undefined, undefined, undefined, undefined, true);
-    //pixel = generators.ridgedMultifractalNoiseGen(width, height, "worley", 1338, ['f2 - f1', 'euclidean', false], 3, undefined, undefined, undefined, undefined, true);
+
+    /*
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.ridged,
+            fractalOptions: {
+                width: width,
+                height: height,
+                noiseGen: "perlin",
+                noiseSeed: 1338,
+                argsList: {
+                    variant: "simplex",
+                    scale: 4
+                },
+                octaves: 6,
+                colored: true
+            }
+        }
+    );
+    */
+
+    /*
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.ridged,
+            fractalOptions: {
+                width: width,
+                height: height,
+                noiseGen: "worley",
+                noiseSeed: 1338,
+                argsList: {
+                    type: "f2 - f1",
+                    distance: "euclidean",
+                    three_dimensions: "false"
+                },
+                octaves: 3,
+                colored: true
+            }
+        }
+    );
+    */
 
     // Worley Noise
-    //pixel = generators.worleyNoiseGen(width, height, 43, 'f2 - f1', 'euclidean', true, true);
-    //pixel = generators.worleyNoiseGen(width, height, 1338, 'f2 - f1', 'euclidean', false, false)
+
+    /*
+    pixel = generators.noiseGen(
+        {
+            noise: noiseGenerators.noiseGenerators.worleyNoise,
+            noiseOptions: {
+                width: width,
+                height: height,
+                three_dimensions: true,
+                colored: true,
+                seed: 43,
+                type: "f2 - f1",
+                distance: "euclidean"
+            }
+        }
+    );
+    */
+
+    /*
+    pixel = generators.noiseGen(
+        {
+            noise: noiseGenerators.noiseGenerators.worleyNoise,
+            noiseOptions: {
+                width: width,
+                height: height,
+                seed: 1338,
+                type: 'f2 - f1',
+                distance: "euclidean",
+                three_dimensions: false,
+                colored: false
+            }
+        }
+    );
+    */
 
     // Domain Warping
-    //pixel = generators.domainWarpingFractalGen(width, height, 'ridged', "perlin", 1338, ['simplex'], 6, 4, 6);
-    //pixel = generators.domainWarpingFractalGen(width, height, 'turbulence', "worley", 1338, ['f2 - f1', 'euclidean'], 8, 4, 2, undefined, undefined, undefined, undefined, true);
-    //pixel = generators.domainWarpingFractalGen(width, height, 'turbulence', "perlin", 44, undefined, 10, 10, undefined, undefined, undefined, undefined, undefined, true);
+
+    /*
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.warp,
+            fractalOptions: {
+                width: width,
+                height: height,
+                fractalGen: noiseGenerators.noiseFractals.ridged,
+                noiseGen: "perlin",
+                noiseSeed: 1338,
+                argsList: {
+                    variant: "simplex"
+                },
+                qMultiplier: 4,
+                rMultiplier: 10,
+                octaves: 6,
+                colored: true
+            }
+        }
+    );
+    */
+
+    /*
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.warp,
+            fractalOptions: {
+                width: width,
+                height: height,
+                fractalGen: noiseGenerators.noiseFractals.ridged,
+                noiseGen: "worley",
+                noiseSeed: 1338,
+                argsList: {
+                    type: "f2 - f1",
+                    distance: "manhattan"
+                },
+                qMultiplier: 4,
+                rMultiplier: 4,
+                octaves: 2,
+                colored: true
+            }
+        }
+    );
+    */
+
+    /*
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.warp,
+            fractalOptions: {
+                width: width,
+                height: height,
+                fractalGen: noiseGenerators.noiseFractals.turbulence,
+                noiseGen: "perlin",
+                noiseSeed: 44,
+                qMultiplier: 10,
+                rMultiplier: 10,
+                colored: true
+            }
+        }
+    );
+    */
+
+
+    pixel = generators.fractalNoiseGen(
+        {
+            fractal: noiseGenerators.noiseFractals.warp,
+            fractalOptions: {
+                width: width,
+                height: height,
+                fractalGen: noiseGenerators.noiseFractals.fbm,
+                noiseGen: "perlin",
+                noiseSeed: 44,
+                qMultiplier: 40,
+                rMultiplier: 20,
+                colored: true
+            }
+        }
+    );
+
 
     // Colormap
     //function f(z){return [z[0]*(z[0]**2-z[1]**2)-2*z[0]*z[1]**2+0.23,2*z[0]**2*z[1]+z[1]*(z[0]**2-z[1]**2)-0.970];}

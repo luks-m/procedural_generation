@@ -67,4 +67,46 @@ function colorMap(options) {
     return _colorMap;
 }
 
+/**
+ * @typedef {Object} noiseDescriptor
+ * @property {function} noise - Noise generator
+ * @property {Object} noiseOptions - Set of parameters to configure the noise
+ */
+
+/**
+ * Generic Noise Generator (White, Perlin & Worley)
+ * @param {noiseDescriptor} options - Set of parameters to configure the noise
+ * @returns {function} - Noise generator function according to given parameters
+ */
+function noiseGenerator(options) {
+    const width = options.noiseOptions.width;
+    const height = options.noiseOptions.height;
+    if (typeof(width) !== "number" || typeof(height) !== "number")
+        throw Error(`TypeError: Please provide valid width and height values.`);
+
+    return options.noise(width, height, options.noiseOptions)
+}
+
+/**
+ * @typedef {Object} fractalNoiseDescriptor
+ * @property {function} fractal - Fractal Noise generator
+ * @property {Object} fractalOptions - Set of parameters to configure the fractal noise
+ */
+
+/**
+ * Generic Fractal Noise Generator (FBM, Turbulence & Ridged)
+ * @param {fractalNoiseDescriptor} options - Set of parameters to configure the fractal noise
+ * @returns {function} - Noise generator function according to given parameters
+ */
+function fractalNoiseGenerator(options) {
+    const width = options.fractalOptions.width;
+    const height = options.fractalOptions.height;
+    if (typeof(width) !== "number" || typeof(height) !== "number")
+        throw Error(`TypeError: Please provide valid width and height values.`);
+
+    return options.fractal(width, height, options.fractalOptions);
+}
+
 exports.colorMap = colorMap;
+exports.noiseGen = noiseGenerator;
+exports.fractalNoiseGen = fractalNoiseGenerator;
