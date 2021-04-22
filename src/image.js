@@ -5,6 +5,7 @@ const generatorsLucas = require('./generators_lucas.js');
 const generatorsleo = require('./generator_leo.js');
 const colorMaps = require('./colorMaps.js');
 const colorMapPredicate = require('./colorMapPredicate.js');
+const colors = require('./colors.js');
 
 
 const filtersLucas = require('./filters_lucas.js');
@@ -41,10 +42,10 @@ function getImage(canvas, width, height) {
     ///////////////////// Generators : /////////////////////
 
     // Checkerboard
-    //pixel = generatorsLucas.makeCheckerboard(width, height, 50,
-	//				     helpers.getColor(255,0,0,255),
-	//				     helpers.getColor(0,255,0,255));
-
+    /*pixel = generatorsLucas.makeCheckerboard(width, height, 50,
+					     colors.createColor(255,0,0,255),
+					     colors.createColor(0,255,0,255));
+					     */
     // Perlin Noise
     //pixel = generators.perlinNoiseGen(width, height, 1338, 'simplex');
 
@@ -67,7 +68,7 @@ function getImage(canvas, width, height) {
     //pixel = generators.worleyNoiseGen(width, height, 1338, 'f2 - f1', 'euclidean', false, false)
 
     // Domain Warping
-    pixel = generators.domainWarpingFractalGen(width, height, 'ridged', "perlin", 1338, ['simplex'], 6, 4, 6);
+    //pixel = generators.domainWarpingFractalGen(width, height, 'ridged', "perlin", 1338, ['simplex'], 6, 4, 6);
     //pixel = generators.domainWarpingFractalGen(width, height, 'turbulence', "worley", 1338, ['f2 - f1', 'euclidean'], 8, 4, 2, undefined, undefined, undefined, undefined, true);
     //pixel = generators.domainWarpingFractalGen(width, height, 'turbulence', "perlin", 44, undefined, 10, 10, undefined, undefined, undefined, undefined, undefined, true);
 
@@ -185,8 +186,8 @@ function getImage(canvas, width, height) {
 			    [1/256,  4/256,  6/256,  4/256, 1/256]];
 			    */
     //const size = 5;
-
-    //pixel = filtersLucas.gaussianBlur(pixel, width, height, gaussianKernel, size);
+    //let kernel = filtersLucas.createKernel(5, 1.5);
+    //pixel = filtersLucas.gaussianBlur(pixel, width, height, kernel, 5);
 
     //Gaussian Blur Size 13
     // const gaussianKernel = [[0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -203,7 +204,7 @@ function getImage(canvas, width, height) {
 	// 		    [0,0,0,0,0,0.000001,0.000001,0.000001,0,0,0,0,0],
 	// 		    [0,	0,0,0,0,0,0,0,0,0,0,0,0]];
 
-    const size = 13;
+    //const size = 13;
 
     //pixel = filtersLucas.gaussianBlur(pixel, width, height, gaussianKernel, size);
 
