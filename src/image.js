@@ -66,10 +66,10 @@ function getImage(canvas, width, height) {
     // Fractal Brownian Motion
 
     /*
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.fbm,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.fbm,
+            noiseOptions: {
                 width: width,
                 height: height,
                 noiseGen: "perlin",
@@ -89,10 +89,10 @@ function getImage(canvas, width, height) {
     */
 
     /*
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.fbm,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.fbm,
+            noiseOptions: {
                 width: width,
                 height: height,
                 noiseGen: "worley",
@@ -110,10 +110,10 @@ function getImage(canvas, width, height) {
     */
 
     /*
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.fbm,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.fbm,
+            noiseOptions: {
                 width: width,
                 height: height,
                 noiseGen: "perlin",
@@ -127,10 +127,10 @@ function getImage(canvas, width, height) {
     */
 
     /*
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.fbm,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.fbm,
+            noiseOptions: {
                 width: width,
                 height: height,
                 noiseGen: "worley",
@@ -149,10 +149,10 @@ function getImage(canvas, width, height) {
     // Turbulence Noise
 
     /*
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.turbulence,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.turbulence,
+            noiseOptions: {
                 width: width,
                 height: height,
                 noiseGen: "perlin",
@@ -167,10 +167,10 @@ function getImage(canvas, width, height) {
     */
 
     /*
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.turbulence,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.turbulence,
+            noiseOptions: {
                 width: width,
                 height: height,
                 noiseGen: "worley",
@@ -190,10 +190,10 @@ function getImage(canvas, width, height) {
     // Ridged Multifractal Noise
 
     /*
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.ridged,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.ridged,
+            noiseOptions: {
                 width: width,
                 height: height,
                 noiseGen: "perlin",
@@ -210,10 +210,10 @@ function getImage(canvas, width, height) {
     */
 
     /*
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.ridged,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.ridged,
+            noiseOptions: {
                 width: width,
                 height: height,
                 noiseGen: "worley",
@@ -269,10 +269,10 @@ function getImage(canvas, width, height) {
     // Domain Warping
 
     /*
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.warp,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.warp,
+            noiseOptions: {
                 width: width,
                 height: height,
                 fractalGen: noiseGenerators.noiseFractals.ridged,
@@ -291,10 +291,10 @@ function getImage(canvas, width, height) {
     */
 
     /*
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.warp,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.warp,
+            noiseOptions: {
                 width: width,
                 height: height,
                 fractalGen: noiseGenerators.noiseFractals.ridged,
@@ -314,10 +314,10 @@ function getImage(canvas, width, height) {
     */
 
     /*
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.warp,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.warp,
+            noiseOptions: {
                 width: width,
                 height: height,
                 fractalGen: noiseGenerators.noiseFractals.turbulence,
@@ -332,10 +332,10 @@ function getImage(canvas, width, height) {
     */
 
 
-    pixel = generators.fractalNoiseGen(
+    pixel = generators.noiseGen(
         {
-            fractal: noiseGenerators.noiseFractals.warp,
-            fractalOptions: {
+            noise: noiseGenerators.noiseFractals.warp,
+            noiseOptions: {
                 width: width,
                 height: height,
                 fractalGen: noiseGenerators.noiseFractals.fbm,
@@ -347,6 +347,7 @@ function getImage(canvas, width, height) {
             }
         }
     );
+
 
 
     // Colormap
