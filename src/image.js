@@ -515,8 +515,6 @@ function getImage(canvas, width, height) {
     pixel = filtersLucas.gaussianBlur(
 	{
 	    image : pixel,
-	    width : width,
-	    height : height,
 	    kernel : kernel,
 	    kernelSize : 10
 	});
