@@ -657,7 +657,10 @@ function worleyNoiseGenerator(width, height, options) {
     let distanceDimension = THREE_DIMENSIONS ? distanceFormula.three_dim : distanceFormula.two_dim;
 
 
-    // Return the type of distance to compute according to user's input
+    /**
+     * Get the type of distance to compute according to user's input
+     * @returns {function({number}, {number}): {number}} - Distance expression to use
+     */
     function loadArgType() {
         if (TYPE === 'f1')
             return (x, y) => getNthNearestDistance(1, x, y);
@@ -670,7 +673,11 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
-    // Return the distance formula to use according to user's input
+    /**
+     * Get the distance formula to use according to user's input
+     * @returns {{two_dim: (function({number}, {number}, {number}, {number}): {number}),
+     * three_dim: (function({number}, {number}, {number}, {number}, {number}, {number}): {number})}} - Distance formula to use
+     */
     function loadArgDistance() {
         if (DISTANCE === 'euclidean')
             return getDistanceEuclidean();
@@ -683,11 +690,22 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
-    // Tools to compute Chebyshev distances
+    /**
+     * Tools to compute Chebyshev distances
+     * @returns {{two_dim: (function(number, number, number, number): number),
+     * three_dim: (function(number, number, number, number, number, number): number)}} - Two and Three dimensions formulas
+     */
     function getDistanceChebyshev() {
 
 
-        // Returns the Chebyshev distance between two points in a 2D plan
+        /**
+         * Chebyshev distance between two points in a 2D plan
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance2D(x1, x2, y1, y2) {
             let a = Math.abs(x1 - x2);
             let b = Math.abs(y1 - y2);
@@ -696,7 +714,16 @@ function worleyNoiseGenerator(width, height, options) {
         }
 
 
-        // Returns the Chebyshev distance between two points in a 3D volume
+        /**
+         * Chebyshev distance between two points in a 3D volume
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @param z1 - z coordinate of the first point
+         * @param z2 - z coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance3D(x1, x2, y1, y2, z1, z2) {
             let a = Math.abs(x1 - x2);
             let b = Math.abs(y1 - y2);
@@ -713,11 +740,22 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
-    // Tools to compute Manhattan distances
+    /**
+     * Tools to compute Manhattan distances
+     * @returns {{two_dim: (function(number, number, number, number): number),
+     * three_dim: (function(number, number, number, number, number, number): number)}} - Two and Three dimensions formulas
+     */
     function getDistanceManhattan() {
 
 
-        // Returns the Manhattan distance between two points in a 2D plan
+        /**
+         * Manhattan distance between two points in a 2D plan
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance2D(x1, x2, y1, y2) {
             let a = Math.abs(x1 - x2);
             let b = Math.abs(y1 - y2);
@@ -726,7 +764,16 @@ function worleyNoiseGenerator(width, height, options) {
         }
 
 
-        // Returns the Manhattan distance between two points in a 3D volume
+        /**
+         * Manhattan distance between two points in a 3D volume
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @param z1 - z coordinate of the first point
+         * @param z2 - z coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance3D(x1, x2, y1, y2, z1, z2) {
             let a = Math.abs(x1 - x2);
             let b = Math.abs(y1 - y2);
@@ -743,11 +790,22 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
-    // Tools to compute euclidean distances
+    /**
+     * Tools to compute Euclidean distances
+     * @returns {{two_dim: (function(number, number, number, number): number),
+     * three_dim: (function(number, number, number, number, number, number): number)}} - Two and Three dimensions formulas
+     */
     function getDistanceEuclidean() {
 
 
-        // Returns the euclidean distance between two points in a 2D plan
+        /**
+         * Euclidean distance between two points in a 2D plan
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance2D(x1, x2, y1, y2) {
             let a = x1 - x2;
             let b = y1 - y2;
@@ -756,7 +814,16 @@ function worleyNoiseGenerator(width, height, options) {
         }
 
 
-        // Returns the euclidean distance between two points in a 3D volume
+        /**
+         * Euclidean distance between two points in a 3D volume
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @param z1 - z coordinate of the first point
+         * @param z2 - z coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance3D(x1, x2, y1, y2, z1, z2) {
             let a = x1 - x2;
             let b = y1 - y2;
@@ -772,19 +839,32 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
+    /**
+     * Get a random positive integer
+     * @param {number} max - Maximum value
+     * @returns {number} - A random positive integer in range [0, max[
+     */
     function getInt(max) {
         return Math.floor(helpers.changeRange(random(), -1, 1, 0, 1) * Math.floor(max));
     }
 
 
-    // Randomly distribute feature points in a 3D volume
+    /**
+     * Randomly distribute feature points in a 3D volume
+     */
     function generateFeaturePoints() {
         for (let i = 0; i < NUMBER_OF_POINTS; i++)
             featurePoints.push({x: getInt(width), y: getInt(height), z: getInt(width)});
     }
 
 
-    // Return the nth nearest distance between a point (x, y) and all feature points
+    /**
+     * Get the nth nearest distance between a point (x, y) and all feature points
+     * @param {number} n - nth nearest distance to get (superior or equal to 1)
+     * @param {number} x - x coordinate of the point
+     * @param {number} y - y coordinate of the point
+     * @returns {number} - The distance betweehe point and the nth nearest feature point
+     */
     function getNthNearestDistance(n, x, y) {
         if (distances[[x, y]])
             return distances[[x, y]][n - 1];
@@ -804,7 +884,12 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
-    // Return a RGBA pixel according to a coordinate
+    /**
+     * Returns a RGBA pixel according to a coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
+     */
     function getPixelColor(x, y) {
         let distance = getDist(x, y);
         if (COLORED) {
