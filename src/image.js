@@ -74,21 +74,24 @@ function getImage(canvas, width, height) {
     /*
     pixel = generators.noiseGen(
         {
-            noise: noiseGenerators.noiseFractals.fbm,
+            noise: noiseGenerators.noiseFractals.fractal,
             noiseOptions: {
                 width: width,
                 height: height,
-                noiseGen: "perlin",
-                noiseSeed: 2567,
-                argsList: {
-                    variant: "simplex"
-                },
-                octaves: 5,
-                persistence: 0.5,
-                lacunarity: 2,
-                initial_amplitude: 2,
-                initial_frequency: 0.2,
-                colored: true
+                fractal: 'fbm',
+                fractalOptions: {
+                    noiseGen: "perlin",
+                    noiseSeed: 2567,
+                    argsList: {
+                        variant: "simplex"
+                    },
+                    octaves: 5,
+                    persistence: 0.5,
+                    lacunarity: 2,
+                    initial_amplitude: 2,
+                    initial_frequency: 0.2,
+                    colored: true
+                }
             }
         }
     );
@@ -97,19 +100,22 @@ function getImage(canvas, width, height) {
     /*
     pixel = generators.noiseGen(
         {
-            noise: noiseGenerators.noiseFractals.fbm,
+            noise: noiseGenerators.noiseFractals.fractal,
             noiseOptions: {
                 width: width,
                 height: height,
-                noiseGen: "worley",
-                noiseSeed: 44,
-                argsList: {
-                    type: "f2 - f1",
-                    distance: "euclidean",
-                    three_dimensions: true
-                },
-                octaves: 2,
-                colored: true
+                fractal: 'fbm',
+                fractalOptions: {
+                    noiseGen: "worley",
+                    noiseSeed: 44,
+                    argsList: {
+                        type: "f2 - f1",
+                        distance: "euclidean",
+                        three_dimensions: true
+                    },
+                    octaves: 2,
+                    colored: true
+                }
             }
         }
     );
@@ -118,15 +124,18 @@ function getImage(canvas, width, height) {
     /*
     pixel = generators.noiseGen(
         {
-            noise: noiseGenerators.noiseFractals.fbm,
+            noise: noiseGenerators.noiseFractals.fractal,
             noiseOptions: {
                 width: width,
                 height: height,
-                noiseGen: "perlin",
-                noiseSeed: 42,
-                argsList: {
-                    variant: "value"
-                },
+                fractal: 'fbm',
+                fractalOptions: {
+                    noiseGen: "perlin",
+                    noiseSeed: 42,
+                    argsList: {
+                        variant: "value"
+                    },
+                }
             }
         }
     );
@@ -135,18 +144,21 @@ function getImage(canvas, width, height) {
     /*
     pixel = generators.noiseGen(
         {
-            noise: noiseGenerators.noiseFractals.fbm,
+            noise: noiseGenerators.noiseFractals.fractal,
             noiseOptions: {
                 width: width,
                 height: height,
-                noiseGen: "worley",
-                noiseSeed: 1338,
-                argsList: {
-                    type: "f2 - f1",
-                    distance: "euclidean",
-                    three_dimensions: false
-                },
-                octaves: 2,
+                fractal: 'fbm',
+                fractalOptions: {
+                    noiseGen: "worley",
+                    noiseSeed: 1338,
+                    argsList: {
+                        type: "f2 - f1",
+                        distance: "euclidean",
+                        three_dimensions: false
+                    },
+                    octaves: 2,
+                }
             }
         }
     );
@@ -157,16 +169,19 @@ function getImage(canvas, width, height) {
     /*
     pixel = generators.noiseGen(
         {
-            noise: noiseGenerators.noiseFractals.turbulence,
+            noise: noiseGenerators.noiseFractals.fractal,
             noiseOptions: {
                 width: width,
                 height: height,
-                noiseGen: "perlin",
-                noiseSeed: 1338,
-                argsList: {
-                    variant: "simplex"
-                },
-                octaves: 6,
+                fractal: 'turbulence',
+                fractalOptions: {
+                    noiseGen: "perlin",
+                    noiseSeed: 1338,
+                    argsList: {
+                        variant: "simplex"
+                    },
+                    octaves: 6
+                }
             }
         }
     );
@@ -175,18 +190,21 @@ function getImage(canvas, width, height) {
     /*
     pixel = generators.noiseGen(
         {
-            noise: noiseGenerators.noiseFractals.turbulence,
+            noise: noiseGenerators.noiseFractals.fractal,
             noiseOptions: {
                 width: width,
                 height: height,
-                noiseGen: "worley",
-                noiseSeed: 1338,
-                argsList: {
-                    type: "f2 - f1",
-                    distance: "euclidean",
-                    three_dimensions: "false"
-                },
-                octaves: 2,
+                fractal: 'turbulence',
+                fractalOptions: {
+                    noiseGen: "worley",
+                    noiseSeed: 1338,
+                    argsList: {
+                        type: "f2 - f1",
+                        distance: "euclidean",
+                        three_dimensions: "false"
+                    },
+                    octaves: 2
+                }
             }
         }
     );
@@ -198,18 +216,21 @@ function getImage(canvas, width, height) {
     /*
     pixel = generators.noiseGen(
         {
-            noise: noiseGenerators.noiseFractals.ridged,
+            noise: noiseGenerators.noiseFractals.fractal,
             noiseOptions: {
                 width: width,
                 height: height,
-                noiseGen: "perlin",
-                noiseSeed: 1338,
-                argsList: {
-                    variant: "simplex",
-                    scale: 4
-                },
-                octaves: 6,
-                colored: true
+                fractal: 'ridged',
+                fractalOptions: {
+                    noiseGen: "perlin",
+                    noiseSeed: 1338,
+                    argsList: {
+                        variant: "simplex",
+                        scale: 4
+                    },
+                    octaves: 6,
+                    colored: true
+                }
             }
         }
     );
@@ -218,19 +239,22 @@ function getImage(canvas, width, height) {
     /*
     pixel = generators.noiseGen(
         {
-            noise: noiseGenerators.noiseFractals.ridged,
+            noise: noiseGenerators.noiseFractals.fractal,
             noiseOptions: {
                 width: width,
                 height: height,
-                noiseGen: "worley",
-                noiseSeed: 1338,
-                argsList: {
-                    type: "f2 - f1",
-                    distance: "euclidean",
-                    three_dimensions: "false"
-                },
-                octaves: 3,
-                colored: true
+                fractal: 'ridged',
+                fractalOptions: {
+                    noiseGen: "worley",
+                    noiseSeed: 1338,
+                    argsList: {
+                        type: "f2 - f1",
+                        distance: "euclidean",
+                        three_dimensions: "false"
+                    },
+                    octaves: 3,
+                    colored: true
+                }
             }
         }
     );
@@ -281,15 +305,19 @@ function getImage(canvas, width, height) {
             noiseOptions: {
                 width: width,
                 height: height,
-                fractalGen: noiseGenerators.noiseFractals.ridged,
-                noiseGen: "perlin",
-                noiseSeed: 1338,
-                argsList: {
-                    variant: "simplex"
+                fractalGen: {
+                    fractal: 'ridged',
+                    fractalOptions: {
+                        noiseGen: "perlin",
+                        noiseSeed: 1338,
+                        argsList: {
+                            variant: "simplex"
+                        },
+                        octaves: 3,
+                    }
                 },
                 qMultiplier: 4,
                 rMultiplier: 10,
-                octaves: 6,
                 colored: true
             }
         }
@@ -303,16 +331,20 @@ function getImage(canvas, width, height) {
             noiseOptions: {
                 width: width,
                 height: height,
-                fractalGen: noiseGenerators.noiseFractals.ridged,
-                noiseGen: "worley",
-                noiseSeed: 1338,
-                argsList: {
-                    type: "f2 - f1",
-                    distance: "manhattan"
+                fractalGen: {
+                    fractal: 'ridged',
+                    fractalOptions: {
+                        noiseGen: "worley",
+                        noiseSeed: 1338,
+                        argsList: {
+                            type: "f2 - f1",
+                            distance: "manhattan"
+                        },
+                        octaves: 2
+                    }
                 },
                 qMultiplier: 4,
                 rMultiplier: 4,
-                octaves: 2,
                 colored: true
             }
         }
@@ -326,9 +358,13 @@ function getImage(canvas, width, height) {
             noiseOptions: {
                 width: width,
                 height: height,
-                fractalGen: noiseGenerators.noiseFractals.turbulence,
-                noiseGen: "perlin",
-                noiseSeed: 44,
+                fractalGen: {
+                    fractal: 'turbulence',
+                    fractalOptions: {
+                        noiseGen: "perlin",
+                        noiseSeed: 44
+                    }
+                },
                 qMultiplier: 10,
                 rMultiplier: 10,
                 colored: true
@@ -344,9 +380,13 @@ function getImage(canvas, width, height) {
             noiseOptions: {
                 width: width,
                 height: height,
-                fractalGen: noiseGenerators.noiseFractals.fbm,
-                noiseGen: "perlin",
-                noiseSeed: 44,
+                fractalGen: {
+                    fractal: 'fbm',
+                    fractalOptions: {
+                        noiseGen: "perlin",
+                        noiseSeed: 44
+                    }
+                },
                 qMultiplier: 40,
                 rMultiplier: 20,
                 colored: true

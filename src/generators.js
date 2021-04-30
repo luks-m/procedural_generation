@@ -421,7 +421,7 @@ function perlinNoiseGenerator(width, height, options) {
 //////////////////////////////////////////
 
 //////////////////////////////////////////
-///////// FRACTAL BROWNIAN MOTION ////////
+////////////// FRACTAL NOISE /////////////
 
 /**
  * @typedef {Object} fbmDescriptor
@@ -438,122 +438,6 @@ function perlinNoiseGenerator(width, height, options) {
  */
 
 /**
- * Fractal Brownian Motion Generator
- * @param {number} width - Width of the image
- * @param {number} height - Height of the image
- * @param {fbmDescriptor} options - Set of parameters to configure the FBM noise generation
- * @returns {(function(number, number): number)
- * |(function(number, number): {red: number, green: number, blue: number, alpha: number})}
- * RGBA quadruplet for coordinates (x, y), or the noise value for these coordinates if "get_noise" set to true
- */
-function fractalBrownianMotionGenerator(width, height, options) {
-
-    const noiseGen    =   helpers.optionalParameter(options.noiseGen, 'perlin');
-    const noiseSeed   =   helpers.optionalParameter(options.noiseSeed, 42);
-    const argsList    =   helpers.optionalParameter(options.argsList, [ ]);
-    const OCTAVES     =   helpers.optionalParameter(options.octaves, noiseGen === 'worley' ? 2 : 4);
-    const PERSISTENCE =   helpers.optionalParameter(options.persistence, 0.5);
-    const LACUNARITY  =   helpers.optionalParameter(options.lacunarity, 2);
-    const INITIAL_AMPLITUDE   =   helpers.optionalParameter(options.initial_amplitude, 1);
-    const INITIAL_FREQUENCY   =   helpers.optionalParameter(options.initial_frequency, 1);
-    const COLORED             =   helpers.optionalParameter(options.colored, false);
-    const GET_NOISE   =   helpers.optionalParameter(options.get_noise,false);
-
-
-    /**
-     * Returns a list of generator to use for each octave according to user's input
-     * @returns {function[]} - Array of generators for each of the octave
-     */
-    function getOctaveGenerator() {
-        if (noiseGen === 'worley')
-            return Array.from({length: OCTAVES}, (v, i) => worleyNoiseGenerator(width * (LACUNARITY ** i), height * (LACUNARITY ** i), {...argsList, seed: i + noiseSeed, get_noise: true}));
-        else if (noiseGen === 'perlin')
-            return Array.from({length: OCTAVES}, () => perlinNoiseGenerator(width, height, {...argsList, seed: noiseSeed, get_noise: true}));
-        else
-            throw Error(`${noiseGen} is not a valid noise generator. Valid noise generators are 'worley' and 'perlin'`);
-    }
-
-
-    let maxNoiseHeight = 1;
-    let minNoiseHeight = -1;
-
-
-    let octaveGenerator = getOctaveGenerator();
-
-
-    /**
-     * Returns the noise value at given coordinate
-     * @param {number} x - x coordinate to compute the noise from
-     * @param {number} y - y coordinate to compute the noise from
-     * @returns {number} - noise value between -1 and 1
-     */
-    function getNoiseHeight(x, y) {
-        let amplitude = INITIAL_AMPLITUDE;
-        let frequency = INITIAL_FREQUENCY;
-
-
-        /**
-         * Returns the noise value at given octave
-         * @param {number} i - ith octave to compute the noise value from
-         * @returns {number} - The noise value at the ith octave
-         */
-        function getOctaveValue(i) {
-            let sampleX = x * frequency;
-            let sampleY = y * frequency;
-
-            let noiseValue = octaveGenerator[i](sampleX, sampleY);
-
-            amplitude *= PERSISTENCE;
-            frequency *= LACUNARITY;
-
-            return noiseValue * amplitude;
-        }
-
-
-        let noiseHeight = Array.from({length: OCTAVES}, (v, i) => getOctaveValue(i)).reduce((prev, curr) => prev + curr, 0);
-
-        if (noiseHeight > maxNoiseHeight)
-            maxNoiseHeight = noiseHeight;
-        else if (noiseHeight < minNoiseHeight)
-            minNoiseHeight = noiseHeight;
-
-        return noiseHeight;
-    }
-
-
-    /**
-     * Returns a RGBA pixel according to a coordinate
-     * @param {number} x - x coordinate to compute the noise from
-     * @param {number} y - y coordinate to compute the noise from
-     * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
-     */
-    function getPixelColor(x, y) {
-        let v = getNoiseHeight(x, y);
-        if (COLORED) {
-            let R = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 20, 87);
-            let G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
-            let B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
-
-            return colors.createColor(R, G, B, 255);
-        } else {
-            v = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
-            return colors.createColor(v, v, v, 255);
-        }
-    }
-
-    if (GET_NOISE)
-        return (x, y) => helpers.changeRange(getNoiseHeight(x, y), minNoiseHeight, maxNoiseHeight, -1, 1);
-    else
-        return getPixelColor;
-}
-
-//////////////////////////////////////////
-
-
-//////////////////////////////////////////
-//////////// TURBULENCE NOISE ////////////
-
-/**
  * @typedef {Object} turbulenceDescriptor
  * @property {('perlin'|'worley')} [noiseGen='perlin'] - Noise generator to compute the noise with
  * @property {number} [noiseSeed=42] - Noise generator seed
@@ -566,122 +450,6 @@ function fractalBrownianMotionGenerator(width, height, options) {
  * @property {boolean} [colored=false] - Put to true to have a colored image, else it will be B&W
  * @property {boolean} [get_noise=false] - Returns a noise value in [-1, 1]
  */
-
-/**
- * Turbulence Noise Generator
- * @param {number} width - Width of the image
- * @param {number} height - Height of the image
- * @param {turbulenceDescriptor} options - Set of parameters to configure the Turbulence noise generation
- * @returns {(function(number, number): number)
- * |(function(number, number): {red: number, green: number, blue: number, alpha: number})}
- * RGBA quadruplet for coordinates (x, y), or the noise value for these coordinates if "get_noise" set to true
- */
-function turbulenceNoiseGenerator(width, height, options) {
-
-    const noiseGen    =   helpers.optionalParameter(options.noiseGen, 'perlin');
-    const noiseSeed   =   helpers.optionalParameter(options.noiseSeed, 42);
-    const argsList    =   helpers.optionalParameter(options.argsList, [ ]);
-    const OCTAVES     =   helpers.optionalParameter(options.octaves, noiseGen === 'worley' ? 2 : 4);
-    const PERSISTENCE =   helpers.optionalParameter(options.persistence, 0.5);
-    const LACUNARITY  =   helpers.optionalParameter(options.lacunarity, 2);
-    const INITIAL_AMPLITUDE  =   helpers.optionalParameter(options.initial_amplitude, 1);
-    const INITIAL_FREQUENCY   =   helpers.optionalParameter(options.initial_frequency, 1);
-    const COLORED             =   helpers.optionalParameter(options.colored, false);
-    const GET_NOISE = helpers.optionalParameter(options.get_noise,false);
-
-
-    /**
-     * Returns a list of generator to use for each octave according to user's input
-     * @returns {function[]} - Array of generators for each of the octave
-     */
-    function getOctaveGenerator() {
-        if (noiseGen === 'worley')
-            return Array.from({length: OCTAVES}, (v, i) => worleyNoiseGenerator(width * (LACUNARITY ** i), height * (LACUNARITY ** i), {...argsList, seed: i + noiseSeed, get_noise: true}));
-        else if (noiseGen === 'perlin')
-            return Array.from({length: OCTAVES}, () => perlinNoiseGenerator(width, height, {...argsList, seed: noiseSeed, get_noise: true}));
-        else
-            throw Error(`${noiseGen} is not a valid noise generator. Valid noise generators are 'worley' and 'perlin'`);
-    }
-
-
-    let maxNoiseHeight = 1;
-    let minNoiseHeight = 0;
-
-
-    let octaveGenerator = getOctaveGenerator();
-
-
-    /**
-     * Returns the noise value at given coordinate
-     * @param {number} x - x coordinate to compute the noise from
-     * @param {number} y - y coordinate to compute the noise from
-     * @returns {number} - noise value between -1 and 1
-     */
-    function getNoiseHeight(x, y) {
-        let amplitude = INITIAL_AMPLITUDE;
-        let frequency = INITIAL_FREQUENCY;
-
-
-        /**
-         * Returns the noise value at given octave
-         * @param {number} i - ith octave to compute the noise value from
-         * @returns {number} - The noise value at the ith octave
-         */
-        function getOctaveValue(i) {
-            let sampleX = x * frequency;
-            let sampleY = y * frequency;
-
-            let noiseValue = octaveGenerator[i](sampleX, sampleY);
-
-            amplitude *= PERSISTENCE;
-            frequency *= LACUNARITY;
-
-            return Math.abs(noiseValue) * amplitude;
-        }
-
-
-        let noiseHeight = Array.from({length: OCTAVES}, (v, i) => getOctaveValue(i)).reduce((prev, curr) => prev + curr, 0);
-
-        if (noiseHeight > maxNoiseHeight)
-            maxNoiseHeight = noiseHeight;
-        else if (noiseHeight < minNoiseHeight)
-            minNoiseHeight = noiseHeight;
-
-        return noiseHeight;
-    }
-
-
-    /**
-     * Returns a RGBA pixel according to a coordinate
-     * @param {number} x - x coordinate to compute the noise from
-     * @param {number} y - y coordinate to compute the noise from
-     * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
-     */
-    function getPixelColor(x, y) {
-        let v = getNoiseHeight(x, y);
-        if (COLORED) {
-            let R = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 20, 87);
-            let G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
-            let B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
-
-            return colors.createColor(R, G, B, 255);
-        } else {
-            v = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
-            return colors.createColor(v, v, v, 255);
-        }
-    }
-
-    if (GET_NOISE)
-        return (x, y) => helpers.changeRange(getNoiseHeight(x, y), minNoiseHeight, maxNoiseHeight, -1, 1);
-    else
-        return getPixelColor;
-}
-
-//////////////////////////////////////////
-
-
-//////////////////////////////////////////
-//////// RIDGED MULTIFRACTAL NOISE ///////
 
 /**
  * @typedef {Object} ridgedMultifractalDescriptor
@@ -698,26 +466,69 @@ function turbulenceNoiseGenerator(width, height, options) {
  */
 
 /**
- * Ridged Multifractal Noise Generator
+ * @typedef {Object} fractalDescriptor
+ * @property {('fbm'|'turbulence'|'ridged')} fractal - Type of fractal noise to compute
+ * @property {fractalBrownianMotionGenerator|turbulenceDescriptor|ridgedMultifractalDescriptor} fractalOptions - Parameters for the fractal noise generator
+ */
+
+/**
+ * Fractal Noise Generator
  * @param {number} width - Width of the image
  * @param {number} height - Height of the image
- * @param {ridgedMultifractalDescriptor} options - Set of parameters to configure the Ridged Multifractal noise generation
+ * @param {fractalDescriptor} options - Set of parameters to configure the fractal noise generation
  * @returns {(function(number, number): number)
  * |(function(number, number): {red: number, green: number, blue: number, alpha: number})}
  * RGBA quadruplet for coordinates (x, y), or the noise value for these coordinates if "get_noise" set to true
  */
-function ridgedMultifractalNoiseGenerator(width, height, options) {
+function fractalNoiseGenerator(width, height, options) {
 
-    const noiseGen    =   helpers.optionalParameter(options.noiseGen, 'perlin');
-    const noiseSeed   =   helpers.optionalParameter(options.noiseSeed, 42);
-    const argsList    =   helpers.optionalParameter(options.argsList, [ ]);
-    const OCTAVES     =   helpers.optionalParameter(options.octaves, noiseGen === 'worley' ? 2 : 4);
-    const PERSISTENCE =   helpers.optionalParameter(options.persistence, 0.5);
-    const LACUNARITY  =   helpers.optionalParameter(options.lacunarity, 2);
-    const INITIAL_AMPLITUDE  =   helpers.optionalParameter(options.initial_amplitude, 1);
-    const INITIAL_FREQUENCY   =   helpers.optionalParameter(options.initial_frequency, 1);
-    const COLORED             =   helpers.optionalParameter(options.colored, false);
-    const GET_NOISE = helpers.optionalParameter(options.get_noise,false);
+    const fractalGen  =   helpers.optionalParameter(options.fractal, 'fbm');
+    const noiseGen    =   helpers.optionalParameter(options.fractalOptions.noiseGen, 'perlin');
+    const noiseSeed   =   helpers.optionalParameter(options.fractalOptions.noiseSeed, 42);
+    const argsList    =   helpers.optionalParameter(options.fractalOptions.argsList, [ ]);
+    const OCTAVES     =   helpers.optionalParameter(options.fractalOptions.octaves, noiseGen === 'worley' ? 2 : 4);
+    const PERSISTENCE =   helpers.optionalParameter(options.fractalOptions.persistence, 0.5);
+    const LACUNARITY  =   helpers.optionalParameter(options.fractalOptions.lacunarity, 2);
+    const INITIAL_AMPLITUDE   =   helpers.optionalParameter(options.fractalOptions.initial_amplitude, 1);
+    const INITIAL_FREQUENCY   =   helpers.optionalParameter(options.fractalOptions.initial_frequency, 1);
+    const COLORED             =   helpers.optionalParameter(options.fractalOptions.colored, false);
+    const GET_NOISE   =   helpers.optionalParameter(options.fractalOptions.get_noise,false);
+
+
+    let maxNoiseHeight;
+    let minNoiseHeight;
+    let initial_noiseHeight;
+    const octaveNoiseTransformation = loadArgFractalGen();
+
+
+    let octaveGenerator = getOctaveGenerator();
+
+
+    // Return the type of distance to compute according to user's input
+    function loadArgFractalGen() {
+        if (fractalGen === 'fbm') {
+            maxNoiseHeight = 1;
+            minNoiseHeight = -1;
+            initial_noiseHeight = 0;
+            return (noiseValue, amplitude) => noiseValue * amplitude;
+        }
+        else if (fractalGen === 'turbulence') {
+            maxNoiseHeight = 1;
+            minNoiseHeight = 0;
+            initial_noiseHeight = 0;
+            return (noiseValue, amplitude) => Math.abs(noiseValue) * amplitude;
+        }
+        else if (fractalGen === 'ridged') {
+            let visualClarityOffset = noiseGen === 'worley' ? OCTAVES / 10 : 0;
+
+            maxNoiseHeight = -0.5 + visualClarityOffset;
+            minNoiseHeight = -1;
+            initial_noiseHeight = -1;
+            return (noiseValue, amplitude) => (1 - Math.abs(noiseValue)) ** 2 * amplitude;
+        }
+        else
+            throw Error(`${fractalGen} is not a fractal generator. Valid fractal generator are 'fbm', 'turbulence' and 'ridged`);
+    }
 
 
     /**
@@ -732,14 +543,6 @@ function ridgedMultifractalNoiseGenerator(width, height, options) {
         else
             throw Error(`${noiseGen} is not a valid noise generator. Valid noise generators are 'worley' and 'perlin'`);
     }
-
-
-    let visualClarityOffset = noiseGen === 'worley' ? OCTAVES / 10 : 0;
-
-    let maxNoiseHeight = -0.5 + visualClarityOffset;
-    let minNoiseHeight = -1;
-
-    let octaveGenerator = getOctaveGenerator();
 
 
     /**
@@ -767,11 +570,11 @@ function ridgedMultifractalNoiseGenerator(width, height, options) {
             amplitude *= PERSISTENCE;
             frequency *= LACUNARITY;
 
-            return (1 - Math.abs(noiseValue)) ** 2 * amplitude;
+            return octaveNoiseTransformation(noiseValue, amplitude);
         }
 
 
-        let noiseHeight = Array.from({length: OCTAVES}, (v, i) => getOctaveValue(i)).reduce((prev, curr) => prev + curr, -1);
+        let noiseHeight = Array.from({length: OCTAVES}, (v, i) => getOctaveValue(i)).reduce((prev, curr) => prev + curr, initial_noiseHeight);
 
         if (noiseHeight > maxNoiseHeight)
             maxNoiseHeight = noiseHeight;
@@ -854,7 +657,10 @@ function worleyNoiseGenerator(width, height, options) {
     let distanceDimension = THREE_DIMENSIONS ? distanceFormula.three_dim : distanceFormula.two_dim;
 
 
-    // Return the type of distance to compute according to user's input
+    /**
+     * Get the type of distance to compute according to user's input
+     * @returns {function({number}, {number}): {number}} - Distance expression to use
+     */
     function loadArgType() {
         if (TYPE === 'f1')
             return (x, y) => getNthNearestDistance(1, x, y);
@@ -867,7 +673,11 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
-    // Return the distance formula to use according to user's input
+    /**
+     * Get the distance formula to use according to user's input
+     * @returns {{two_dim: (function({number}, {number}, {number}, {number}): {number}),
+     * three_dim: (function({number}, {number}, {number}, {number}, {number}, {number}): {number})}} - Distance formula to use
+     */
     function loadArgDistance() {
         if (DISTANCE === 'euclidean')
             return getDistanceEuclidean();
@@ -880,11 +690,22 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
-    // Tools to compute Chebyshev distances
+    /**
+     * Tools to compute Chebyshev distances
+     * @returns {{two_dim: (function(number, number, number, number): number),
+     * three_dim: (function(number, number, number, number, number, number): number)}} - Two and Three dimensions formulas
+     */
     function getDistanceChebyshev() {
 
 
-        // Returns the Chebyshev distance between two points in a 2D plan
+        /**
+         * Chebyshev distance between two points in a 2D plan
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance2D(x1, x2, y1, y2) {
             let a = Math.abs(x1 - x2);
             let b = Math.abs(y1 - y2);
@@ -893,7 +714,16 @@ function worleyNoiseGenerator(width, height, options) {
         }
 
 
-        // Returns the Chebyshev distance between two points in a 3D volume
+        /**
+         * Chebyshev distance between two points in a 3D volume
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @param z1 - z coordinate of the first point
+         * @param z2 - z coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance3D(x1, x2, y1, y2, z1, z2) {
             let a = Math.abs(x1 - x2);
             let b = Math.abs(y1 - y2);
@@ -910,11 +740,22 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
-    // Tools to compute Manhattan distances
+    /**
+     * Tools to compute Manhattan distances
+     * @returns {{two_dim: (function(number, number, number, number): number),
+     * three_dim: (function(number, number, number, number, number, number): number)}} - Two and Three dimensions formulas
+     */
     function getDistanceManhattan() {
 
 
-        // Returns the Manhattan distance between two points in a 2D plan
+        /**
+         * Manhattan distance between two points in a 2D plan
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance2D(x1, x2, y1, y2) {
             let a = Math.abs(x1 - x2);
             let b = Math.abs(y1 - y2);
@@ -923,7 +764,16 @@ function worleyNoiseGenerator(width, height, options) {
         }
 
 
-        // Returns the Manhattan distance between two points in a 3D volume
+        /**
+         * Manhattan distance between two points in a 3D volume
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @param z1 - z coordinate of the first point
+         * @param z2 - z coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance3D(x1, x2, y1, y2, z1, z2) {
             let a = Math.abs(x1 - x2);
             let b = Math.abs(y1 - y2);
@@ -940,11 +790,22 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
-    // Tools to compute euclidean distances
+    /**
+     * Tools to compute Euclidean distances
+     * @returns {{two_dim: (function(number, number, number, number): number),
+     * three_dim: (function(number, number, number, number, number, number): number)}} - Two and Three dimensions formulas
+     */
     function getDistanceEuclidean() {
 
 
-        // Returns the euclidean distance between two points in a 2D plan
+        /**
+         * Euclidean distance between two points in a 2D plan
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance2D(x1, x2, y1, y2) {
             let a = x1 - x2;
             let b = y1 - y2;
@@ -953,7 +814,16 @@ function worleyNoiseGenerator(width, height, options) {
         }
 
 
-        // Returns the euclidean distance between two points in a 3D volume
+        /**
+         * Euclidean distance between two points in a 3D volume
+         * @param x1 - x coordinate of the first point
+         * @param x2 - x coordinate of the second point
+         * @param y1 - y coordinate of the first point
+         * @param y2 - y coordinate of the second point
+         * @param z1 - z coordinate of the first point
+         * @param z2 - z coordinate of the second point
+         * @returns {number} - Distances between the points
+         */
         function getDistance3D(x1, x2, y1, y2, z1, z2) {
             let a = x1 - x2;
             let b = y1 - y2;
@@ -969,19 +839,32 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
+    /**
+     * Get a random positive integer
+     * @param {number} max - Maximum value
+     * @returns {number} - A random positive integer in range [0, max[
+     */
     function getInt(max) {
         return Math.floor(helpers.changeRange(random(), -1, 1, 0, 1) * Math.floor(max));
     }
 
 
-    // Randomly distribute feature points in a 3D volume
+    /**
+     * Randomly distribute feature points in a 3D volume
+     */
     function generateFeaturePoints() {
         for (let i = 0; i < NUMBER_OF_POINTS; i++)
             featurePoints.push({x: getInt(width), y: getInt(height), z: getInt(width)});
     }
 
 
-    // Return the nth nearest distance between a point (x, y) and all feature points
+    /**
+     * Get the nth nearest distance between a point (x, y) and all feature points
+     * @param {number} n - nth nearest distance to get (superior or equal to 1)
+     * @param {number} x - x coordinate of the point
+     * @param {number} y - y coordinate of the point
+     * @returns {number} - The distance betweehe point and the nth nearest feature point
+     */
     function getNthNearestDistance(n, x, y) {
         if (distances[[x, y]])
             return distances[[x, y]][n - 1];
@@ -1001,7 +884,12 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
-    // Return a RGBA pixel according to a coordinate
+    /**
+     * Returns a RGBA pixel according to a coordinate
+     * @param {number} x - x coordinate to compute the noise from
+     * @param {number} y - y coordinate to compute the noise from
+     * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
+     */
     function getPixelColor(x, y) {
         let distance = getDist(x, y);
         if (COLORED) {
@@ -1031,17 +919,9 @@ function worleyNoiseGenerator(width, height, options) {
 ///////// DOMAIN WARPING FRACTAL /////////
 /**
  * @typedef {Object} domainWarpingDescriptor
- * @property {function} fractalGen - Fractal generator to use
- * @property {('perlin'|'worley')} [noiseGen='perlin'] - Noise generator to compute noise with
- * @property {number} [noiseSeed=42] - Noise generator seed
- * @property {*[]} [argsList=[ ]] - Optional arguments for the noise generator, starting at the third argument of the noise generator function
- * @property {number} [qMultiplier=4} - A multiplier for the first level distortion
- * @property {number} [rMultiplier=10} - A multiplier for the second level distortion
- * @property {number} [octaves=2] - Number of frequency octaves to generate the noise with
- * @property {number} [persistence=0.5] - A multiplier that determines how quickly the amplitude increases for each successive octave.
- * @property {number} [lacunarity=2] - A multiplier that determines how quickly the frequency increases for each successive octave.
- * @property {number} [initial_amplitude=1] - Initial amplitude for the first octave
- * @property {number} [initial_frequency=1] - Initial frequency for the first octave
+ * @property {fractalDescriptor} fractalGen - Fractal generator to use and its parameters
+ * @property {number} [qMultiplier=4] - A multiplier for the first level distortion
+ * @property {number} [rMultiplier=10] - A multiplier for the second level distortion
  * @property {boolean} [colored=false] - Put to true to have a colored image, else it will be B&W
  * @property {boolean} [get_noise=false] - Returns a noise value in [-1, 1]
  */
@@ -1057,16 +937,16 @@ function worleyNoiseGenerator(width, height, options) {
  */
 function domainWarpingFractalGenerator(width, height, options) {
 
-    const noiseGen    =   helpers.optionalParameter(options.noiseGen, "perlin");
-    const noiseSeed   =   helpers.optionalParameter(options.noiseSeed, 42);
-    const argsList    =   helpers.optionalParameter(options.argsList, [ ]);
+    const noiseGen    =   helpers.optionalParameter(options.fractalGen.fractalOptions.noiseGen, "perlin");
+    const noiseSeed   =   helpers.optionalParameter(options.fractalGen.fractalOptions.noiseSeed, 42);
+    const argsList    =   helpers.optionalParameter(options.fractalGen.fractalOptions.argsList, [ ]);
     const qMultiplier =   helpers.optionalParameter(options.qMultiplier, 4);
     const rMultiplier =   helpers.optionalParameter(options.rMultiplier, 4);
-    const OCTAVES     =   helpers.optionalParameter(options.octaves, 2);
-    const PERSISTENCE =   helpers.optionalParameter(options.persistence, 0.5);
-    const LACUNARITY  =   helpers.optionalParameter(options.lacunarity, 2);
-    const INITIAL_AMPLITUDE   =   helpers.optionalParameter(options.initial_amplitude, 1);
-    const INITIAL_FREQUENCY   =   helpers.optionalParameter(options.initial_frequency, 1);
+    const OCTAVES     =   helpers.optionalParameter(options.fractalGen.fractalOptions.octaves, 2);
+    const PERSISTENCE =   helpers.optionalParameter(options.fractalGen.fractalOptions.persistence, 0.5);
+    const LACUNARITY  =   helpers.optionalParameter(options.fractalGen.fractalOptions.lacunarity, 2);
+    const INITIAL_AMPLITUDE   =   helpers.optionalParameter(options.fractalGen.fractalOptions.initial_amplitude, 1);
+    const INITIAL_FREQUENCY   =   helpers.optionalParameter(options.fractalGen.fractalOptions.initial_frequency, 1);
     const COLORED             =   helpers.optionalParameter(options.colored, false);
     const GET_NOISE = helpers.optionalParameter(options.get_noise,false);
 
@@ -1074,18 +954,21 @@ function domainWarpingFractalGenerator(width, height, options) {
     let maxNoiseHeight = 1;
     let minNoiseHeight = -1;
 
-    let fractal = options.fractalGen(width, height,
+    let fractal = fractalNoiseGenerator(width, height,
         {
-            noiseGen: noiseGen,
-            noiseSeed: noiseSeed,
-            argsList: argsList,
-            octaves: OCTAVES,
-            persistence: PERSISTENCE,
-            lacunarity: LACUNARITY,
-            initial_amplitude: INITIAL_AMPLITUDE,
-            initial_frequency: INITIAL_FREQUENCY,
-            colored: false,
-            get_noise: true
+            fractal: options.fractalGen.fractal,
+            fractalOptions: {
+                noiseGen: noiseGen,
+                noiseSeed: noiseSeed,
+                argsList: argsList,
+                octaves: OCTAVES,
+                persistence: PERSISTENCE,
+                lacunarity: LACUNARITY,
+                initial_amplitude: INITIAL_AMPLITUDE,
+                initial_frequency: INITIAL_FREQUENCY,
+                colored: false,
+                get_noise: true
+            }
         }
     );
 
@@ -1163,9 +1046,7 @@ const noiseGenerators =
 
 const noiseFractals =
     {
-        fbm         : fractalBrownianMotionGenerator,
-        turbulence  : turbulenceNoiseGenerator,
-        ridged      : ridgedMultifractalNoiseGenerator,
+        fractal     : fractalNoiseGenerator,
         warp        : domainWarpingFractalGenerator
     };
 
