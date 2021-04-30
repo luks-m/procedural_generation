@@ -43,9 +43,15 @@ function getImage(canvas, width, height) {
     ///////////////////// Generators : /////////////////////
 
     // Checkerboard
-    //pixel = generatorsLucas.makeCheckerboard(width, height, 50,
-	//				     helpers.getColor(255,0,0,255),
-	//				     helpers.getColor(0,255,0,255));
+
+    
+    pixel = generatorsLucas.makeCheckerboard(
+	{
+	    pixelPerCase: 50,
+	    color1: colors.createColor(255,0,0,255),
+	    color2: colors.createColor(0,255,0,255),
+	});
+    
 
     // Perlin Noise
 
@@ -331,7 +337,7 @@ function getImage(canvas, width, height) {
     );
     */
 
-
+    /*
     pixel = generators.noiseGen(
         {
             noise: noiseGenerators.noiseFractals.warp,
@@ -347,10 +353,11 @@ function getImage(canvas, width, height) {
             }
         }
     );
-
+    */
 
 
     // Colormap
+    
     //function f(z){return [z[0]*(z[0]**2-z[1]**2)-2*z[0]*z[1]**2+0.23,2*z[0]**2*z[1]+z[1]*(z[0]**2-z[1]**2)-0.970];}
     //pixel = colorMaps.colormaps.jet(colorMapPredicate.focused(colorMapPredicate.juliaSpi(15), height, width, -1, 1, -1, 1), 0,2);
 
@@ -365,7 +372,7 @@ function getImage(canvas, width, height) {
     //pixel = generatorsleo.getColormap(colorMapPredicate.focused(colorMapPredicate.IFS([f1,f2,f3,f4],p,4,500,0.5),height,width,-5,5,-5,5),"island",0,6);
 
 
-    //voronoi
+    //Voronoi
 
     //function f(t){return [Math.sin(t)/(1+Math.cos(t)**2),Math.sin(t)*Math.cos(t)/(1+Math.cos(t)**2)];}
     //pixel = generatorsleo.voronoi([[200,200],[120,140],[70,155]],[helpers.getColor(255,0,0,255),helpers.getColor(0,255,0,255),helpers.getColor(0,0,255,255)])
@@ -450,43 +457,32 @@ function getImage(canvas, width, height) {
     //     helpers.getColor((distance), (rand()*(500-distance)), ((500 + distance * rand())), 255 % distance) : 
     //     helpers.getColor((distance * rand()), ((rand() * 500) / distance) / distance, distance, 255);
     // }
-    ///////////////////// Filters : /////////////////////
 
-    //Opacity Changer with value
-    //pixel = filtersLucas.opacityChanger(pixel, 100);
+
 
     
-    //Gaussian Blur Size 5
-    /*const gaussianKernel = [[1/256,  4/256,  6/256,  4/256, 1/256],
-			    [4/256, 16/256, 24/256, 16/256, 4/256],
-			    [6/256, 24/256, 36/256, 24/256, 6/256],
-			    [4/256, 16/256, 24/256, 16/256, 4/256],
-			    [1/256,  4/256,  6/256,  4/256, 1/256]];
-			    */
-    //const size = 5;
-    //let kernel = filtersLucas.createKernel(5, 1.5);
-    //pixel = filtersLucas.gaussianBlur(pixel, width, height, kernel, 5);
+    ///////////////////// Filters : /////////////////////
 
-    //Gaussian Blur Size 13
-    // const gaussianKernel = [[0,0,0,0,0,0,0,0,0,0,0,0,0],
-	// 		    [0,0,0,0,0,0.000001,0.000001,0.000001,0,0,0,0,0],
-	// 		    [0,0,0,0.000001,0.000014,0.000055,0.000088,0.000055,0.000014,0.000001,0,0,0],
-	// 		    [0,0,0.000001,0.000036,0.000362,0.001445,0.002289,0.001445,0.000362,0.000036,0.000001,0,0],
-	// 		    [0,0,0.000014,0.000362,0.003672,0.014648,0.023204,0.014648,0.003672,0.000362,0.000014,0,0],
-	// 		    [0,	0.000001,0.000055,0.001445,0.014648,0.058433,0.092564,0.058433,0.014648,0.001445,0.000055,0.000001,0],
-	// 		    [0,0.000001,0.000088,0.002289,0.023204,0.092564,0.146632,0.092564,0.023204,0.002289,0.000088,0.000001,0],
-	// 		    [0,0.000001,0.000055,0.001445,0.014648,0.058433,0.092564,0.058433,0.014648,0.001445,0.000055,0.000001,0],
-	// 		    [0,0,0.000014,0.000362,0.003672,0.014648,0.023204,0.014648,0.003672,0.000362,0.000014,0,0],
-	// 		    [0,0,0.000001,0.000036,0.000362,0.001445,0.002289,0.001445,0.000362,0.000036,0.000001,0,0],
-	// 		    [0,0,0,0.000001,0.000014,0.000055,0.000088,0.000055,0.000014,0.000001,0,0,0],
-	// 		    [0,0,0,0,0,0.000001,0.000001,0.000001,0,0,0,0,0],
-	// 		    [0,	0,0,0,0,0,0,0,0,0,0,0,0]];
+    //pixel = generatorsleo.generatorIsoscelesTriangle({color1 : colors.examples.WHITE, color2 : colors.examples.BLACK, size : 20});
+    
+    //Gaussian Blur
+    const kernel = filtersLucas.createKernel(
+	{
+	    kernelSize : 10,
+	    sigma : 1.5
+	});
+    
+    pixel = filtersLucas.gaussianBlur(
+	{
+	    image : pixel,
+	    width : width,
+	    height : height,
+	    kernel : kernel,
+	    kernelSize : 10
+	});
 
-    //const size = 13;
-
-    //pixel = filtersLucas.gaussianBlur(pixel, width, height, gaussianKernel, size);
-
-
+    //Opacity Changer with value
+    //pixel = filtersLucas.opacityChanger(pixel, 255);
     
     //let matrices = filtersleo.canvasToMatrix(canvas,height,width);
     //let matricesfiltered = filtersleo.reverseImg(matrices,"","");
