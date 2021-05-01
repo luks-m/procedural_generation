@@ -24,7 +24,8 @@ const examples = {
     PINK: createColor(255, 192, 203, 255),
     GREY: createColor(128, 128, 128, 255),
     INDIGO: createColor(121, 28, 248, 255),
-    VERDIGRI: createColor(149, 165, 149, 255)
+    VERDIGRI: createColor(149, 165, 149, 255),
+    TRANSPARENT: createColor(0,0,0,0)
 }
 
 exports.examples = examples;

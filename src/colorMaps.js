@@ -1,4 +1,3 @@
-const helpers = require('./helpers.js');
 const generators = require('./gen.js');
 
 /**
@@ -235,18 +234,14 @@ function colorMapHot(options) {
 
 
 
-const colorMaps = {
-                    greys   : colorMapGreys,
-                    mushroom: colorMapMushroom,
-                    hot     : colorMapHot,
-                    spring  : colorMapSpring,
-                    purple  : colorMapPurple,
-                    jet     : colorMapJet,
-                    hsl     : colorMapHSL,
-                    light   : colorMapLight,
-                    island  : colorMapIsland,
-                    islandD : colorMapIslandD,
-                    snow    : colorMapSnow
-                };
-
-exports.colorMaps = colorMaps;
+exports.greys = colorMapGreys;
+exports.mushroom = colorMapMushroom;
+exports.hot = colorMapHot;
+exports.spring = colorMapSpring;
+exports.purple = colorMapPurple;
+exports.jet = colorMapJet;
+exports.hsl = colorMapHSL;
+exports.light = colorMapLight;
+exports.island = colorMapIsland;
+exports.islandD = colorMapIslandD;
+exports.snow = colorMapSnow;
