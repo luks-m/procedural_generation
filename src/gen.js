@@ -90,7 +90,7 @@ function noiseGenerator(options) {
     if (typeof(width) !== "number" || typeof(height) !== "number")
         throw Error(`TypeError: Please provide valid width and height values.`);
 
-    return options.noise(width, height, options.noiseOptions)
+    return options.noise(width, height, options.noiseOptions);
 }
 
 

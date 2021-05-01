@@ -5,8 +5,8 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
-function singleColorRandomGenerator(color) {
-    return (x, y) => colors.createColor(getRandomInt(255), getRandomInt(255), getRandomInt(255), getRandomInt(255));
+function singleColorRandomGenerator() {
+    return colors.createColor(getRandomInt(255), getRandomInt(255), getRandomInt(255), getRandomInt(255));
 }
 
 
@@ -424,35 +424,7 @@ function perlinNoiseGenerator(width, height, options) {
 ////////////// FRACTAL NOISE /////////////
 
 /**
- * @typedef {Object} fbmDescriptor
- * @property {('perlin'|'worley')} [noiseGen='perlin'] - Noise generator to compute the noise with
- * @property {number} [noiseSeed=42] - Noise generator seed
- * @property {*[]} [argsList=[ ]] - Optional arguments for the noise generator, starting at the third argument of the noise generator function
- * @property {number} [octaves=2|4] - Number of frequency octaves to generate the noise with
- * @property {number} [persistence=0.5] - A multiplier that determines how quickly the amplitude increases for each successive octave.
- * @property {number} [lacunarity=2] - A multiplier that determines how quickly the frequency increases for each successive octave.
- * @property {number} [initial_amplitude=1] - Initial amplitude for the first octave
- * @property {number} [initial_frequency=1] - Initial frequency for the first octave
- * @property {boolean} [colored=false] - Put to true to have a colored image, else it will be B&W
- * @property {boolean} [get_noise=false] - Returns a noise value in [-1, 1]
- */
-
-/**
- * @typedef {Object} turbulenceDescriptor
- * @property {('perlin'|'worley')} [noiseGen='perlin'] - Noise generator to compute the noise with
- * @property {number} [noiseSeed=42] - Noise generator seed
- * @property {*[]} [argsList=[ ]] - Optional arguments for the noise generator, starting at the third argument of the noise generator function
- * @property {number} [octaves=2|4] - Number of frequency octaves to generate the noise with
- * @property {number} [persistence=0.5] - A multiplier that determines how quickly the amplitude increases for each successive octave.
- * @property {number} [lacunarity=2] - A multiplier that determines how quickly the frequency increases for each successive octave.
- * @property {number} [initial_amplitude=1] - Initial amplitude for the first octave
- * @property {number} [initial_frequency=1] - Initial frequency for the first octave
- * @property {boolean} [colored=false] - Put to true to have a colored image, else it will be B&W
- * @property {boolean} [get_noise=false] - Returns a noise value in [-1, 1]
- */
-
-/**
- * @typedef {Object} ridgedMultifractalDescriptor
+ * @typedef {Object} fractalOptionsDescriptor
  * @property {('perlin'|'worley')} [noiseGen='perlin'] - Noise generator to compute the noise with
  * @property {number} [noiseSeed=42] - Noise generator seed
  * @property {*[]} [argsList=[ ]] - Optional arguments for the noise generator, starting at the third argument of the noise generator function
@@ -468,7 +440,7 @@ function perlinNoiseGenerator(width, height, options) {
 /**
  * @typedef {Object} fractalDescriptor
  * @property {('fbm'|'turbulence'|'ridged')} fractal - Type of fractal noise to compute
- * @property {fractalBrownianMotionGenerator|turbulenceDescriptor|ridgedMultifractalDescriptor} fractalOptions - Parameters for the fractal noise generator
+ * @property {fractalOptionsDescriptor} fractalOptions - Parameters for the fractal noise generator
  */
 
 /**
@@ -482,6 +454,7 @@ function perlinNoiseGenerator(width, height, options) {
  */
 function fractalNoiseGenerator(width, height, options) {
 
+    if (typeof(options.fractalOptions) === 'undefined') options.fractalOptions = {};
     const fractalGen  =   helpers.optionalParameter(options.fractal, 'fbm');
     const noiseGen    =   helpers.optionalParameter(options.fractalOptions.noiseGen, 'perlin');
     const noiseSeed   =   helpers.optionalParameter(options.fractalOptions.noiseSeed, 42);
@@ -917,6 +890,7 @@ function worleyNoiseGenerator(width, height, options) {
 
 //////////////////////////////////////////
 ///////// DOMAIN WARPING FRACTAL /////////
+
 /**
  * @typedef {Object} domainWarpingDescriptor
  * @property {fractalDescriptor} fractalGen - Fractal generator to use and its parameters
@@ -936,7 +910,9 @@ function worleyNoiseGenerator(width, height, options) {
  * RGBA quadruplet for coordinates (x, y), or the noise value for these coordinates if "get_noise" set to true
  */
 function domainWarpingFractalGenerator(width, height, options) {
-
+    console.log(options)
+    if (typeof(options.fractalGen) === 'undefined' || typeof(options.fractalGen.fractalOptions) === 'undefined')
+        options.fractalGen = { ...options.fractalGen, fractalOptions: { } };
     const noiseGen    =   helpers.optionalParameter(options.fractalGen.fractalOptions.noiseGen, "perlin");
     const noiseSeed   =   helpers.optionalParameter(options.fractalGen.fractalOptions.noiseSeed, 42);
     const argsList    =   helpers.optionalParameter(options.fractalGen.fractalOptions.argsList, [ ]);

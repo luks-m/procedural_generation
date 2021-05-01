@@ -44,14 +44,14 @@ function getImage(canvas, width, height) {
 
     // Checkerboard
 
-    
+    /*
     pixel = generatorsLucas.makeCheckerboard(
 	{
 	    pixelPerCase: 50,
 	    color1: colors.createColor(255,0,0,255),
 	    color2: colors.createColor(0,255,0,255),
 	});
-    
+    */
 
     // Perlin Noise
 
@@ -506,6 +506,8 @@ function getImage(canvas, width, height) {
     //pixel = generatorsleo.generatorIsoscelesTriangle({color1 : colors.examples.WHITE, color2 : colors.examples.BLACK, size : 20});
     
     //Gaussian Blur
+
+    /*
     const kernel = filtersLucas.createKernel(
 	{
 	    kernelSize : 10,
@@ -518,6 +520,7 @@ function getImage(canvas, width, height) {
 	    kernel : kernel,
 	    kernelSize : 10
 	});
+    */
 
     //Opacity Changer with value
     //pixel = filtersLucas.opacityChanger(pixel, 255);
