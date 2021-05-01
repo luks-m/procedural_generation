@@ -910,7 +910,7 @@ function worleyNoiseGenerator(width, height, options) {
  * RGBA quadruplet for coordinates (x, y), or the noise value for these coordinates if "get_noise" set to true
  */
 function domainWarpingFractalGenerator(width, height, options) {
-    console.log(options)
+
     if (typeof(options.fractalGen) === 'undefined' || typeof(options.fractalGen.fractalOptions) === 'undefined')
         options.fractalGen = { ...options.fractalGen, fractalOptions: { } };
     const noiseGen    =   helpers.optionalParameter(options.fractalGen.fractalOptions.noiseGen, "perlin");

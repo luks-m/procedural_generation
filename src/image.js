@@ -373,7 +373,7 @@ function getImage(canvas, width, height) {
     );
     */
 
-    /*
+    
     pixel = generators.noiseGen(
         {
             noise: noiseGenerators.noiseFractals.warp,
@@ -393,7 +393,7 @@ function getImage(canvas, width, height) {
             }
         }
     );
-    */
+
 
 
     // Colormap
