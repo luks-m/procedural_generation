@@ -21,12 +21,12 @@ function imageGeneration(canvas, width, height, getPixelColor) {
     let progress = 0;
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++, n += 4) {
-            progress += percentageGeneratedByOnePixel;
-            if (progress.toFixed(2) % 2.5 === 0) {
-                process.stdout.clearLine();
-                process.stdout.cursorTo(0);
-                process.stdout.write(`Generating Image: ${progress.toFixed(2)}%`);
-            }
+            // progress += percentageGeneratedByOnePixel;
+            // if (progress.toFixed(2) % 2.5 === 0) {
+            //     process.stdout.clearLine();
+            //     process.stdout.cursorTo(0);
+            //     process.stdout.write(`Generating Image: ${progress.toFixed(2)}%`);
+            // }
             const pixelColor = getPixelColor(x, y);
             image.data[n] = pixelColor.red;
             image.data[n + 1] = pixelColor.green;
@@ -34,7 +34,7 @@ function imageGeneration(canvas, width, height, getPixelColor) {
             image.data[n + 3] = pixelColor.alpha;
         }
     }
-    process.stdout.write(`\n`);
+    // process.stdout.write(`\n`);
     context.putImageData(image, 0, 0);
     return canvas;
 }
