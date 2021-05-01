@@ -177,7 +177,7 @@ function minus(options) {
     });
 }
 
-function clear() {
+function clear() {
     return (x, y) => functionsColor.examples.TRANSPARENT;
 }
 
