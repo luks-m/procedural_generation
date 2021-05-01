@@ -373,7 +373,7 @@ function getImage(canvas, width, height) {
     );
     */
 
-    
+
     pixel = generators.noiseGen(
         {
             noise: noiseGenerators.noiseFractals.warp,
@@ -384,7 +384,8 @@ function getImage(canvas, width, height) {
                     fractal: 'fbm',
                     fractalOptions: {
                         noiseGen: "perlin",
-                        noiseSeed: 44
+                        noiseSeed: 44,
+                        octaves: 2
                     }
                 },
                 qMultiplier: 40,
@@ -393,6 +394,33 @@ function getImage(canvas, width, height) {
             }
         }
     );
+
+
+    /*
+    pixel = generators.noiseGen(
+        {
+            noise: noiseGenerators.noiseFractals.warp,
+            noiseOptions: {
+                width: width,
+                height: height,
+                fractalGen: {
+                    fractal: 'fbm',
+                    fractalOptions: {
+                        noiseGen: "worley",
+                        noiseSeed: 44,
+                        argsList: {
+                            type: "f2 - f1"
+                        },
+                        octaves: 2
+                    }
+                },
+                qMultiplier: 10,
+                rMultiplier: 4,
+                colored: true
+            }
+        }
+    )
+    */
 
 
 

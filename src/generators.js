@@ -911,18 +911,10 @@ function worleyNoiseGenerator(width, height, options) {
  */
 function domainWarpingFractalGenerator(width, height, options) {
 
-    if (typeof(options.fractalGen) === 'undefined' || typeof(options.fractalGen.fractalOptions) === 'undefined')
-        options.fractalGen = { ...options.fractalGen, fractalOptions: { } };
-    const noiseGen    =   helpers.optionalParameter(options.fractalGen.fractalOptions.noiseGen, "perlin");
-    const noiseSeed   =   helpers.optionalParameter(options.fractalGen.fractalOptions.noiseSeed, 42);
-    const argsList    =   helpers.optionalParameter(options.fractalGen.fractalOptions.argsList, [ ]);
+    if (typeof(options.fractalGen) === 'undefined')
+        options.fractalGen = { fractalOptions: { } };
     const qMultiplier =   helpers.optionalParameter(options.qMultiplier, 4);
     const rMultiplier =   helpers.optionalParameter(options.rMultiplier, 4);
-    const OCTAVES     =   helpers.optionalParameter(options.fractalGen.fractalOptions.octaves, 2);
-    const PERSISTENCE =   helpers.optionalParameter(options.fractalGen.fractalOptions.persistence, 0.5);
-    const LACUNARITY  =   helpers.optionalParameter(options.fractalGen.fractalOptions.lacunarity, 2);
-    const INITIAL_AMPLITUDE   =   helpers.optionalParameter(options.fractalGen.fractalOptions.initial_amplitude, 1);
-    const INITIAL_FREQUENCY   =   helpers.optionalParameter(options.fractalGen.fractalOptions.initial_frequency, 1);
     const COLORED             =   helpers.optionalParameter(options.colored, false);
     const GET_NOISE = helpers.optionalParameter(options.get_noise,false);
 
@@ -934,15 +926,7 @@ function domainWarpingFractalGenerator(width, height, options) {
         {
             fractal: options.fractalGen.fractal,
             fractalOptions: {
-                noiseGen: noiseGen,
-                noiseSeed: noiseSeed,
-                argsList: argsList,
-                octaves: OCTAVES,
-                persistence: PERSISTENCE,
-                lacunarity: LACUNARITY,
-                initial_amplitude: INITIAL_AMPLITUDE,
-                initial_frequency: INITIAL_FREQUENCY,
-                colored: false,
+                ...options.fractalGen.fractalOptions,
                 get_noise: true
             }
         }
