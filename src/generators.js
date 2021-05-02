@@ -620,7 +620,7 @@ function worleyNoiseGenerator(width, height, options) {
     const GET_NOISE           =   helpers.optionalParameter(options.get_noise, false);
 
 
-    let featurePoints = [ ];
+    let featurePoints;
     let distances = [ ];
 
     let random = helpers.makeRandom(SEED);
@@ -826,8 +826,9 @@ function worleyNoiseGenerator(width, height, options) {
      * Randomly distribute feature points in a 3D volume
      */
     function generateFeaturePoints() {
-        for (let i = 0; i < NUMBER_OF_POINTS; i++)
-            featurePoints.push({x: getInt(width), y: getInt(height), z: getInt(width)});
+        featurePoints = Array.from({length: NUMBER_OF_POINTS + 1}, () => {
+            return {x: getInt(width), y: getInt(height), z: getInt(width)}
+        });
     }
 
 
@@ -842,17 +843,16 @@ function worleyNoiseGenerator(width, height, options) {
         if (distances[[x, y]])
             return distances[[x, y]][n - 1];
 
-        let _distances = [];
-
         // Get distances from the given location to each seed points
-        for (let i = 0; i < NUMBER_OF_POINTS; i++)
-            _distances[i] = distanceDimension(x, featurePoints[i].x, y, featurePoints[i].y, 0, featurePoints[i].z);
+        let _distances = Array.from({length: NUMBER_OF_POINTS + 1},
+            (v, i) => distanceDimension(x, featurePoints[i].x, y, featurePoints[i].y, 0, featurePoints[i].z)
+        );
 
         _distances.sort((d1, d2) => {
             return d1 - d2
         });
 
-        distances[[x, y]] = _distances.slice(0, 2); // Save only th first two distances, as these are the only one which may be useful
+        distances[[x, y]] = _distances.slice(0, 2); // Save only the first two distances, as these are the only one which may be useful
         return _distances[n - 1];
     }
 
