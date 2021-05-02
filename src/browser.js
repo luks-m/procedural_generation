@@ -2,7 +2,7 @@ const getImage = require('./image.js');
 
 
 const width = 500, height = 500;
-const canvas = document.getElementById("drawing_board");
+let canvas = document.getElementById("drawing_board");
 
 
 canvas.width = width;
