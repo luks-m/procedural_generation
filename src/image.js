@@ -265,7 +265,7 @@ function getImage(canvas, width, height) {
 
     // Worley Noise
 
-
+    /*
     pixel = generators.noiseGen(
         {
             noise: noiseGenerators.noiseGenerators.worleyNoise,
@@ -280,7 +280,7 @@ function getImage(canvas, width, height) {
             }
         }
     );
-
+    */
 
     /*
     pixel = generators.noiseGen(
@@ -327,7 +327,7 @@ function getImage(canvas, width, height) {
     );
     */
 
-    /*
+
     pixel = generators.noiseGen(
         {
             noise: noiseGenerators.noiseFractals.warp,
@@ -341,7 +341,8 @@ function getImage(canvas, width, height) {
                         noiseSeed: 1338,
                         argsList: {
                             type: "f2 - f1",
-                            distance: "manhattan"
+                            distance: "euclidean",
+                            three_dimensions: true
                         },
                         octaves: 2
                     }
@@ -352,7 +353,7 @@ function getImage(canvas, width, height) {
             }
         }
     );
-    */
+
 
     /*
     pixel = generators.noiseGen(
