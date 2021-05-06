@@ -9,12 +9,12 @@ const helpers = require('./helpers.js');
  */
 function makeCheckerboard(options) {
     function checkerboard(x, y) {
-	if ((x%(options.pixelPerCase*2) < options.pixelPerCase && y%(options.pixelPerCase*2) < options.pixelPerCase)
-	    || (x%(options.pixelPerCase*2) > options.pixelPerCase && y%(options.pixelPerCase*2) > options.pixelPerCase))
-	    return options.color1;
-	else
-	    return options.color2;
-    }
+		if ((x % (options.pixelPerCase * 2) < options.pixelPerCase && y % (options.pixelPerCase * 2) < options.pixelPerCase)
+			|| (x % (options.pixelPerCase * 2) > options.pixelPerCase && y % (options.pixelPerCase * 2) > options.pixelPerCase))
+			return options.color1;
+		else
+			return options.color2;
+	}
     return checkerboard;
 }
 

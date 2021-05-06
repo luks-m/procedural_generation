@@ -21,12 +21,12 @@ function opacityChanger(options) {
  * @param {object} v2
  */
 function scalarProduct(options) {
-    return options.v1.reduce((acc, array, index) =>
-		     [acc[0] + array.red*options.v2[index],
-		      acc[1] + array.green*options.v2[index],
-		      acc[2] + array.blue*options.v2[index],
-		      acc[3] + array.alpha*options.v2[index]]
-		     , [0,0,0,0]);		
+	return options.v1.reduce((acc, array, index) =>
+			[acc[0] + array.red * options.v2[index],
+				acc[1] + array.green * options.v2[index],
+				acc[2] + array.blue * options.v2[index],
+				acc[3] + array.alpha * options.v2[index]]
+		, [0, 0, 0, 0]);
 }
 
 /**
@@ -36,13 +36,13 @@ function scalarProduct(options) {
  * @param {object} matrix2 
  */
 function convolution(options) {
-    return options.matrix1.reduce((acc, line, index) =>
-				  [acc[0] + scalarProduct({v1: line, v2:options.matrix2[index]})[0],
-				   acc[1] + scalarProduct({v1: line, v2:options.matrix2[index]})[1],
-				   acc[2] + scalarProduct({v1: line, v2:options.matrix2[index]})[2],
-				   acc[3] + scalarProduct({v1: line, v2:options.matrix2[index]})[3]],
-				   [0,0,0,0]);
-				 }
+	return options.matrix1.reduce((acc, line, index) =>
+			[acc[0] + scalarProduct({v1: line, v2: options.matrix2[index]})[0],
+				acc[1] + scalarProduct({v1: line, v2: options.matrix2[index]})[1],
+				acc[2] + scalarProduct({v1: line, v2: options.matrix2[index]})[2],
+				acc[3] + scalarProduct({v1: line, v2: options.matrix2[index]})[3]],
+		[0, 0, 0, 0]);
+}
 
 /**
  * Returns the kernel with size kernelSize for Gaussian Blur
@@ -51,9 +51,9 @@ function convolution(options) {
  * @param {number} sigma
  */
 function createKernel(options) {
-    return [...Array(options.kernelSize)].map(
-	(line, x) => [...Array(options.kernelSize)].map(
-	    (value, y) => Math.exp(((x-(options.kernelSize-1)/2)**2 + (y-(options.kernelSize-1)/2)**2)/(-2*(options.sigma**2)))/(2*Math.PI*(options.sigma**2))));
+	return [...Array(options.kernelSize)].map(
+		(line, x) => [...Array(options.kernelSize)].map(
+			(value, y) => Math.exp(((x - (options.kernelSize - 1) / 2) ** 2 + (y - (options.kernelSize - 1) / 2) ** 2) / (-2 * (options.sigma ** 2))) / (2 * Math.PI * (options.sigma ** 2))));
 }
 
 /**
@@ -65,9 +65,9 @@ function createKernel(options) {
  * @param {number} kernelSize The size of the kernel around the central pixel
  */
 function copyFunction(options) {
-    return [...Array(options.kernelSize)].map(
-	(line, i) => [...Array(options.kernelSize)].map(
-	    (value, j) => options.image(options.x - options.kernelSize/2 + j, options.y - options.kernelSize/2 + i)));
+	return [...Array(options.kernelSize)].map(
+		(line, i) => [...Array(options.kernelSize)].map(
+			(value, j) => options.image(options.x - options.kernelSize / 2 + j, options.y - options.kernelSize / 2 + i)));
 }
 
 /**
@@ -79,17 +79,17 @@ function copyFunction(options) {
  */
 function gaussianBlur(options) {
     function blurIntern(x,y) {
-	const results = convolution(
-	    {
-		matrix1 : copyFunction(
-		    {
-			image : options.image,
-			x : x,
-			y : y,
-			kernelSize : options.kernelSize
-		    }),
-		matrix2 : options.kernel
-	    });
+		const results = convolution(
+			{
+				matrix1: copyFunction(
+					{
+						image: options.image,
+						x: x,
+						y: y,
+						kernelSize: options.kernelSize
+					}),
+				matrix2: options.kernel
+			});
 	return colors.createColor(results[0], results[1], results[2], results[3]);
     }
     return blurIntern;

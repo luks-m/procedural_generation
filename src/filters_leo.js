@@ -178,7 +178,7 @@ function minus(options) {
 }
 
 function clear() {
-    return (x, y) => functionsColor.examples.TRANSPARENT;
+    return functionsColor.examples.TRANSPARENT;
 }
 
 const composition = { operation, multiply, screen, divide, add, minus, atop, out, inSrc, over, xor, clear };
