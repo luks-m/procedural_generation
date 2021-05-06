@@ -38,7 +38,7 @@ function colorMapMushroom(options) {
         ...options 
     };
     function mushroom(x, y) {
-        return generators.colorMap(_options)(x, y)
+        return generators.colorMap(_options)(x, y);
     }
     return mushroom;
 }
@@ -59,7 +59,7 @@ function colorMapSpring(options) {
                 ...options
             };
     function spring(x, y) {
-        return generators.colorMap(_options)(x, y)
+        return generators.colorMap(_options)(x, y);
     }
     return spring;
 }
