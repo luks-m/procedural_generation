@@ -6,7 +6,7 @@ function testPerlin() {
     describe('Perlin Noise test suite', () => {
 
         test('Test of Simplex Noise', () => {
-            pixel = generators.noiseGenerator(
+            const pixel = generators.noiseGenerator(
                 {
                     noise: generators.noise.noiseGenerators.perlinNoise,
                     noiseOptions: {
@@ -25,7 +25,7 @@ function testPerlin() {
             expect(pixel(150, 200)).toStrictEqual(colors.createColor(150, 150, 150, 255));
             expect(pixel(200, 250)).toStrictEqual(colors.createColor(82, 82, 82, 255));
             expect(pixel(250, 250)).toStrictEqual(colors.createColor(69, 69, 69, 255));
-        })
+        });
     });
 }
 
