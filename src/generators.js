@@ -42,13 +42,13 @@ function perlinNoiseGenerator(width, height, options) {
     const random = helpers.makeRandom(SEED);
 
 
-    let gradients = {};
+    let gradients = {}; // Cache
 
-    let pixelSizeWidth = width / SCALE;
-    let pixelSizeHeight = height / SCALE;
+    const pixelSizeWidth = width / SCALE;
+    const pixelSizeHeight = height / SCALE;
 
 
-    let compute = loadNoiseType();
+    const compute = loadNoiseType();
 
 
     /**
@@ -125,26 +125,19 @@ function perlinNoiseGenerator(width, height, options) {
          */
         function computeValue(x, y) {
             // Determine grid cell coordinates
-            let x0 = Math.floor(x);
-            let x1 = x0 + 1;
-            let y0 = Math.floor(y);
-            let y1 = y0 + 1;
+            const x0 = Math.floor(x);
+            const x1 = x0 + 1;
+            const y0 = Math.floor(y);
+            const y1 = y0 + 1;
 
             // Determine interpolation weights
-            let sx = x - x0;
-            let sy = y - y0;
+            const sx = x - x0;
+            const sy = y - y0;
 
             // Interpolate between grid point gradients
-            let n0 = dotGridValue(x0, y0);
-            let n1 = dotGridValue(x1, y0);
-            let ix0 = interpolate(sx, n0, n1);
-            n0 = dotGridValue(x0, y1);
-            n1 = dotGridValue(x1, y1);
-            let ix1 = interpolate(sx, n0, n1);
-
-            let value = interpolate(sy, ix0, ix1);
-
-            return value;
+            return interpolate(sy,
+                interpolate(sx, dotGridValue(x0, y0), dotGridValue(x1, y0)),
+                interpolate(sx, dotGridValue(x0, y1), dotGridValue(x1, y1)));
         }
 
 
@@ -162,7 +155,7 @@ function perlinNoiseGenerator(width, height, options) {
          * @returns {{x: number, y: number}} - Random vector
          */
         function randomGradient() {
-            let angle = (2 * Math.PI) * random();
+            const angle = (2 * Math.PI) * random();
             return {x: Math.cos(angle), y: Math.sin(angle)}; // Polar coordinates, Norm = 1
         }
 
@@ -181,8 +174,8 @@ function perlinNoiseGenerator(width, height, options) {
                 gradients[[ix, iy]] = randomGradient();
 
             // Compute the distance vector
-            let dx = x - ix;
-            let dy = y - iy;
+            const dx = x - ix;
+            const dy = y - iy;
 
             // Compute the dot-product (changeRange used to broaden spectrum)
             return helpers.changeRange(dx * gradients[[ix, iy]].x + dy * gradients[[ix, iy]].y, -0.7, 0.7, -1, 1);
@@ -197,25 +190,19 @@ function perlinNoiseGenerator(width, height, options) {
          */
         function computeGradient(x, y) {
             // Determine grid cell coordinates
-            let x0 = Math.floor(x);
-            let x1 = x0 + 1;
-            let y0 = Math.floor(y);
-            let y1 = y0 + 1;
+            const x0 = Math.floor(x);
+            const x1 = x0 + 1;
+            const y0 = Math.floor(y);
+            const y1 = y0 + 1;
 
             // Determine interpolation weights
-            let sx = x - x0;
-            let sy = y - y0;
+            const sx = x - x0;
+            const sy = y - y0;
 
             // Interpolate between grid point gradients
-            let n0 = dotGridGradient(x0, y0, x, y);
-            let n1 = dotGridGradient(x1, y0, x, y);
-            let ix0 = interpolate(sx, n0, n1);
-
-            n0 = dotGridGradient(x0, y1, x, y);
-            n1 = dotGridGradient(x1, y1, x, y);
-            let ix1 = interpolate(sx, n0, n1);
-
-            let value = interpolate(sy, ix0, ix1);
+            const value = interpolate(sy,
+                interpolate(sx, dotGridGradient(x0, y0, x, y), dotGridGradient(x1, y0, x, y)),
+                interpolate(sx, dotGridGradient(x0, y1, x, y), dotGridGradient(x1, y1, x, y)));
 
             return value;
         }
@@ -230,11 +217,11 @@ function perlinNoiseGenerator(width, height, options) {
      * @returns {function} - Function returning a noise value for coordinates (x, y) according to a simplex noise
      */
     function simplexNoise() {
-        let r = 0.5;
+        const r = 0.5;
 
         // Skewing factors for 2D simplex grid
-        let F2 = (Math.sqrt(3) - 1) / 2; // triangle to square
-        let G2 = (3 - Math.sqrt(3)) / 6; // square to triangle
+        const F2 = (Math.sqrt(3) - 1) / 2; // triangle to square
+        const G2 = (3 - Math.sqrt(3)) / 6; // square to triangle
 
         const permutation = [151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36,
             103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23, 190, 6, 148, 247, 120, 234, 75, 0,
@@ -261,9 +248,9 @@ function perlinNoiseGenerator(width, height, options) {
          * @returns {number} - the dot product with (x,y)
          */
         function dotGridGradient(hash, x, y) {
-            let h = hash & 7;      // Convert low 3 bits of hash code
-            let u = h < 4 ? x : y;  // into 8 simple gradient directions,
-            let v = h < 4 ? y : x;  // and compute the dot product with (x,y).
+            const h = hash & 7;      // Convert low 3 bits of hash code
+            const u = h < 4 ? x : y;  // into 8 simple gradient directions,
+            const v = h < 4 ? y : x;  // and compute the dot product with (x,y).
             return ((h & 1) ? -u : u) + ((h & 2) ? -2 * v : 2 * v);
         }
 
@@ -275,7 +262,7 @@ function perlinNoiseGenerator(width, height, options) {
          * @returns {number[]} - Skewed (x, y) coordinates
          */
         function skew(x, y) {
-            let s = (x + y) * F2; // 2D Hairy factor
+            const s = (x + y) * F2; // 2D Hairy factor
             return [x + s, y + s];
         }
 
@@ -289,7 +276,7 @@ function perlinNoiseGenerator(width, height, options) {
          * @returns {number[]} - Unskewed displacement vector
          */
         function getUnskewedDisplacementVector(x, y, ixSkewed, iySkewed) {
-            let us = (ixSkewed + iySkewed) * G2;
+            const us = (ixSkewed + iySkewed) * G2;
             return [x - ixSkewed + us, y - iySkewed + us];
 
         }
@@ -315,64 +302,57 @@ function perlinNoiseGenerator(width, height, options) {
             // Coordinate Skewing
 
             // Skew the input space to determine which simplex cell we're in
-            let [xSkewed, ySkewed] = skew(x, y);
-            let ixSkewed = Math.floor(xSkewed);
-            let iySkewed = Math.floor(ySkewed);
+            const [xSkewed, ySkewed] = skew(x, y);
+            const ixSkewed = Math.floor(xSkewed);
+            const iySkewed = Math.floor(ySkewed);
 
             // Simplicial subdivision
 
             // For the 2D case, the simplex shape is an equilateral triangle.
-            // Determine which simplex we're in
-            let xi, yi; // Offsets for second (middle) corner of simplex in (i, j) coords
-            if (xSkewed - ixSkewed > ySkewed - iySkewed) {
-                // The x internal coordinate is the largest, so it is added first, then followed by the y internal coordinate
-                xi = 1;
-                yi = 0;
-            } else {
-                // The y internal coordinate is the largest, so it is added first, then followed by the x internal coordinate
-                xi = 0;
-                yi = 1;
-            }
+            // Determine which simplex we're in.
+            // Either the x internal coordinate is the largest, so it is added first, then followed by the y internal coordinate
+            // Or the y internal coordinate is the largest, so it is added first, then followed by the x internal coordinate
+            const [xi, yi] = [[0, 1], [1, 0]][+(xSkewed - ixSkewed > ySkewed - iySkewed)]; // Offsets for second (middle) corner of simplex in (i, j) coords
 
             // Gradient selection
 
             // Unskew the cell origin back to (x, y) space
             // The x, y distances from the cell origin
-            let [xUnskewed, yUnskewed] = getUnskewedDisplacementVector(x, y, ixSkewed, iySkewed);
+            const [xUnskewed, yUnskewed] = getUnskewedDisplacementVector(x, y, ixSkewed, iySkewed);
 
             // Adding (1,0) to unskewed coordinates implies adding (1 - G2, -G2) to input coordinates
             // Adding (0,1) to unskewed coordinates implies adding (-G2, 1 - G2) to input coordinates
             // Offsets with the first largest coordinate added
-            let x1 = xUnskewed - xi + G2;
-            let y1 = yUnskewed - yi + G2;
+            const x1 = xUnskewed - xi + G2;
+            const y1 = yUnskewed - yi + G2;
 
             // Offsets with the second largest coordinate added
-            let x2 = xUnskewed - 1 + 2 * G2;
-            let y2 = yUnskewed - 1 + 2 * G2;
+            const x2 = xUnskewed - 1 + 2 * G2;
+            const y2 = yUnskewed - 1 + 2 * G2;
 
             // Kernel summation
 
             // Majors the indices to 256, so as not to exceed the size of the array of permutations.
-            let ii = (SEED + ixSkewed) % 256;
-            let jj = (SEED + iySkewed) % 256;
+            const ii = (SEED + ixSkewed) % 256;
+            const jj = (SEED + iySkewed) % 256;
 
-            let n0, n1, n2; // Noise contributions from each of the three corners
+            // Noise contributions from each of the three corners
 
             // Calculate the contribution from the three corners
-            let f0 = falloff(xUnskewed, yUnskewed);
-            n0 = Math.max(0, f0) ** 4 * dotGridGradient(permutation[ii + permutation[jj]], xUnskewed, yUnskewed);
+            const f0 = falloff(xUnskewed, yUnskewed);
+            const n0 = Math.max(0, f0) ** 4 * dotGridGradient(permutation[ii + permutation[jj]], xUnskewed, yUnskewed);
 
             // We add the largest coordinate
-            let f1 = falloff(x1, y1);
-            n1 = Math.max(0, f1) ** 4 * dotGridGradient(permutation[ii + xi + permutation[jj + yi]], x1, y1);
+            const f1 = falloff(x1, y1);
+            const n1 = Math.max(0, f1) ** 4 * dotGridGradient(permutation[ii + xi + permutation[jj + yi]], x1, y1);
 
             // Then we add the second largest coordinate
-            let f2 = falloff(x2, y2);
-            n2 = Math.max(0, f2) ** 4 * dotGridGradient(permutation[ii + 1 + permutation[jj + 1]], x2, y2);
+            const f2 = falloff(x2, y2);
+            const n2 = Math.max(0, f2) ** 4 * dotGridGradient(permutation[ii + 1 + permutation[jj + 1]], x2, y2);
 
             // Add contributions from each corner to get the final noise value.
             // The result is scaled to return values in the interval [-1,1].
-            let scaleFactor = 2916 * Math.sqrt(2) / 125;
+            const scaleFactor = 2916 * Math.sqrt(2) / 125;
             return scaleFactor * (n0 + n1 + n2);
         }
 
@@ -399,13 +379,12 @@ function perlinNoiseGenerator(width, height, options) {
      * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
      */
     function getPixelColor(x, y) {
-        let v = getNoiseHeight(x, y);
         if (COLORED) {
-            v = (v + 0.5) * 360;
-            let [R, G, B] = helpers.hsl2rgb(v);
+            const v = (getNoiseHeight(x, y) + 0.5) * 360;
+            const [R, G, B] = helpers.hsl2rgb(v);
             return colors.createColor(R, G, B, 255);
         } else {
-            v = (v + 1) / 2 * 255;
+            const v = (getNoiseHeight(x, y) + 1) / 2 * 255;
             return colors.createColor(v, v, v, 255);
         }
     }
@@ -470,32 +449,31 @@ function fractalNoiseGenerator(width, height, options) {
 
     let maxNoiseHeight;
     let minNoiseHeight;
-    let initial_noiseHeight;
-    const octaveNoiseTransformation = loadArgFractalGen();
+    const [initial_noiseHeight, octaveNoiseTransformation] = loadArgFractalGen();
 
 
-    let octaveGenerator = getOctaveGenerator();
+    const octaveGenerator = getOctaveGenerator();
 
 
-    // Return the type of distance to compute according to user's input
+    /**
+     * Return the type of distance to compute according to user's input
+     * @returns {(number|(function({number}, {number})))[]}
+     */
     function loadArgFractalGen() {
         if (fractalGen === 'fbm') {
             maxNoiseHeight = 1;
             minNoiseHeight = -1;
-            initial_noiseHeight = 0;
-            return (noiseValue, amplitude) => noiseValue * amplitude;
+            return [0, (noiseValue, amplitude) => noiseValue * amplitude];
         } else if (fractalGen === 'turbulence') {
             maxNoiseHeight = 1;
             minNoiseHeight = 0;
-            initial_noiseHeight = 0;
-            return (noiseValue, amplitude) => Math.abs(noiseValue) * amplitude;
+            return [0, (noiseValue, amplitude) => Math.abs(noiseValue) * amplitude];
         } else if (fractalGen === 'ridged') {
-            let visualClarityOffset = noiseGen === 'worley' ? OCTAVES / 10 : 0;
+            const visualClarityOffset = noiseGen === 'worley' ? OCTAVES / 10 : 0;
 
             maxNoiseHeight = -0.5 + visualClarityOffset;
             minNoiseHeight = -1;
-            initial_noiseHeight = -1;
-            return (noiseValue, amplitude) => (1 - Math.abs(noiseValue)) ** 2 * amplitude;
+            return [-1, (noiseValue, amplitude) => (1 - Math.abs(noiseValue)) ** 2 * amplitude];
         } else
             throw Error(`${fractalGen} is not a fractal generator. Valid fractal generator are 'fbm', 'turbulence' and 'ridged`);
     }
@@ -530,29 +508,27 @@ function fractalNoiseGenerator(width, height, options) {
      * @returns {number} - noise value between -1 and 1
      */
     function getNoiseHeight(x, y) {
-        let amplitude = INITIAL_AMPLITUDE;
-        let frequency = INITIAL_FREQUENCY;
-
 
         /**
          * Returns the noise value at given octave
          * @param {number} i - ith octave to compute the noise value from
+         * @param {number} amplitude - Amplitude of the octave
+         * @param {number} frequency - Frequency of the octave
          * @returns {number} - The noise value at the ith octave
          */
-        function getOctaveValue(i) {
-            let sampleX = x * frequency;
-            let sampleY = y * frequency;
+        function getOctaveValue(i, amplitude, frequency) {
+            const sampleX = x * frequency;
+            const sampleY = y * frequency;
 
-            let noiseValue = octaveGenerator[i](sampleX, sampleY);
-
-            amplitude *= PERSISTENCE;
-            frequency *= LACUNARITY;
+            const noiseValue = octaveGenerator[i](sampleX, sampleY);
 
             return octaveNoiseTransformation(noiseValue, amplitude);
         }
 
-
-        let noiseHeight = Array.from({length: OCTAVES}, (v, i) => getOctaveValue(i)).reduce((prev, curr) => prev + curr, initial_noiseHeight);
+        const noiseHeight = Array.from({length: OCTAVES},
+            (v, i) =>
+                getOctaveValue(i, INITIAL_AMPLITUDE * PERSISTENCE ** (i + 1), INITIAL_FREQUENCY * LACUNARITY ** i))
+            .reduce((prev, curr) => prev + curr, initial_noiseHeight);
 
         if (noiseHeight > maxNoiseHeight)
             maxNoiseHeight = noiseHeight;
@@ -570,16 +546,16 @@ function fractalNoiseGenerator(width, height, options) {
      * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
      */
     function getPixelColor(x, y) {
-        let v = getNoiseHeight(x, y);
+        const v = getNoiseHeight(x, y);
         if (COLORED) {
-            let R = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 20, 87);
-            let G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
-            let B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
+            const R = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 20, 87);
+            const G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
+            const B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
 
             return colors.createColor(R, G, B, 255);
         } else {
-            v = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
-            return colors.createColor(v, v, v, 255);
+            const v_rgb = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
+            return colors.createColor(v_rgb, v_rgb, v_rgb, 255);
         }
     }
 
@@ -625,14 +601,14 @@ function worleyNoiseGenerator(width, height, options) {
     const GET_NOISE = helpers.optionalParameter(options.get_noise, false);
 
 
-    let featurePoints;
-    let distances = [];
+    const random = helpers.makeRandom(SEED);
 
-    let random = helpers.makeRandom(SEED);
+    const featurePoints = generateFeaturePoints();
+    let distances = []; // cache
 
-    let getDist = loadArgType();
-    let distanceFormula = loadArgDistance();
-    let distanceDimension = THREE_DIMENSIONS ? distanceFormula.three_dim : distanceFormula.two_dim;
+    const getDist = loadArgType();
+    const distanceFormula = loadArgDistance();
+    const distanceDimension = THREE_DIMENSIONS ? distanceFormula.three_dim : distanceFormula.two_dim;
 
 
     /**
@@ -685,8 +661,8 @@ function worleyNoiseGenerator(width, height, options) {
          * @returns {number} - Distances between the points
          */
         function getDistance2D(x1, x2, y1, y2) {
-            let a = Math.abs(x1 - x2);
-            let b = Math.abs(y1 - y2);
+            const a = Math.abs(x1 - x2);
+            const b = Math.abs(y1 - y2);
 
             return Math.max(a, b);
         }
@@ -703,9 +679,9 @@ function worleyNoiseGenerator(width, height, options) {
          * @returns {number} - Distances between the points
          */
         function getDistance3D(x1, x2, y1, y2, z1, z2) {
-            let a = Math.abs(x1 - x2);
-            let b = Math.abs(y1 - y2);
-            let c = Math.abs(z1 - z2);
+            const a = Math.abs(x1 - x2);
+            const b = Math.abs(y1 - y2);
+            const c = Math.abs(z1 - z2);
 
             return Math.max(a, b, c);
         }
@@ -735,8 +711,8 @@ function worleyNoiseGenerator(width, height, options) {
          * @returns {number} - Distances between the points
          */
         function getDistance2D(x1, x2, y1, y2) {
-            let a = Math.abs(x1 - x2);
-            let b = Math.abs(y1 - y2);
+            const a = Math.abs(x1 - x2);
+            const b = Math.abs(y1 - y2);
 
             return a + b;
         }
@@ -753,9 +729,9 @@ function worleyNoiseGenerator(width, height, options) {
          * @returns {number} - Distances between the points
          */
         function getDistance3D(x1, x2, y1, y2, z1, z2) {
-            let a = Math.abs(x1 - x2);
-            let b = Math.abs(y1 - y2);
-            let c = Math.abs(z1 - z2);
+            const a = Math.abs(x1 - x2);
+            const b = Math.abs(y1 - y2);
+            const c = Math.abs(z1 - z2);
 
             return a + b + c;
         }
@@ -785,8 +761,8 @@ function worleyNoiseGenerator(width, height, options) {
          * @returns {number} - Distances between the points
          */
         function getDistance2D(x1, x2, y1, y2) {
-            let a = x1 - x2;
-            let b = y1 - y2;
+            const a = x1 - x2;
+            const b = y1 - y2;
 
             return Math.sqrt(a * a + b * b);
         }
@@ -803,9 +779,9 @@ function worleyNoiseGenerator(width, height, options) {
          * @returns {number} - Distances between the points
          */
         function getDistance3D(x1, x2, y1, y2, z1, z2) {
-            let a = x1 - x2;
-            let b = y1 - y2;
-            let c = z1 - z2;
+            const a = x1 - x2;
+            const b = y1 - y2;
+            const c = z1 - z2;
 
             return Math.sqrt(a * a + b * b + c * c);
         }
@@ -829,9 +805,10 @@ function worleyNoiseGenerator(width, height, options) {
 
     /**
      * Randomly distribute feature points in a 3D volume
+     * @returns {{x: number, y: number, z: number}[]} - Feature points coordinate in 3D space
      */
     function generateFeaturePoints() {
-        featurePoints = Array.from({length: NUMBER_OF_POINTS + 1}, () => {
+        return Array.from({length: NUMBER_OF_POINTS + 1}, () => {
             return {x: getInt(width), y: getInt(height), z: getInt(width)};
         });
     }
@@ -842,20 +819,19 @@ function worleyNoiseGenerator(width, height, options) {
      * @param {number} n - nth nearest distance to get (superior or equal to 1)
      * @param {number} x - x coordinate of the point
      * @param {number} y - y coordinate of the point
-     * @returns {number} - The distance betweehe point and the nth nearest feature point
+     * @returns {{number}} - The distance betweehe point and the nth nearest feature point
      */
     function getNthNearestDistance(n, x, y) {
         if (distances[[x, y]])
             return distances[[x, y]][n - 1];
 
         // Get distances from the given location to each seed points
-        let _distances = Array.from({length: NUMBER_OF_POINTS + 1},
-            (v, i) => distanceDimension(x, featurePoints[i].x, y, featurePoints[i].y, 0, featurePoints[i].z)
-        );
+        const _distances = Array.from({length: NUMBER_OF_POINTS + 1},
+            (v, i) => distanceDimension(x, featurePoints[i].x, y, featurePoints[i].y, 0, featurePoints[i].z))
+            .sort((d1, d2) => {
+                return d1 - d2;
+            });
 
-        _distances.sort((d1, d2) => {
-            return d1 - d2;
-        });
 
         distances[[x, y]] = _distances.slice(0, 2); // Save only the first two distances, as these are the only one which may be useful
         return _distances[n - 1];
@@ -869,21 +845,20 @@ function worleyNoiseGenerator(width, height, options) {
      * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
      */
     function getPixelColor(x, y) {
-        let distance = getDist(x, y);
+        const distance = getDist(x, y);
         if (COLORED) {
-            let R = helpers.changeRange(distance, 0, width / 6, 20, 74);
-            let G = helpers.changeRange(distance, 0, width / 6, 45, 154);
-            let B = helpers.changeRange(distance, 0, width / 6, 70, 216);
+            const R = helpers.changeRange(distance, 0, width / 6, 20, 74);
+            const G = helpers.changeRange(distance, 0, width / 6, 45, 154);
+            const B = helpers.changeRange(distance, 0, width / 6, 70, 216);
 
             return colors.createColor(R, G, B, 255);
         } else {
-            let noiseValue = helpers.changeRange(distance, 0, width / 7, 0, 255);
+            const noiseValue = helpers.changeRange(distance, 0, width / 7, 0, 255);
 
             return colors.createColor(noiseValue, noiseValue, noiseValue, 255);
         }
     }
 
-    generateFeaturePoints();
 
     if (GET_NOISE)
         return (x, y) => helpers.changeRange(getDist(x, y), 0, width / 7, -2, 2);
@@ -924,10 +899,10 @@ function domainWarpingFractalGenerator(width, height, options) {
     const GET_NOISE = helpers.optionalParameter(options.get_noise, false);
 
 
-    let maxNoiseHeight = 1;
-    let minNoiseHeight = -1;
+    const maxNoiseHeight = 1;
+    const minNoiseHeight = -1;
 
-    let fractal = fractalNoiseGenerator(width, height,
+    const fractal = fractalNoiseGenerator(width, height,
         {
             fractal: options.fractalGen.fractal,
             fractalOptions: {
@@ -946,13 +921,13 @@ function domainWarpingFractalGenerator(width, height, options) {
      */
     function getNoiseHeight(x, y) {
         // Offsets gotten from https://iquilezles.org/www/articles/warp/warp.htm
-        let q =
+        const q =
             [
                 fractal(x, y),
                 fractal(x + 5.2, y + 1.3)
             ];
 
-        let r =
+        const r =
             [
                 fractal(x + qMultiplier * q[0] + 1.7, y + qMultiplier * q[0] + 9.2),
                 fractal(x + qMultiplier * q[0] + 8.3, y + qMultiplier * q[0] + 2.8)
@@ -970,16 +945,16 @@ function domainWarpingFractalGenerator(width, height, options) {
      * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
      */
     function getPixelColor(x, y) {
-        let v = getNoiseHeight(x, y);
+        const v = getNoiseHeight(x, y);
         if (COLORED) {
-            let R = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 20, 87);
-            let G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
-            let B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
+            const R = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 20, 87);
+            const G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
+            const B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
 
             return colors.createColor(R, G, B, 255);
         } else {
-            v = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
-            return colors.createColor(v, v, v, 255);
+            const v_rgb = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 0, 255);
+            return colors.createColor(v_rgb, v_rgb, v_rgb, 255);
         }
     }
 
