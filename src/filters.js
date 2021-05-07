@@ -281,7 +281,8 @@ function anaglyphe(options){
  */
 function opacityChanger(options) {
     function opacityIntern(x, y) {
-        return functionsColor.createColor(options.image(x, y).red, options.image(x, y).green, options.image(x, y).blue, options.opacity);
+	const pixel = options.image(x,y);
+        return functionsColor.createColor(pixel.red, pixel.green, pixel.blue, options.opacity);
     }
     return opacityIntern;
 }
@@ -322,10 +323,13 @@ function convolution(options) {
  * @param {number} kernelSize
  * @param {number} sigma
  */
-function createKernel(options) {
-    return [...Array(options.kernelSize)].map(
-        (line, x) => [...Array(options.kernelSize)].map(
-            (value, y) => Math.exp(((x - (options.kernelSize - 1) / 2) ** 2 + (y - (options.kernelSize - 1) / 2) ** 2) / (-2 * (options.sigma ** 2))) / (2 * Math.PI * (options.sigma ** 2))));
+function createKernel(options) {    
+    if (options.kernelSize % 2 == 0)
+	throw new Error("Error : even kernel size");
+    else
+	return [...Array(options.kernelSize)].map(
+            (line, x) => [...Array(options.kernelSize)].map(
+		(value, y) => Math.exp(((x - (options.kernelSize - 1) / 2) ** 2 + (y - (options.kernelSize - 1) / 2) ** 2) / (-2 * (options.sigma ** 2))) / (2 * Math.PI * (options.sigma ** 2))));
 }
 
 /**

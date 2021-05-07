@@ -1,6 +1,8 @@
 const generators = require('./../gen.js');
 const noiseGenerators = require('./../generators.js');
 const colors = require('./../colors.js');
+const generatorsLucas = require('./../generators_lucas.js');
+
 
 function testPerlin() {
 
@@ -31,4 +33,34 @@ function testPerlin() {
     });
 }
 
-testPerlin();
+
+function testCheckerboard() {
+
+    describe('Checkerboard test', () => {
+	pixel = generatorsLucas.makeCheckerboard(
+	    {
+		pixelPerCase: 50,
+		color1: colors.createColor(150,70,35,255),
+		color2: colors.createColor(100,255,180,255),
+	    }
+	);
+	
+	test('Test of pixel number per case', () => {
+	    expect(pixel(0,0)).toEqual(pixel(0,49));
+	    expect(pixel(0,49)).not.toEqual(pixel(0,50));
+	    expect(pixel(0,50)).toEqual(pixel(0,51));
+	});
+
+	test('Test of square color uniqueness', () => {
+	    for (let x = 0; x < 50; x++) {
+		for (let y = 0; y < 50 ; y++) {
+		    expect(pixel(x,y)).toEqual(colors.createColor(150,70,35,255));
+		}
+	    }
+	});
+    });
+}
+
+
+//testPerlin();
+//testCheckerboard();

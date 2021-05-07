@@ -1,7 +1,6 @@
 const colors = require('./colors.js');
 const generators = require('./generators.js');
 const filters = require('./filters.js');
-const { generator } = require('./tilingGenerators.js');
 
 function imageGeneration(canvas, width, height, getPixelColor) {
     let context = canvas.getContext("2d");
@@ -42,7 +41,7 @@ function getImage(canvas, width, height) {
     ///////////////// Perlin Noise /////////////////////
 
 
-    /* pixel = generators.noiseGenerator(
+    pixel = generators.noiseGenerator(
         {
             noise: generators.noise.noiseGenerators.perlinNoise,
             noiseOptions: {
@@ -53,8 +52,8 @@ function getImage(canvas, width, height) {
             }
         }
 
-    ); */
-    
+    ); 
+
     ///////////////// Fractal Brownian Motion //////////
 
     /* pixel = generators.noiseGenerator({
@@ -456,38 +455,65 @@ function getImage(canvas, width, height) {
     }); */
 
     //Voronoi
+    /*
     pixel = generators.tilings.voronoiHexagonal({
         height: height,
         width: width,
         size: 20
-    });
+    }); 
+    */
     //Bee
 
     
     ///////////////////// Filters : /////////////////////
 
+    /*
     pixel = filters.composition.multiply({
         src: pixel,
         dst: generators.tilings.square({
             size: height,
-            color1: colors.examples.VERDIGRI
+            color1: colors.examples.VERDIGRI,
+	    color2: colors.examples.TRANSPARENT
         })
     });
+    */
 
-
+    //Opacity Chnager
+    /*
+    pixel = filters.opacityChanger(
+	{
+	    image : pixel,
+	    opacity : 255
+	}
+    );
+    */
     //Gaussian Blur
-    const kernel = filtersLucas.createKernel(
+
+
+    for (let y = 43; y < 48; y++) {
+	for (let x = 29; x < 34; x++) {
+	    console.log(pixel(x,y));
+	}
+    }
+    
+    
+    const kernel = filters.createKernel(
 	{
 	    kernelSize : 5,
 	    sigma : 1.5
 	});
-    
-    pixel = filtersLucas.gaussianBlur(
+
+    console.log(kernel);
+    pixel = filters.gaussianBlur(
 	{
 	    image : pixel,
 	    kernel : kernel,
 	    kernelSize : 5
 	});
+
+    console.log(pixel(29,45));
+    console.log(pixel(30,45));
+    console.log(pixel(31,45));
 
     canvas = imageGeneration(canvas, width, height, pixel);
 
