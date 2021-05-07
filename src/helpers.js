@@ -1,19 +1,11 @@
-
-/**
- * @todo REMOVE ?
- */
-const optionalParameter = function (parameter, defaultValue) {
-    return typeof(parameter) !== 'undefined' ? parameter : defaultValue;
-};
-
 /**
  * Convert a value from one range to another
- * @param {*} n 
- * @param {*} min_old 
- * @param {*} max_old 
- * @param {*} min_new 
- * @param {*} max_new 
- * @returns 
+ * @param {number} n - The value to change
+ * @param {number} min_old - Old lower bound of n
+ * @param {number} max_old - Old upper bound of n
+ * @param {number} min_new - New lower bound for n
+ * @param {number} max_new - New upper bound for n
+ * @returns {number} - The converted value
  */
 const changeRange = function (n, min_old, max_old, min_new, max_new) {
     if (n > max_old)
@@ -33,17 +25,17 @@ function norm(vec1, vec2){
     return Math.sqrt((vec1[0] - vec2[0]) ** 2 + (vec1[1] - vec2[1]) ** 2);
 }
 
+
 /**
- * 
- * @param {*} seed 
- * @returns 
+ * Random generator
+ * @param seed - Generator seed
+ * @returns {function()} - Function returning a value between -1 and 1
  */
 function makeRandom(seed=101) {
     return () => (123456791 * Math.sin(seed * seed * seed++)) % 1;
 }
 
 
-exports.optionalParameter = optionalParameter;
 exports.changeRange = changeRange;
 exports.norm = norm;
 exports.makeRandom = makeRandom;

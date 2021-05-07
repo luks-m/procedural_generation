@@ -1,7 +1,7 @@
 all: gen
 
 test:
-	npx jest --config="src/test/jest.config.js" src/test/filters.test.js
+	npx jest --config="src/test/jest.config.js" src/test/*.test.js
 
 gen: clean
 	mkdir -p public/scripts

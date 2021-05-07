@@ -1,14 +1,28 @@
 const helpers = require('./helpers.js');
 const colors = require('./colors.js');
 
-// @todo GET NOISE
 /**
- * 
- * @returns
+ * @typedef {Object} whiteNoiseDescriptor
+ * @property {number} [seed=42] - Random generator's seed
+ * @property {boolean} [get_noise=false] - Returns a noise value in [-1, 1]
  */
-function singleColorRandomGenerator() {
-    const rand = helpers.makeRandom();
-    return () => colors.createColor(rand() * 255, rand() * 255, rand() * 255, rand() * 255);
+
+/**
+ * White Noise Generator
+ * @param {whiteNoiseDescriptor} options - Set of optional parameters to configure the White noise generation
+ * @returns {function(): {red, green, blue, alpha}}
+ */
+function singleColorRandomGenerator(options) {
+    options = {
+        seed: 42,
+        get_noise: false,
+        ...options
+    };
+
+    const random = helpers.makeRandom(options.seed);
+    if (options.get_noise)
+        return () => random();
+    return () => colors.createColor((random() + 1) / 2 * 255, (random() + 1) / 2 * 255, (random() + 1) / 2 * 255, 255);
 }
 
 //////////////////////////////////////////
@@ -33,11 +47,19 @@ function singleColorRandomGenerator() {
  * RGBA quadruplet for coordinates (x, y), or the noise value for these coordinates if "get_noise" set to true
  */
 function perlinNoiseGenerator(width, height, options) {
-    const SEED = helpers.optionalParameter(options.seed, 42);
-    const VARIANT = helpers.optionalParameter(options.variant, "simplex");
-    const SCALE = helpers.optionalParameter(options.scale, 8);
-    const COLORED = helpers.optionalParameter(options.colored, false);
-    const GET_NOISE = helpers.optionalParameter(options.get_noise, false);
+    options = {
+        seed: 42,
+        variant: "simplex",
+        scale: 8,
+        colored: false,
+        get_noise: false,
+        ...options
+    };
+    const SEED = options.seed;
+    const VARIANT = options.variant;
+    const SCALE = options.scale;
+    const COLORED = options.colored;
+    const GET_NOISE = options.get_noise;
 
 
     const random = helpers.makeRandom(SEED);
@@ -407,7 +429,7 @@ function perlinNoiseGenerator(width, height, options) {
  * @property {('perlin'|'worley')} [noiseGen='perlin'] - Noise generator to compute the noise with
  * @property {number} [noiseSeed=42] - Noise generator seed
  * @property {*[]} [argsList=[ ]] - Optional arguments for the noise generator, starting at the third argument of the noise generator function
- * @property {number} [octaves=2|4] - Number of frequency octaves to generate the noise with
+ * @property {number} [octaves=2] - Number of frequency octaves to generate the noise with
  * @property {number} [persistence=0.5] - A multiplier that determines how quickly the amplitude increases for each successive octave.
  * @property {number} [lacunarity=2] - A multiplier that determines how quickly the frequency increases for each successive octave.
  * @property {number} [initial_amplitude=1] - Initial amplitude for the first octave
@@ -432,19 +454,34 @@ function perlinNoiseGenerator(width, height, options) {
  * RGBA quadruplet for coordinates (x, y), or the noise value for these coordinates if "get_noise" set to true
  */
 function fractalNoiseGenerator(width, height, options) {
+    options = {
+        fractal: typeof(options.fractal) === 'undefined' ? 'fbm' : options.fractal,
+        fractalOptions: {
+            noiseGen: 'perlin',
+            noiseSeed: 42,
+            argsList: [],
+            octaves: 2,
+            persistence: 0.5,
+            lacunarity: 2,
+            initial_amplitude: 1,
+            initial_frequency: 1,
+            colored: false,
+            get_noise: false,
+            ...options.fractalOptions
+        }
+    };
 
-    if (typeof (options.fractalOptions) === 'undefined') options.fractalOptions = {};
-    const fractalGen = helpers.optionalParameter(options.fractal, 'fbm');
-    const noiseGen = helpers.optionalParameter(options.fractalOptions.noiseGen, 'perlin');
-    const noiseSeed = helpers.optionalParameter(options.fractalOptions.noiseSeed, 42);
-    const argsList = helpers.optionalParameter(options.fractalOptions.argsList, []);
-    const OCTAVES = helpers.optionalParameter(options.fractalOptions.octaves, noiseGen === 'worley' ? 2 : 4);
-    const PERSISTENCE = helpers.optionalParameter(options.fractalOptions.persistence, 0.5);
-    const LACUNARITY = helpers.optionalParameter(options.fractalOptions.lacunarity, 2);
-    const INITIAL_AMPLITUDE = helpers.optionalParameter(options.fractalOptions.initial_amplitude, 1);
-    const INITIAL_FREQUENCY = helpers.optionalParameter(options.fractalOptions.initial_frequency, 1);
-    const COLORED = helpers.optionalParameter(options.fractalOptions.colored, false);
-    const GET_NOISE = helpers.optionalParameter(options.fractalOptions.get_noise, false);
+    const fractalGen = options.fractal;
+    const noiseGen = options.fractalOptions.noiseGen;
+    const noiseSeed = options.fractalOptions.noiseSeed;
+    const argsList = options.fractalOptions.argsList;
+    const OCTAVES = options.fractalOptions.octaves;
+    const PERSISTENCE = options.fractalOptions.persistence;
+    const LACUNARITY = options.fractalOptions.lacunarity;
+    const INITIAL_AMPLITUDE = options.fractalOptions.initial_amplitude;
+    const INITIAL_FREQUENCY = options.fractalOptions.initial_frequency;
+    const COLORED = options.fractalOptions.colored;
+    const GET_NOISE = options.fractalOptions.get_noise;
 
 
     let maxNoiseHeight;
@@ -493,6 +530,11 @@ function fractalNoiseGenerator(width, height, options) {
         else if (noiseGen === 'perlin')
             return Array.from({length: OCTAVES}, () => perlinNoiseGenerator(width, height, {
                 ...argsList,
+                seed: noiseSeed,
+                get_noise: true
+            }));
+        else if (noiseGen === 'white')
+            return Array.from({length: OCTAVES}, () => singleColorRandomGenerator({
                 seed: noiseSeed,
                 get_noise: true
             }));
@@ -592,19 +634,29 @@ function fractalNoiseGenerator(width, height, options) {
  * RGBA quadruplet for coordinates (x, y), or the noise value for these coordinates if "get_noise" set to true
  */
 function worleyNoiseGenerator(width, height, options) {
-    const SEED = helpers.optionalParameter(options.seed, 42);
-    const TYPE = helpers.optionalParameter(options.type, 'f2 - f1');
-    const DISTANCE = helpers.optionalParameter(options.distance, 'euclidean');
-    const THREE_DIMENSIONS = helpers.optionalParameter(options.three_dimensions, false);
-    const COLORED = helpers.optionalParameter(options.colored, false);
-    const NUMBER_OF_POINTS = helpers.optionalParameter(options.number_of_points, width / 3);
-    const GET_NOISE = helpers.optionalParameter(options.get_noise, false);
+    options = {
+        seed: 42,
+        type: "f2 - f1",
+        distance: "euclidean",
+        three_dimensions: false,
+        colored: false,
+        number_of_points: width / 3,
+        get_noise: false,
+        ...options
+    };
+    const SEED = options.seed;
+    const TYPE = options.type;
+    const DISTANCE = options.distance;
+    const THREE_DIMENSIONS = options.three_dimensions;
+    const COLORED = options.colored;
+    const NUMBER_OF_POINTS = options.number_of_points;
+    const GET_NOISE = options.get_noise;
 
 
     const random = helpers.makeRandom(SEED);
 
     const featurePoints = generateFeaturePoints();
-    let distances = []; // cache
+    let distances = {}; // cache
 
     const getDist = loadArgType();
     const distanceFormula = loadArgDistance();
@@ -893,10 +945,17 @@ function domainWarpingFractalGenerator(width, height, options) {
 
     if (typeof (options.fractalGen) === 'undefined')
         options.fractalGen = {fractalOptions: {}};
-    const qMultiplier = helpers.optionalParameter(options.qMultiplier, 4);
-    const rMultiplier = helpers.optionalParameter(options.rMultiplier, 4);
-    const COLORED = helpers.optionalParameter(options.colored, false);
-    const GET_NOISE = helpers.optionalParameter(options.get_noise, false);
+    options = {
+        qMultiplier: 4,
+        rMultiplier: 4,
+        colored: false,
+        get_noise: false,
+        ...options
+    };
+    const qMultiplier = options.qMultiplier;
+    const rMultiplier = options.rMultiplier;
+    const COLORED = options.colored;
+    const GET_NOISE = options.get_noise;
 
 
     const maxNoiseHeight = 1;
