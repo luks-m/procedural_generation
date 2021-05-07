@@ -3,6 +3,25 @@ const helpers = require('./helpers.js');
 const geometric = require('./geometricPredicate.js');
 
 /**
+ * A checkerboard generator
+ *
+ * @param {number} pixelPerCase The number of pixels which constitute a case
+ * @param {object} color1 The first color of the checkerboard
+ * @param {object} color2 The second color of the checkerboard
+ */
+function checkerboard(options) {
+    function _checkerboard(x, y) {
+        if ((x % (options.pixelPerCase * 2) < options.pixelPerCase && y % (options.pixelPerCase * 2) < options.pixelPerCase)
+            || (x % (options.pixelPerCase * 2) > options.pixelPerCase && y % (options.pixelPerCase * 2) > options.pixelPerCase))
+            return options.color1;
+        else
+            return options.color2;
+    }
+    return _checkerboard;
+}
+
+
+/**
  * 
  * @param {*} size 
  * @param {*} color1 
@@ -437,6 +456,7 @@ function noiseGenerator(options) {
     return options.noise(width, height, options.noiseOptions);
 }
 
+exports.checkerboard = checkerboard;
 exports.rectangleTriangle = rectangleTriangle;
 exports.isoscelesTriangle = isoscelesTriangle;
 exports.equilateralTriangle = equilateralTriangle;

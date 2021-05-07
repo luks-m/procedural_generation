@@ -1,30 +1,5 @@
 
-const hsl2rgb = function(_h) {
-    let L = 0.5;
-    let S = 0.5;
-    let C = (1 - Math.abs(2 * L - 1)) * S;
-    let X = C * (1 - Math.abs(((_h / 60) % 2) - 1));
-    let m = L - C / 2;
 
-
-    function _hsl2rgb(_h) {
-        if (0 <= _h && _h < 60)
-            return [C, X, 0];
-        if (60 <= _h && _h < 120)
-            return [X, C, 0];
-        if (120 <= _h && _h < 180)
-            return [0, C, X];
-        if (180 <= _h && _h < 240)
-            return [0, X, C];
-        if (240 <= _h && _h < 300)
-            return [X, 0, C];
-        return [C, 0, X];
-    }
-
-    let [Rp, Gp, Bp] = _hsl2rgb(_h);
-
-    return [(Rp + m) * 255, (Gp + m) * 255, (Bp + m) * 255];
-};
 
 
 const optionalParameter = function (parameter, defaultValue) {
@@ -58,7 +33,7 @@ function multiply(A, B) {
 }
 
 
-exports.hsl2rgb = hsl2rgb;
+
 exports.optionalParameter = optionalParameter;
 exports.changeRange = changeRange;
 exports.norm = norm;
