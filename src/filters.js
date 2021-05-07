@@ -176,8 +176,12 @@ function minus(options) {
     });
 }
 
-function clear() {
-    return (x, y) => functionsColor.examples.TRANSPARENT;
+function clear(options) {
+    return (x, y) => {
+        if (options.toClear(x, y))
+            return functionsColor.examples.TRANSPARENT;
+        return options.src(x,y);
+    };
 }
 
 const composition = { operation, multiply, screen, divide, add, minus, atop, out, inSrc, over, xor, clear };
