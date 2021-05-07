@@ -271,21 +271,6 @@ function anaglyphe(options){
     return _anaglyphe;
 }
 
-
-
-/**
- * A filter that fixes the opacity of an 'image' to 'opacity'
- * 
- * @param {function} image
- * @param {number} opacity
- */
-function opacityChanger(options) {
-    function opacityIntern(x, y) {
-        return functionsColor.createColor(options.image(x, y).red, options.image(x, y).green, options.image(x, y).blue, options.opacity);
-    }
-    return opacityIntern;
-}
-
 /**
  * Returns the scalar product of the vectors v1 and v2
  * 
