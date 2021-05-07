@@ -1,6 +1,25 @@
-const colorFunctions = require('./colors.js');
 const helpers = require('./helpers.js');
 const geometric = require('./geometricPredicate.js');
+const colorFunctions = require('./colors.js');
+
+/**
+ * A checkerboard generator
+ *
+ * @param {number} pixelPerCase The number of pixels which constitute a case
+ * @param {object} color1 The first color of the checkerboard
+ * @param {object} color2 The second color of the checkerboard
+ */
+function checkerboard(options) {
+    function _checkerboard(x, y) {
+        if ((x % (options.pixelPerCase * 2) < options.pixelPerCase && y % (options.pixelPerCase * 2) < options.pixelPerCase)
+            || (x % (options.pixelPerCase * 2) > options.pixelPerCase && y % (options.pixelPerCase * 2) > options.pixelPerCase))
+            return options.color1;
+        else
+            return options.color2;
+    }
+    return _checkerboard;
+}
+
 
 /**
  * 
@@ -249,7 +268,7 @@ function beePattern(options) {
 function voronoi(options) {
     function _voronoi(x, y) {
         let array = options.center.map((i) => helpers.norm(i, [x, y]));
-        let min = array.reduce( 
+        let min = array.reduce(
             (acc, val, index) => acc.value > val ? { value: val, index: index } : acc,
             { value: array[0], index: 0 }
         );
@@ -267,7 +286,7 @@ function voronoi(options) {
  */
 function voronoiRandom(options) {
     const _options = [...Array(options.number).keys()].reduce((accumulator) => {
-        return { 
+        return {
             center: [...accumulator.center, [Math.random() * options.width, Math.random() * options.height]],
             color: [...accumulator.color, colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255)]
         };
@@ -287,18 +306,18 @@ function voronoiHexagonal(options) {
     const numberPointHeight = 3 * Math.floor(options.height / options.size);
     const numberPointWidth = 3 * Math.floor(options.width / options.size);
     const iterable = [...Array(numberPointHeight).keys()].map(() => [...Array(numberPointWidth).keys()]);
-    const _options = iterable.reduce( (accumulator, value, y) =>
-            value.reduce( (acc, x) => {
-                    const center = (
-                        geometric.isEven({ x: y }) ?
-                            [-options.size + x * options.size, y * options.size] :
-                            [-1.5 * options.size + x * options.size, y * options.size]
-                    );
-                    return {
-                        center: [...acc.center, center],
-                        color: [...acc.color, colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255)]
-                    };
-                }, accumulator),
+    const _options = iterable.reduce((accumulator, value, y) =>
+        value.reduce((acc, x) => {
+            const center = (
+                geometric.isEven({ x: y }) ?
+                    [-options.size + x * options.size, y * options.size] :
+                    [-1.5 * options.size + x * options.size, y * options.size]
+            );
+            return {
+                center: [...acc.center, center],
+                color: [...acc.color, colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255)]
+            };
+        }, accumulator),
         { center: [], color: [] }
     );
     return voronoi(_options);
@@ -318,23 +337,23 @@ function voronoiPentagonal(options) {
     const _options = iterable.reduce((accumulator, value, i) =>
         value.reduce((acc, j) => {
             const centers = (geometric.isEven({ x: i }) ? [
-                    ...acc.center,
-                    [-options.size + j * options.size + options.size / 3, i * options.size / 2],
-                    [-options.size + j * options.size - options.size / 3, i * options.size / 2],
-                    [-options.size + j * options.size, i * options.size / 2 + options.size / 4],
-                    [-options.size + j * options.size, i * options.size / 2 - options.size / 4]
-                ] : [
-                    ...acc.center,
-                    [-1.5 * options.size + j * options.size, i * options.size / 2 + options.size / 4],
-                    [-1.5 * options.size + j * options.size, i * options.size / 2 - options.size / 4],
-                    [-1.5 * options.size + j * options.size - options.size / 3, i * options.size / 2],
-                    [-1.5 * options.size + j * options.size + options.size / 3, i * options.size / 2]
-                ]
+                ...acc.center,
+                [-options.size + j * options.size + options.size / 3, i * options.size / 2],
+                [-options.size + j * options.size - options.size / 3, i * options.size / 2],
+                [-options.size + j * options.size, i * options.size / 2 + options.size / 4],
+                [-options.size + j * options.size, i * options.size / 2 - options.size / 4]
+            ] : [
+                ...acc.center,
+                [-1.5 * options.size + j * options.size, i * options.size / 2 + options.size / 4],
+                [-1.5 * options.size + j * options.size, i * options.size / 2 - options.size / 4],
+                [-1.5 * options.size + j * options.size - options.size / 3, i * options.size / 2],
+                [-1.5 * options.size + j * options.size + options.size / 3, i * options.size / 2]
+            ]
             );
             return {
                 center: centers,
                 color: [
-                    ...acc.color, 
+                    ...acc.color,
                     colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255),
                     colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255),
                     colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255),
@@ -347,96 +366,42 @@ function voronoiPentagonal(options) {
     return voronoi(_options);
 }
 
+
+/////////////////////////////////////////////////////
 /**
- * 
- * @param {*} min 
- * @param {*} max 
- * @returns 
+ * @todo : REFACTOR generator function usage
  */
-function multiGradient(min, max) {
-    const dist = Math.abs(max - min) * 1.01; //distance intervalle
-    let sign = 1;
-    if (min > max) { // si les bornes sont inversée on inverse tout ainsi que x
-        min = -min;
-        max = -max;
-        sign = -1;
+/////////////////////////////////////////////////////
+function generator(generators, size, color1, color2) {
+    function getOtherColor(actualColor, color1, color2) {
+        if (genColor.compareColor(actualColor, color1)) {
+            return color2;
+        }
+        return color1;
     }
-    function _gradient(x, variations) {
-        let value;
-        
-        x = x * sign;
-        if (x < min) { // si x est avant l'intervalle
-            // borne max positive - écart
-            value = dist - Math.abs(x - min) % dist; // calcul de l'écart à la borne modulo la taille de l'intervalle
+    function getGenerators(x, y) {
+        function getColor(acc, curr) {
+            if (acc) {
+                acc = genColor.compareColor(color1, curr);
+            }
+            else {
+                let new_color = getOtherColor(curr, color1, color2);
+                acc = genColor.compareColor(color1, new_color);
+            }
+            return acc;
         }
-        else if (x <= max) { // si x est dans l'intervalle pas de soucis
-            value = x - min;
+        let color = generators.map((f, i) => { let [x1, y1] = size[i](x, y); return f(x1, y1); });
+        let bool = color.reduce((acc, curr) => getColor(acc, curr), true);
+        if ((bool && genColor.compareColor(color[color.length - 1], color1)) || (!bool && !genColor.compareColor(color[color.length - 1], color1))) {
+            return color[color.length - 1];
         }
-        else { // si x est après l'intervalle
-            value = Math.abs(x - max) % dist; // calcul de l'écart à la borne modulo la taille de l'intervalle
-        }
-        
-        const step = dist / variations.length;
-        const index = Math.floor(value / step);
-        if (variations[index].length === 1){
-            return variations[index][0];
-        }
-        const normedValue = (value - index * step) / step;
-        return variations[index][0] + (variations[index][1] - variations[index][0]) * normedValue;
+        return getOtherColor(color[color.length - 1], color1, color2);
     }
-    return _gradient;
+
+    return getGenerators;
 }
 
-/**
- * Apply multiGradient to each color depending on the result of f(x, y)
- * @param {*} f 
- * @param {*} min 
- * @param {*} max 
- * @param {*} redVariations 
- * @param {*} greenVariations 
- * @param {*} blueVariations 
- * @param {*} alphaVariations 
- * @returns 
- */
-function colorMap(options) {
-    const gradient = multiGradient(options.min, options.max);
-    function _colorMap(x, y) {
-        let res = options.f(x, y);
-        let red = gradient(res, options.redVariations);
-        let green = gradient(res, options.greenVariations);
-        let blue = gradient(res, options.blueVariations);
-        let alpha = gradient(res, options.alphaVariations);
-        return colorFunctions.createColor(red, green, blue, alpha);
-    }
-    return _colorMap;
-}
-
-/**
- * @typedef {Object} noiseDescriptor
- * @property {function} noise - Noise generator
- * @property {Object} noiseOptions - Set of parameters to configure the noise
- */
-
-/**
- * @typedef {Object} fractalNoiseDescriptor
- * @property {function} fractal - Fractal Noise generator
- * @property {Object} fractalOptions - Set of parameters to configure the fractal noise
- */
-
-/**
- * Generic Noise Generator (White, Perlin, Worley) & Fractal Generator (FBM, Turbulence & Ridged)
- * @param {(noiseDescriptor|fractalNoiseDescriptor)} options - Set of parameters to configure the noise
- * @returns {function} - Noise generator function according to given parameters
- */
-function noiseGenerator(options) {
-    const width = options.noiseOptions.width;
-    const height = options.noiseOptions.height;
-    if (typeof(width) !== "number" || typeof(height) !== "number")
-        throw Error(`TypeError: Please provide valid width and height values.`);
-
-    return options.noise(width, height, options.noiseOptions);
-}
-
+exports.checkerboard = checkerboard;
 exports.rectangleTriangle = rectangleTriangle;
 exports.isoscelesTriangle = isoscelesTriangle;
 exports.equilateralTriangle = equilateralTriangle;
@@ -452,5 +417,4 @@ exports.voronoi = voronoi;
 exports.voronoiRandom = voronoiRandom;
 exports.voronoiHexagonal = voronoiHexagonal;
 exports.voronoiPentagonal = voronoiPentagonal;
-exports.colorMap = colorMap;
-exports.noiseGen = noiseGenerator;
+exports.generator = generator;
