@@ -8,8 +8,8 @@ function imageGeneration(canvas, width, height, getPixelColor) {
     let image = context.createImageData(width, height);
 
     let n = 0; // Index inside the image array
-    const percentageGeneratedByOnePixel = ((1 / (height * width)) * 100);
-    let progress = 0;
+    // const percentageGeneratedByOnePixel = ((1 / (height * width)) * 100);
+    // let progress = 0;
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++, n += 4) {
             // progress += percentageGeneratedByOnePixel;
@@ -42,7 +42,6 @@ function getImage(canvas, width, height) {
     ///////////////// Perlin Noise /////////////////////
 
     /*
->>>>>>> refs/remotes/origin/master
     pixel = generators.noiseGenerator(
         {
             noise: generators.noise.noiseGenerators.perlinNoise,
@@ -472,29 +471,27 @@ function getImage(canvas, width, height) {
 
     
     ///////////////////// Filters : /////////////////////
-    /*
 
-    /*
-    pixel = filters.composition.multiply({
+    pixel = filters.takeColor({
+        src: pixel,
+        takeRed: true,
+        takeBlue: true,
+        takeGreen: false
+    });
+    pixel = filters.composition.add({
         src: pixel,
         dst: generators.tilings.square({
             size: height,
-            color1: colors.examples.VERDIGRI,
-	    color2: colors.examples.TRANSPARENT
+            color1: colors.examples.PURPLE,
+            color2: colors.examples.TRANSPARENT
         })
     });
-    */
-
-
-    //Opacity Chnager
-    /*
-    pixel = filters.opacityChanger(
-	{
-	    image : pixel,
-	    opacity : 255
-	}
-    );
-    */
+    pixel = filters.repeat({
+        src: pixel,
+        size: 10,
+        width:200,
+        height: 50
+    });
     //Gaussian Blur
 
 /*

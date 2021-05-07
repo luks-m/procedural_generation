@@ -1,4 +1,3 @@
-const helpers = require('./helpers.js');
 const functionsColor = require('./colors.js');
 
 /**
@@ -178,7 +177,7 @@ function minus(options) {
 }
 
 function clear() {
-    return functionsColor.examples.TRANSPARENT;
+    return (x, y) => functionsColor.examples.TRANSPARENT;
 }
 
 const composition = { operation, multiply, screen, divide, add, minus, atop, out, inSrc, over, xor, clear };
@@ -250,9 +249,9 @@ function blackWhite(options){
 }
 
 function repeat(options){
-    const x_scale = options.width / size;
-    const y_scale = options.height / size;
-    return (x, y) => options.src((x * x_scale) % (size * x_scale), (y * y_scale) % (size * y_scale));
+    const x_scale = options.width / options.size;
+    const y_scale = options.height / options.size;
+    return (x, y) => options.src((x * x_scale) % (options.size * x_scale), (y * y_scale) % (options.size * y_scale));
 }
 	
 function anaglyphe(options){
@@ -308,7 +307,7 @@ function convolution(options) {
  * @param {number} sigma
  */
 function createKernel(options) {    
-    if (options.kernelSize % 2 == 0)
+    if (options.kernelSize % 2 === 0)
 	throw new Error("Error : even kernel size");
     else
 	return [...Array(options.kernelSize)].map(
@@ -365,6 +364,5 @@ exports.takeColor = takeColor;
 exports.blackWhite = blackWhite;
 exports.anaglyphe = anaglyphe;
 exports.repeat = repeat;
-exports.opacityChanger = opacityChanger;
 exports.gaussianBlur = gaussianBlur;
 exports.createKernel = createKernel;

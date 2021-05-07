@@ -1,12 +1,9 @@
 const generators = require('./../generators.js');
 const colors = require('./../colors.js');
-const generatorsLucas = require('./../generators_lucas.js');
 
 
 function testPerlin() {
-
     describe('Perlin Noise test suite', () => {
-
         test('Test of Simplex Noise', () => {
             const pixel = generators.noiseGenerator(
                 {
@@ -33,9 +30,8 @@ function testPerlin() {
 
 
 function testCheckerboard() {
-
     describe('Checkerboard test', () => {
-        pixel = generatorsLucas.makeCheckerboard(
+        const pixel = generators.tilings.checkerboard(
             {
                 pixelPerCase: 50,
                 color1: colors.createColor(150, 70, 35, 255),
@@ -60,5 +56,5 @@ function testCheckerboard() {
 }
 
 
-//testPerlin();
-//testCheckerboard();
+testPerlin();
+testCheckerboard();
