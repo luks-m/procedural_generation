@@ -1,4 +1,4 @@
-const generators = require('./gen.js');
+const generators = require('./colorMapGenerator.js');
 
 /**
  * 
@@ -16,10 +16,8 @@ function colorMapGreys(options) {
         alphaVariations: [[255]],
         ...options
     };
-    function greys(x, y) {
-        return generators.colorMap(_options)(x, y);
-    }
-    return greys;
+    const generator = generators.colorMap(_options);
+    return (x, y) => generator(x, y);
 }
 
 /**
@@ -37,10 +35,8 @@ function colorMapMushroom(options) {
         alphaVariations: [[255]],
         ...options 
     };
-    function mushroom(x, y) {
-        return generators.colorMap(_options)(x, y)
-    }
-    return mushroom;
+    const generator = generators.colorMap(_options);
+    return (x, y) => generator(x, y);
 }
 
 /**
@@ -58,10 +54,8 @@ function colorMapSpring(options) {
                 alphaVariations: [[255]],
                 ...options
             };
-    function spring(x, y) {
-        return generators.colorMap(_options)(x, y)
-    }
-    return spring;
+    const generator = generators.colorMap(_options);
+    return (x, y) => generator(x, y);
 }
 
 /**
@@ -79,10 +73,8 @@ function colorMapJet(options) {
         alphaVariations: [[255]],
         ...options
     };
-    function jet(x, y) {
-        return generators.colorMap(_options)(x, y);
-    }
-    return jet;
+    const generator = generators.colorMap(_options);
+    return (x, y) => generator(x, y);
 }
 
 /**
@@ -100,10 +92,8 @@ function colorMapHSL(options) {
         alphaVariations: [[255]],
         ...options
     };
-    function hsl(x, y) {
-        return generators.colorMap(_options)(x, y);
-    }
-    return hsl;
+    const generator = generators.colorMap(_options);
+    return (x, y) => generator(x, y);
 }
 
 /**
@@ -121,10 +111,8 @@ function colorMapLight(options) {
         alphaVariations: [[255]],
         ...options
     };
-    function light(x, y){
-        return generators.colorMap(_options)(x, y);
-    }
-    return light;
+    const generator = generators.colorMap(_options);
+    return (x, y) => generator(x, y);
 }
 
 /**
@@ -142,10 +130,8 @@ function colorMapIsland(options) {
         alphaVariations: [[255]],
         ...options
     };
-    function island(x, y) {
-        return generators.colorMap(_options)(x, y);
-    }
-    return island;
+    const generator = generators.colorMap(_options);
+    return (x, y) => generator(x, y);
 }
 
 /**
@@ -163,10 +149,8 @@ function colorMapIslandD(options) {
         alphaVariations: [[255]],
         ...options
     };
-    function island(x, y) {
-        return generators.colorMap(_options)(x, y);
-    }
-    return island;
+    const generator = generators.colorMap(_options);
+    return (x, y) => generator(x, y);
 }
 
 /**
@@ -184,10 +168,8 @@ function colorMapSnow(options) {
         alphaVariations: [[255, 120], [120, 0], [0], [0]],
         ...options
     };
-    function snow(x, y) {
-        return generators.colorMap(_options)(x,y);
-    }
-    return snow;
+    const generator = generators.colorMap(_options);
+    return (x, y) => generator(x, y);
 }
 
 /**
@@ -205,10 +187,8 @@ function colorMapPurple(options) {
         alphaVariations: [[255]],
         ...options
     };
-    function purple(x, y) {
-        return generators.colorMap(_options)(x, y);
-    }
-    return purple;
+    const generator = generators.colorMap(_options);
+    return (x, y) => generator(x, y);
 }
 
 /**
@@ -226,10 +206,8 @@ function colorMapHot(options) {
         alphaVariations: [[255]],
         ...options
     };
-    function hot(x,y) {
-        return generators.colorMap(_options)(x, y);
-    }
-    return hot;
+    const generator = generators.colorMap(_options);
+    return (x, y) => generator(x, y);
 }
 
 

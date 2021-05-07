@@ -1,7 +1,7 @@
 all: gen
 
 test:
-	node tst/*.js
+	npx jest --config="src/test/jest.config.js" src/test/generators.test.js
 
 gen: clean
 	mkdir -p public/scripts
@@ -16,3 +16,4 @@ clean:
 	rm -rf public/*
 	rm -f $$(find . -name \*~)
 	rm -f *.png
+	rm -rf src/test/coverage

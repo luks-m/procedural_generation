@@ -7,7 +7,7 @@
  */
 function wave(x, y) {
     return Math.sin(x + y ** 2) * Math.sqrt(x ** 2 + y ** 2) / (10);
-};
+}
 
 /**
  * 
@@ -17,7 +17,7 @@ function wave(x, y) {
  */
 function flag(x, y) {
     return Math.sin(x / 10 + y / 10) * (x ** 3) * (y ** 2);
-};
+}
 
 /**
  * 
@@ -27,7 +27,7 @@ function flag(x, y) {
  */
 function pic(x, y) {
     return Math.sin(x ** 2 + 3 * y ** 2) / (0.1 + Math.sqrt(x ** 2 + y ** 2)) + (x ** 2 + 5 * y ** 2) * Math.exp(1 - (x ** 2 + y ** 2)) / 2;
-};
+}
 
 /**
  * 

@@ -171,14 +171,14 @@ function add(options) {
 
 function minus(options) {
     return operation({
-        op: (a, b) => { if (a > b) { return 0; }; return (b - a); },
+        op: (a, b) => { if (a > b) { return 0; } return (b - a); },
         src: options.src,
         dst: options.dst
     });
 }
 
 function clear() {
-    return (x, y) => functionsColor.examples.TRANSPARENT;
+    return functionsColor.examples.TRANSPARENT;
 }
 
 const composition = { operation, multiply, screen, divide, add, minus, atop, out, inSrc, over, xor, clear };
@@ -257,8 +257,8 @@ function repeat(options){
 	
 function anaglyphe(options){
     function _anaglyphe(x, y) {
-        const srcColorRed = (x, y) => { return options.src(x + options.dx, y + options.dy) };
-        const srcColorCyan = (x, y) => { return options.src(x - options.dx, y - options.dy) };
+        const srcColorRed = (x, y) => { return options.src(x + options.dx, y + options.dy); };
+        const srcColorCyan = (x, y) => { return options.src(x - options.dx, y - options.dy); };
         
         const redImage = takeColor({ src: srcColorRed, takeRed: true, takeGreen: false, takeBlue: false });
         const cyanImage = takeColor({ src: srcColorCyan, takeRed: false, takeGreen: true, takeBlue: true });

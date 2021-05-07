@@ -34,7 +34,7 @@ const hsl2rgb = function (hsl) {
     const [Rp, Gp, Bp] = _hsl2rgb();
 
     //return [(Rp + m) * 255, (Gp + m) * 255, (Bp + m) * 255];
-    return createColor((Rp + m) * 255, (Gp + m) * 255, (Bp + m) * 255);
+    return createColor((Rp + m) * 255, (Gp + m) * 255, (Bp + m) * 255, 255);
 };
 
 const examples = {
@@ -53,7 +53,7 @@ const examples = {
     INDIGO: createColor(121, 28, 248, 255),
     VERDIGRI: createColor(149, 165, 149, 255),
     TRANSPARENT: createColor(0,0,0,0)
-}
+};
 
 exports.examples = examples;
 exports.createColor = createColor;

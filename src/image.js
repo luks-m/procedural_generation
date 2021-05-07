@@ -1,16 +1,7 @@
-const helpers = require('./helpers.js');
-
-const noiseGenerators = require('./generators.js');
-const generators = require('./gen.js');
-const generatorsLucas = require('./generators_lucas.js');
-const generatorsleo = require('./generator_leo.js');
-const colorMaps = require('./colorMaps.js');
-const colorMapPredicate = require('./colorMapPredicate.js');
 const colors = require('./colors.js');
-
-
-const filtersLucas = require('./filters_lucas.js');
-const filtersleo = require('./filters_leo.js');
+const generators = require('./generators.js');
+const filters = require('./filters.js');
+const { generator } = require('./tilingGenerators.js');
 
 function imageGeneration(canvas, width, height, getPixelColor) {
     let context = canvas.getContext("2d");
@@ -43,25 +34,15 @@ function getImage(canvas, width, height) {
 
     let pixel;
     
-    ///////////////////// Generators : /////////////////////
+    ////////////////////////////////////////////////////
+    ///////////////// NOISE Generators /////////////////
+    ////////////////////////////////////////////////////
 
-    // Checkerboard
+    ///////////////// Perlin Noise /////////////////////
 
-    /*
-    pixel = generatorsLucas.makeCheckerboard(
-	{
-	    pixelPerCase: 50,
-	    color1: colors.createColor(255,0,0,255),
-	    color2: colors.createColor(0,255,0,255),
-	});
-    */
-
-    // Perlin Noise
-
-    /*
-    pixel = generators.noiseGen(
+    /* pixel = generators.noiseGenerator(
         {
-            noise: noiseGenerators.noiseGenerators.perlinNoise,
+            noise: generators.noise.noiseGenerators.perlinNoise,
             noiseOptions: {
                 width: width,
                 height: height,
@@ -69,15 +50,12 @@ function getImage(canvas, width, height) {
                 variant: 'simplex'
             }
         }
-    );
-    */
+    ); */
+    
+    ///////////////// Fractal Brownian Motion //////////
 
-    // Fractal Brownian Motion
-
-    /*
-    pixel = generators.noiseGen(
-        {
-            noise: noiseGenerators.noiseFractals.fractal,
+    /* pixel = generators.noiseGenerator({
+            noise: generators.noise.noiseFractals.fractal,
             noiseOptions: {
                 width: width,
                 height: height,
@@ -97,8 +75,8 @@ function getImage(canvas, width, height) {
                 }
             }
         }
-    );
-    */
+    ); */
+
 
     /*
     pixel = generators.noiseGen(
@@ -204,7 +182,7 @@ function getImage(canvas, width, height) {
                     argsList: {
                         type: "f2 - f1",
                         distance: "euclidean",
-                        three_dimensions: "false"
+                        three_dimensions: true
                     },
                     octaves: 2
                 }
@@ -229,10 +207,14 @@ function getImage(canvas, width, height) {
                     noiseSeed: 1338,
                     argsList: {
                         variant: "simplex",
-                        scale: 4
+                        scale: 2
                     },
                     octaves: 6,
-                    colored: true
+                    persistence: 0.5,
+                    lacunarity: 2,
+                    initial_amplitude: 2,
+                    initial_frequency: 0.6,
+                    colored: false
                 }
             }
         }
@@ -253,7 +235,7 @@ function getImage(canvas, width, height) {
                     argsList: {
                         type: "f2 - f1",
                         distance: "euclidean",
-                        three_dimensions: "false"
+                        three_dimensions: false
                     },
                     octaves: 3,
                     colored: true
@@ -262,6 +244,34 @@ function getImage(canvas, width, height) {
         }
     );
     */
+
+
+    // pixel = generators.noiseGen(
+    //     {
+    //         noise: noiseGenerators.noiseFractals.fractal,
+    //         noiseOptions: {
+    //             width: width,
+    //             height: height,
+    //             fractal: 'ridged',
+    //             fractalOptions: {
+    //                 noiseGen: "worley",
+    //                 noiseSeed: 1338,
+    //                 argsList: {
+    //                     type: "f2 - f1",
+    //                     distance: "chebyshev",
+    //                     three_dimensions: true
+    //                 },
+    //                 octaves: 2,
+    //                 persistence: 0.5,
+    //                 lacunarity: 2,
+    //                 initial_amplitude: 1,
+    //                 initial_frequency: 0.3,
+    //                 colored: true
+    //             }
+    //         }
+    //     }
+    // );
+
 
     // Worley Noise
 
@@ -341,7 +351,8 @@ function getImage(canvas, width, height) {
                         noiseSeed: 1338,
                         argsList: {
                             type: "f2 - f1",
-                            distance: "manhattan"
+                            distance: "euclidean",
+                            three_dimensions: true
                         },
                         octaves: 2
                     }
@@ -376,7 +387,7 @@ function getImage(canvas, width, height) {
     );
     */
 
-
+    /*
     pixel = generators.noiseGen(
         {
             noise: noiseGenerators.noiseFractals.warp,
@@ -397,7 +408,7 @@ function getImage(canvas, width, height) {
             }
         }
     );
-
+    */
 
     /*
     pixel = generators.noiseGen(
@@ -425,17 +436,39 @@ function getImage(canvas, width, height) {
     )
     */
 
+    ////////////// Checkerboard
 
-    // Colormap
+
+    /* pixel = generators.tilings.checkerboard({
+        pixelPerCase: 50,
+        color1: colors.examples.INDIGO,
+        color2: colors.examples.PURPLE,
+    }); */
+
+    // Colormaps
+    /* pixel = generators.colorMap.examples.greys({
+        f: generators.colorMap.predicate.focused(generators.colorMap.predicate.juliaShapes.juliaDragon(25, 10), height, width, -1, 1, -1, 1),
+        min: 0,
+        max: 10
+    }); */
 
     //Voronoi
-
+    pixel = generators.tilings.voronoiHexagonal({
+        height: height,
+        width: width,
+        size: 20
+    });
     //Bee
 
     
     ///////////////////// Filters : /////////////////////
-
-    //pixel = generatorsleo.generatorIsoscelesTriangle({color1 : colors.examples.WHITE, color2 : colors.examples.BLACK, size : 20});
+    pixel = filters.composition.multiply({
+        src: pixel,
+        dst: generators.tilings.square({
+            size: height,
+            color1: colors.examples.VERDIGRI
+        })
+    });
     
     //Gaussian Blur
 
