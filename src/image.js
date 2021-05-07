@@ -46,19 +46,19 @@ function getImage(canvas, width, height) {
     ///////////////////// Generators : /////////////////////
 
     // Checkerboard
-
     /*
     pixel = generatorsLucas.makeCheckerboard(
-	{
-	    pixelPerCase: 50,
-	    color1: colors.createColor(255,0,0,255),
-	    color2: colors.createColor(0,255,0,255),
-	});
+        {
+            pixelPerCase: 50,
+            color1: colors.createColor(150,70,35,255),
+            color2: colors.createColor(100,255,180,255),
+        }
+    );
     */
 
     // Perlin Noise
 
-    /*
+    
     pixel = generators.noiseGen(
         {
             noise: noiseGenerators.noiseGenerators.perlinNoise,
@@ -70,7 +70,7 @@ function getImage(canvas, width, height) {
             }
         }
     );
-    */
+    
 
     // Fractal Brownian Motion
 
@@ -267,7 +267,7 @@ function getImage(canvas, width, height) {
     );
     */
 
-
+    /*
     pixel = generators.noiseGen(
         {
             noise: noiseGenerators.noiseFractals.fractal,
@@ -293,7 +293,7 @@ function getImage(canvas, width, height) {
             }
         }
     );
-
+    */
 
     // Worley Noise
 
@@ -468,14 +468,17 @@ function getImage(canvas, width, height) {
     
     ///////////////////// Filters : /////////////////////
 
-    //pixel = generatorsleo.generatorIsoscelesTriangle({color1 : colors.examples.WHITE, color2 : colors.examples.BLACK, size : 20});
-    
-    //Gaussian Blur
+    for (let i = 43; i < 48; i++) {
+	for (let j = 28; j < 33; j++) {
+	    console.log(pixel(j,i));
+	}
+    }
 
-    /*
+
+    //Gaussian Blur
     const kernel = filtersLucas.createKernel(
 	{
-	    kernelSize : 10,
+	    kernelSize : 5,
 	    sigma : 1.5
 	});
     
@@ -483,12 +486,11 @@ function getImage(canvas, width, height) {
 	{
 	    image : pixel,
 	    kernel : kernel,
-	    kernelSize : 10
+	    kernelSize : 5
 	});
-    */
 
     canvas = imageGeneration(canvas, width, height, pixel);
-    
+
     return canvas;
 }
 

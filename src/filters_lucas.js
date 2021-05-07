@@ -51,6 +51,9 @@ function convolution(options) {
  * @param {number} sigma
  */
 function createKernel(options) {
+    if (options.kernelSize % 2 == 0)
+	throw new Error("Error : even kernel size");
+    else
 	return [...Array(options.kernelSize)].map(
 		(line, x) => [...Array(options.kernelSize)].map(
 			(value, y) => Math.exp(((x - (options.kernelSize - 1) / 2) ** 2 + (y - (options.kernelSize - 1) / 2) ** 2) / (-2 * (options.sigma ** 2))) / (2 * Math.PI * (options.sigma ** 2))));
