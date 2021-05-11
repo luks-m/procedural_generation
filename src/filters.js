@@ -186,29 +186,27 @@ function clear(options) {
 
 const composition = { operation, multiply, screen, divide, add, minus, atop, out, inSrc, over, xor, clear };
 
-/* TODO : erase repetition effect
-function smooth(generator,height,width){
-    function Smooth(x,y){
-        let r = Math.random();
-        let x_r;
-        let y_r;
-        if (r < 0.5) {
-            x_r = Math.random() + x;
-            y_r = y - Math.random();
-        }
-        else {
-            let theta = -3.14 / 2 + Math.random() * 3.14 * 2;
-            x_r = x * Math.cos(theta) - y * Math.sin(theta);
-            y_r = x * Math.sin(theta) + y * Math.cos(theta);
-        }
-        let norm = Math.sqrt((x - x_r) ** 2 + (y - y_r) ** 2);
-        let color = functionsColor.createColor(1 / norm, 1 / norm, 1 / norm, 1 / norm);
-        let new_color = mul(generator(x_r, y_r), color);
-        return new_color;//functionsColor.createColor(Math.random()*generator(x,y).red,Math.random()*generator(x,y).green,Math.random()*generator(x,y).blue,255);
+function bulge(options) {
+    const _options = {
+        size: {width: 250, height: 250},
+        bulge: {x: 0.5, y: 0.5},
+        coef: 0,
+        ...options
     }
-    return Smooth;
+    const coef = _options.coef/2;
+    function _bulge(x, y) {
+        x /= _options.size.width;
+        y /= _options.size.height;
+        const bulgeX = x - _options.bulge.x;
+        const bulgeY = y - _options.bulge.y;
+        const r = ((bulgeX) ** 2 + (bulgeY) ** 2);
+        let rn = 0
+        if (r !== 0)
+            rn = r ** (coef);
+        return _options.src((rn * (bulgeX) + _options.bulge.x) * _options.size.width, (rn * (bulgeY) + _options.bulge.y) * _options.size.height);
+    }
+    return _bulge;
 }
-*/
 
 function setOpacity(options) {
     const _options = {
@@ -229,18 +227,91 @@ function setOpacity(options) {
 }
 
 function translate(options){
-    return (x,y) => options.src(x + options.dx, y + options.dy);
+    const _options = {
+        dx: 0,
+        dy: 0,
+        ...options
+    };
+    return (x,y) => _options.src(x + _options.dx, y + _options.dy);
 }
 
-function takeColor(options){
-    function _takeColor(x, y) {
-        const color = options.src(x, y);
-        const red = options.takeRed ? color.red : 0;
-        const green = options.takeGreen ? color.green : 0;
-        const blue = options.takeBlue ? color.blue : 0;
-        return functionsColor.createColor(red, green, blue, color.alpha);
+function transform(options) {
+    const _options = {
+        size: {x: 250, y: 250},
+        offset: {x: 0, y: 0},
+        scale: {x: 1, y: 1},
+        angle: 0,
+        ...options
+    };
+    _options.angle = _options.angle * Math.PI / 180;
+    const midX = _options.size.x / 2;
+    const midY = _options.size.x / 2;
+    const tX = (Math.cos(_options.angle) / _options.scale.x);
+    const tY = (Math.sin(_options.angle) / _options.scale.y);
+    const ttX = -(Math.sin(_options.angle) / _options.scale.x);
+    const ttY = (Math.cos(_options.angle) / _options.scale.y);
+
+    function _transform(x, y) {
+        const x2 = x - midX;
+        const y2 = y - midY;
+        const newX = x2 * tX + y2 * ttX + _options.offset.x + midX;
+        const newY = x2 * tY + y2 * ttY + _options.offset.y + midY;
+        return _options.src(newX, newY);
     }
-    return _takeColor;
+    return _transform;
+}
+
+function limit(options) {
+    const _options = {
+        xlim: {min: 0, max: 250},
+        ylim: {min: 0, max: 250},
+        ...options
+    };
+
+    function _limit(x, y) {
+        if (x >= _options.xlim.min && x <= _options.xlim.max && y >= _options.ylim.min && y <= _options.ylim.max)
+            return _options.src(x, y);
+        return functionsColor.examples.TRANSPARENT;
+    }
+    return _limit;
+}
+
+function pixelate(options) {
+    const _options = {
+        size: {x: 1, y: 1},
+        ...options
+    };
+    function _pixelate(x, y) {
+        return _options.src(_options.size.x * Math.floor(x / _options.size.x), _options.size.y * Math.floor(y / _options.size.y));
+    }
+    return _pixelate;
+}
+
+function negative(options) {
+    function _negative (x, y){
+        const pixel = options.src(x, y);
+        return functionsColor.createColor(255 - pixel.red, 255 - pixel.green, 255 - pixel.blue, pixel.alpha);
+    }
+    return _negative;
+}
+
+function changeRGBAColor(options){
+    const _options = {
+        red: undefined,
+        blue: undefined,
+        green: undefined,
+        alpha: undefined,
+        ...options
+    };
+    function _changeRGBAColor(x, y) {
+        const color = _options.src(x, y);
+        const red = _options.red === undefined ? color.red : _options.red;
+        const green = _options.green === undefined ? color.green : _options.green;
+        const blue = _options.blue === undefined ? color.blue : _options.blue;
+        const alpha = _options.alpha === undefined ? color.alpha : _options.alpha;
+        return functionsColor.createColor(red, green, blue, alpha);
+    }
+    return _changeRGBAColor;
 }
 
 function blackWhite(options){
@@ -259,12 +330,17 @@ function repeat(options){
 }
 	
 function anaglyphe(options){
+    const _options = {
+        dx: 0,
+        dy: 0,
+        ...options
+    }
     function _anaglyphe(x, y) {
-        const srcColorRed = (x, y) => { return options.src(x + options.dx, y + options.dy); };
-        const srcColorCyan = (x, y) => { return options.src(x - options.dx, y - options.dy); };
+        const srcColorRed = (x, y) => { return _options.src(x + _options.dx, y + _options.dy); };
+        const srcColorCyan = (x, y) => { return _options.src(x - _options.dx, y - _options.dy); };
         
-        const redImage = takeColor({ src: srcColorRed, takeRed: true, takeGreen: false, takeBlue: false });
-        const cyanImage = takeColor({ src: srcColorCyan, takeRed: false, takeGreen: true, takeBlue: true });
+        const redImage = changeRGBAColor({ src: srcColorRed, green: 0, blue: 0 });
+        const cyanImage = changeRGBAColor({ src: srcColorCyan, red: 0 });
 
         const alphaRed = setOpacity({src: redImage, coef: 0.5});
         const alphaCyan = setOpacity({src: cyanImage, coef: 0.5});
@@ -310,13 +386,13 @@ function convolution(options) {
  * @param {number} kernelSize
  * @param {number} sigma
  */
-function createKernel(options) {    
+function createKernel(options) {
     if (options.kernelSize % 2 === 0)
-	throw new Error("Error : even kernel size");
+        throw new Error("Error : even kernel size");
     else
-	return [...Array(options.kernelSize)].map(
+        return [...Array(options.kernelSize)].map(
             (line, x) => [...Array(options.kernelSize)].map(
-		(value, y) => Math.exp(((x - (options.kernelSize - 1) / 2) ** 2 + (y - (options.kernelSize - 1) / 2) ** 2) / (-2 * (options.sigma ** 2))) / (2 * Math.PI * (options.sigma ** 2))));
+                (value, y) => Math.exp(((x - (options.kernelSize - 1) / 2) ** 2 + (y - (options.kernelSize - 1) / 2) ** 2) / (-2 * (options.sigma ** 2))) / (2 * Math.PI * (options.sigma ** 2))));
 }
 
 /**
@@ -361,12 +437,16 @@ function gaussianBlur(options) {
 
 exports.mirror = mirror;
 exports.composition = composition;
-// exports.smooth = smooth;
-exports.setOpacity = setOpacity;
+exports.bulge = bulge;
+exports.transform = transform;
+exports.pixelate = pixelate;
+exports.negative = negative;
+exports.limit = limit;
+exports.repeat = repeat;
 exports.translate = translate;
-exports.takeColor = takeColor;
+exports.setOpacity = setOpacity;
+exports.changeRGBAColor = changeRGBAColor;
 exports.blackWhite = blackWhite;
 exports.anaglyphe = anaglyphe;
-exports.repeat = repeat;
 exports.gaussianBlur = gaussianBlur;
 exports.createKernel = createKernel;
