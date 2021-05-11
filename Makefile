@@ -1,7 +1,7 @@
 all: gen
 
 test:
-	@npx jest --coverage
+	@npx jest --config="src/test/jest.config.js" --coverage
 
 gen: clean
 	@mkdir -p public/scripts
