@@ -1,12 +1,17 @@
 const functionsColor = require('./colors.js');
 
 /**
- * 
- * @param {*} generator 
- * @param {*} axe 
- * @param {*} height 
- * @param {*} width 
- * @returns 
+ * @typedef {Object} MirrorOptions
+ * @property {function(number,number): color} generator - Function computing a color depending on a pixel coordinate
+ * @property {string} axe - Axes to take to apply the mirror effect ("x", "y" or "xy")
+ * @property {number} width - Width of the image
+ * @property {number} height - Height of the image
+ */
+
+/**
+ * Compute a mirror effect depending on x or/and y axes
+ * @param {MirrorOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
  */
 function mirror(options) {
     if (options.axe === "x")
@@ -19,11 +24,15 @@ function mirror(options) {
 }
 
 /**
- * 
- * @param {*} generator1 
- * @param {*} generator2 
- * @param {*} color 
- * @returns 
+ * @typedef {Object} CompositionOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {function(number,number): color} dst - Function computing a color depending on a pixel coordinate
+ */
+
+/**
+ * Compute a xor composition of a source and destination image
+ * @param {CompositionOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
  */
 function xor(options) {
     function _xor(x, y) {
@@ -33,17 +42,16 @@ function xor(options) {
             gen1Color.red ^ gen2Color.red,
             gen1Color.green ^ gen2Color.green,
             gen1Color.blue ^ gen2Color.blue,
-            255
+            Math.max(gen1Color.alpha, gen2Color.alpha)
             );
     }
     return _xor;
 }
 
 /**
- * 
- * @param {*} src : generator1 
- * @param {*} dst : generator2 
- * @returns 
+ * Compute an over composition of a source and destination image
+ * @param {CompositionOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
  */
 function over(options) {
     function _over(x, y) {
@@ -63,11 +71,9 @@ function over(options) {
 }
 
 /**
- * 
- * @param {*} generator1 
- * @param {*} generator2 
- * @param {*} color 
- * @returns 
+ * Compute a src composition of a source and destination image
+ * @param {CompositionOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
  */
 function inSrc(options) {
     function _inSrc(x, y) {
@@ -84,11 +90,9 @@ function inSrc(options) {
 }
 
 /**
- * 
- * @param {*} generator1 
- * @param {*} generator2 
- * @param {*} color 
- * @returns 
+ * Compute an out composition of a source and destination image
+ * @param {CompositionOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
  */
 function out(options) {
     function _out(x, y) {
@@ -105,22 +109,25 @@ function out(options) {
 }
 
 /**
- * 
- * @param {*} generator1 
- * @param {*} generator2 
- * @param {*} color 
- * @returns 
+ * Compute an atop composition of a source and destination image
+ * @param {CompositionOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
  */
 function atop(options) {
     return over({src: inSrc(options), dst: options.dst});
 }
 
 /**
- * 
- * @param {*} generator1 
- * @param {*} generator2 
- * @param {*} operation 
- * @returns 
+ * @typedef {Object} OperationOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {function(number,number): color} dst - Function computing a color depending on a pixel coordinate
+ * @property {function(number,number): color} op - Function computing a color depending on a src and dst color point (R, G, B, or A)
+ */
+
+/**
+ * Compute a composition of a source and destination image depending on a function op
+ * @param {OperationOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
  */
 function operation(options) {
     function _operation(x, y) {
@@ -136,6 +143,11 @@ function operation(options) {
     return _operation;
 }
 
+/**
+ * Compute a multiply composition of a source and destination image
+ * @param {CompositionOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function multiply(options) {
     return operation({
         op: (a, b) => { return ((a / 255) * (b / 255) * 255); },
@@ -144,6 +156,11 @@ function multiply(options) {
     });
 }
 
+/**
+ * Compute a screen composition of a source and destination image
+ * @param {CompositionOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function screen(options) {
     return operation({
         op: (a, b) => { return (1 - (1 - a / 255) * (1 - b / 255)) * 255; },
@@ -152,6 +169,11 @@ function screen(options) {
     });
 }
 
+/**
+ * Compute a divide composition of a source and destination image
+ * @param {CompositionOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function divide(options) {
     return operation({
         op: (a, b) => { return ((((b + 1) / (a + 1)) * 255)); },
@@ -160,6 +182,11 @@ function divide(options) {
     });
 }
 
+/**
+ * Compute an add composition of a source and destination image
+ * @param {CompositionOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function add(options) {
     return operation({
         op: (a, b) => { return (a + b); },
@@ -168,6 +195,11 @@ function add(options) {
     });
 }
 
+/**
+ * Compute a minus composition of a source and destination image
+ * @param {CompositionOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function minus(options) {
     return operation({
         op: (a, b) => { if (a > b) { return 0; } return (b - a); },
@@ -176,7 +208,23 @@ function minus(options) {
     });
 }
 
+/**
+ * @typedef {Object} ClearOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {function(number,number): color} toClear - Function determining if a pixel has to be transparent or not
+ */
+
+/**
+ * Return a transparent color for a pixel coordinate depending on the truth value of toClear function,
+ * the color of the src image else
+ * @param {ClearOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate (default: true)
+ */
 function clear(options) {
+    const _options = {
+        toClear: () => true,
+        ...options
+    }
     return (x, y) => {
         if (options.toClear(x, y))
             return functionsColor.examples.TRANSPARENT;
@@ -184,15 +232,32 @@ function clear(options) {
     };
 }
 
-const composition = { operation, multiply, screen, divide, add, minus, atop, out, inSrc, over, xor, clear };
+/**
+ * Dictionary of every composition implemented
+ */
+const composition = { operation, multiply, screen, divide, add, minus, atop, out, inSrc, over, xor };
 
+/**
+ * @typedef {Object} BulgeOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {{width: number, height: number}} size - Size of the image (default = { width: 250, height: 250 })
+ * @property {{x: number, y: number}} bulge - Relative coordinate of where the bulge will be (default : {x: 0.5, y: 0.5})
+ * @property {number} coef - Coefficient of the bulge (default : 0) < 0 means implosion and > 0 explosion
+ */
+
+/**
+ * Return a transparent color for a pixel coordinate depending on the truth value of toClear function,
+ * the color of the src image else
+ * @param {BulgeOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function bulge(options) {
     const _options = {
         size: {width: 250, height: 250},
         bulge: {x: 0.5, y: 0.5},
         coef: 0,
         ...options
-    }
+    };
     const coef = _options.coef/2;
     function _bulge(x, y) {
         x /= _options.size.width;
@@ -200,7 +265,7 @@ function bulge(options) {
         const bulgeX = x - _options.bulge.x;
         const bulgeY = y - _options.bulge.y;
         const r = ((bulgeX) ** 2 + (bulgeY) ** 2);
-        let rn = 0
+        let rn = 0;
         if (r !== 0)
             rn = r ** (coef);
         return _options.src((rn * (bulgeX) + _options.bulge.x) * _options.size.width, (rn * (bulgeY) + _options.bulge.y) * _options.size.height);
@@ -208,6 +273,22 @@ function bulge(options) {
     return _bulge;
 }
 
+/**
+ * @typedef {Object} OpacityOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {number} coef - Coefficient to apply to the current opacity value (default = 0)
+ * @property {number} opacity - Constant to add to the current opacity (default : 0)
+ */
+
+
+/**
+ * Set the opacity of a source image by:
+ * - multiplying the current opacity by a coefficient
+ * - adding a constant opacity value
+ * The new opacity value is computed as: currentValue * coefficient + constantValue
+ * @param {OpacityOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function setOpacity(options) {
     const _options = {
         coef: 0,
@@ -226,26 +307,34 @@ function setOpacity(options) {
     return opacity;
 }
 
-function translate(options){
-    const _options = {
-        dx: 0,
-        dy: 0,
-        ...options
-    };
-    return (x,y) => _options.src(x + _options.dx, y + _options.dy);
-}
+/**
+ * @typedef {Object} TransformOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {{width: number, height: number}} size - Size of the image (default = { width: 250, height: 250 })
+ * @property {{x: number, y: number}} offset - Offset to apply to translate the image (default = { x: 0, y: 0 })
+ * @property {{x: number, y: number}} scale - Coefficient to apply in order to resize an image (default = { x: 1, y: 1 })
+ * @property {number} angle - Angle in degree in order to rotate an image (default : 0)
+ */
 
+/**
+ * Do one or more of the following transformation on a source image :
+ * - Scaling
+ * - Translating
+ * - Rotating
+ * @param {TransformOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function transform(options) {
     const _options = {
-        size: {x: 250, y: 250},
+        size: {width: 250, height: 250},
         offset: {x: 0, y: 0},
         scale: {x: 1, y: 1},
         angle: 0,
         ...options
     };
     _options.angle = _options.angle * Math.PI / 180;
-    const midX = _options.size.x / 2;
-    const midY = _options.size.x / 2;
+    const midX = _options.size.width / 2;
+    const midY = _options.size.height / 2;
     const tX = (Math.cos(_options.angle) / _options.scale.x);
     const tY = (Math.sin(_options.angle) / _options.scale.y);
     const ttX = -(Math.sin(_options.angle) / _options.scale.x);
@@ -261,6 +350,19 @@ function transform(options) {
     return _transform;
 }
 
+/**
+ * @typedef {Object} LimitOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {{min: number, max: number}} xlim - Boundary for the x axis of the src image (default = { min: 0, max: 250 })
+ * @property {{min: number, max: number}} ylim - Boundary for the y axis of the src image (default = { min: 0, max: 250 })
+ */
+
+/**
+ * Limit the computing a source image between (xmin, ymin) and (xmax, ymax)
+ * return a transparent color if the coordinate are not in this interval
+ * @param {LimitOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function limit(options) {
     const _options = {
         xlim: {min: 0, max: 250},
@@ -276,17 +378,38 @@ function limit(options) {
     return _limit;
 }
 
+/**
+ * @typedef {Object} PixelateOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {{x: number, y: number}} size - New size of the pixel on the image (default = { x: 1, y: 1 })
+ */
+
+/**
+ * Pixelate an image
+ * @param {PixelateOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function pixelate(options) {
     const _options = {
         size: {x: 1, y: 1},
         ...options
     };
-    function _pixelate(x, y) {
+    function _pixelate(x, y) {
         return _options.src(_options.size.x * Math.floor(x / _options.size.x), _options.size.y * Math.floor(y / _options.size.y));
     }
     return _pixelate;
 }
 
+/**
+ * @typedef {Object} CommonOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ */
+
+/**
+ * Negative the colors of an image
+ * @param {CommonOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function negative(options) {
     function _negative (x, y){
         const pixel = options.src(x, y);
@@ -295,11 +418,25 @@ function negative(options) {
     return _negative;
 }
 
+/**
+ * @typedef {Object} ChangeRGBAOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {number|undefined} red - New red value to apply to the image (default = undefined, e.g no change)
+ * @property {number|undefined} green - New green value to apply to the image (default = undefined, e.g no change)
+ * @property {number|undefined} blue - New blue value to apply to the image (default = undefined, e.g no change)
+ * @property {number|undefined} alpha - New alpha value to apply to the image (default = undefined, e.g no change)
+ */
+
+/**
+ * Change one or more component of the rgba color of a source image
+ * @param {ChangeRGBAOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function changeRGBAColor(options){
     const _options = {
         red: undefined,
-        blue: undefined,
         green: undefined,
+        blue: undefined,
         alpha: undefined,
         ...options
     };
@@ -314,6 +451,11 @@ function changeRGBAColor(options){
     return _changeRGBAColor;
 }
 
+/**
+ * Transform a source image to a black and white image
+ * @param {CommonOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function blackWhite(options){
     function _blackWhite(x, y) {
         const color = options.src(x,y);
@@ -323,18 +465,43 @@ function blackWhite(options){
     return _blackWhite;
 }
 
+/**
+ * @typedef {Object} RepeatOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {number} width - Width of the image
+ * @property {number} height - Height of the image
+ * @property {number} size - Size of the new image
+ */
+
+/**
+ * Repeat an image depending on a width, height and size factor
+ * @param {RepeatOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function repeat(options){
     const x_scale = options.width / options.size;
     const y_scale = options.height / options.size;
     return (x, y) => options.src((x * x_scale) % (options.size * x_scale), (y * y_scale) % (options.size * y_scale));
 }
-	
+
+/**
+ * @typedef {Object} AnaglypheOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {number} dx - Translation in x of the cyan and red mask (default = 0)
+ * @property {number} dy - Translation in y of the cyan and red mask (default = 0)
+ */
+
+/**
+ * Transform an image to an anaglyphe image (basic 3D image effect)
+ * @param {AnaglypheOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
+ */
 function anaglyphe(options){
     const _options = {
         dx: 0,
         dy: 0,
         ...options
-    }
+    };
     function _anaglyphe(x, y) {
         const srcColorRed = (x, y) => { return _options.src(x + _options.dx, y + _options.dy); };
         const srcColorCyan = (x, y) => { return _options.src(x - _options.dx, y - _options.dy); };
@@ -410,11 +577,16 @@ function copyFunction(options) {
 }
 
 /**
+ * @typedef {Object} GaussianBlurOptions
+ * @property {function(number,number): color} src - Function computing a color depending on a pixel coordinate
+ * @property {[]} kernel The Gaussian Blur kernel
+ * @property {number} kernelSize The size of the Gaussian kernel
+ */
+
+/**
  * Returns the blurred image with Gaussian blur
- *
- * @param {function} image The image to be blurred
- * @param {object} kernel The Gaussian Blur kernel
- * @param {number} kernelSize The size of the Gaussian kernel
+ * @param {GaussianBlurOptions} options Set of options to pass to the filter function
+ * @returns {function(x,y)} Function computing a color depending on a pixel coordinate
  */
 function gaussianBlur(options) {
     function blurIntern(x, y) {
@@ -422,7 +594,7 @@ function gaussianBlur(options) {
             {
                 matrix1: copyFunction(
                     {
-                        image: options.image,
+                        image: options.src,
                         x: x,
                         y: y,
                         kernelSize: options.kernelSize
@@ -436,6 +608,7 @@ function gaussianBlur(options) {
 
 
 exports.mirror = mirror;
+exports.clear = clear;
 exports.composition = composition;
 exports.bulge = bulge;
 exports.transform = transform;
@@ -443,7 +616,6 @@ exports.pixelate = pixelate;
 exports.negative = negative;
 exports.limit = limit;
 exports.repeat = repeat;
-exports.translate = translate;
 exports.setOpacity = setOpacity;
 exports.changeRGBAColor = changeRGBAColor;
 exports.blackWhite = blackWhite;
