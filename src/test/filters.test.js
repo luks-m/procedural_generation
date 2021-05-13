@@ -36,7 +36,7 @@ function test_gaussian_blur() {
 
         const filtered_pixel = filters.gaussianBlur(
             {
-                image: unfiltered_pixel,
+                src: unfiltered_pixel,
                 kernel: kernel,
                 kernelSize: 5
             });
