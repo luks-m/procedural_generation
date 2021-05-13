@@ -2,6 +2,14 @@ const helpers = require('./helpers.js');
 const geometric = require('./geometricPredicate.js');
 const colorFunctions = require('./colors.js');
 
+function solid(options) {
+    const _options = {
+        color: colorFunctions.examples.TRANSPARENT,
+        ...options
+    };
+    return () => _options.color;
+}
+
 /**
  * A checkerboard generator
  *
@@ -401,6 +409,7 @@ function generator(generators, size, color1, color2) {
     return getGenerators;
 }
 
+exports.solid = solid;
 exports.checkerboard = checkerboard;
 exports.rectangleTriangle = rectangleTriangle;
 exports.isoscelesTriangle = isoscelesTriangle;
