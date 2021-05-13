@@ -153,6 +153,7 @@ function perlinNoiseGenerator(width, height, options) {
 
     /**
      * Tools to compute gradient noise
+     * @param {function} randomValue - Function returning a random value in range ]-1, 1[
      * @returns {function} - Function returning a noise value for coordinates (x, y) according to a gradient noise
      */
     function gradientNoise(randomValue) {
