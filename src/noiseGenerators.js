@@ -668,55 +668,50 @@ function worleyNoiseGenerator(width, height, options) {
         get_noise: false,
         ...options
     };
-    const SEED = options.seed;
-    const TYPE = options.type;
-    const DISTANCE = options.distance;
-    const THREE_DIMENSIONS = options.three_dimensions;
-    const COLORED = options.colored;
-    const NUMBER_OF_POINTS = options.number_of_points;
-    const GET_NOISE = options.get_noise;
 
+    const random = helpers.makeRandom(options.seed);
 
-    const random = helpers.makeRandom(SEED);
-
-    const featurePoints = generateFeaturePoints();
+    const featurePoints = generateFeaturePoints(random, options.number_of_points);
     let distances = {}; // cache
 
-    const getDist = loadArgType();
-    const distanceFormula = loadArgDistance();
-    const distanceDimension = THREE_DIMENSIONS ? distanceFormula.three_dim : distanceFormula.two_dim;
-
+    const distanceFormulas = loadArgDistance(options.distance);
+    const distanceDimension = options.three_dimensions ? distanceFormulas.three_dim : distanceFormulas.two_dim;
+    const getDist = loadArgType(options.type)(distanceDimension, options.number_of_points, featurePoints);
 
     /**
      * Get the type of distance to compute according to user's input
-     * @returns {function({number}, {number}): {number}} - Distance expression to use
+     * @param {('f1'|'f2'|'f2 - f1')} type - Type of distance to feature points to use
+     * @returns {function(((function({number}, {number}, {number}, {number}): {number})
+     * |(function({number}, {number}, {number}, {number}, {number}, {number}): {number})), {number}, {x: {number}, y: {number}, z: {number}}[])
+     * : function({number}, {number}): {number}} - Distance expression to use
      */
-    function loadArgType() {
-        if (TYPE === 'f1')
-            return (x, y) => getNthNearestDistance(1, x, y);
-        else if (TYPE === 'f2 - f1')
-            return (x, y) => getNthNearestDistance(2, x, y) - getNthNearestDistance(1, x, y);
-        else if (TYPE === 'f2')
-            return (x, y) => getNthNearestDistance(2, x, y);
+    function loadArgType(type) {
+        if (type === 'f1')
+            return (distanceEval, number_of_points, featurePoints) => (x, y) => getNthNearestDistance(1, x, y, distanceEval, number_of_points, featurePoints);
+        else if (type === 'f2 - f1')
+            return (distanceEval, number_of_points, featurePoints) => (x, y) => getNthNearestDistance(2, x, y, distanceEval, number_of_points, featurePoints) - getNthNearestDistance(1, x, y, distanceEval, number_of_points, featurePoints);
+        else if (type === 'f2')
+            return (distanceEval, number_of_points, featurePoints) => (x, y) => getNthNearestDistance(2, x, y, distanceEval, number_of_points, featurePoints);
         else
-            throw Error(`${TYPE} is not a valid distance type. Valid distance types are 'f1', 'f2' and 'f2 - f1'`);
+            throw Error(`${type} is not a valid distance type. Valid distance types are 'f1', 'f2' and 'f2 - f1'`);
     }
 
 
     /**
      * Get the distance formula to use according to user's input
+     * @param {('euclidean'|'manhattan'|'chebyshev')} distance - Distance formula to use
      * @returns {{two_dim: (function({number}, {number}, {number}, {number}): {number}),
      * three_dim: (function({number}, {number}, {number}, {number}, {number}, {number}): {number})}} - Distance formula to use
      */
-    function loadArgDistance() {
-        if (DISTANCE === 'euclidean')
+    function loadArgDistance(distance) {
+        if (distance === 'euclidean')
             return getDistanceEuclidean();
-        else if (DISTANCE === 'manhattan')
+        else if (distance === 'manhattan')
             return getDistanceManhattan();
-        else if (DISTANCE === 'chebyshev')
+        else if (distance === 'chebyshev')
             return getDistanceChebyshev();
         else
-            throw Error(`${DISTANCE} is not a valid distance formula. Distance formulas are 'euclidean', 'manhattan' and 'chebyshev'`);
+            throw Error(`${distance} is not a valid distance formula. Distance formulas are 'euclidean', 'manhattan' and 'chebyshev'`);
     }
 
 
@@ -872,20 +867,23 @@ function worleyNoiseGenerator(width, height, options) {
     /**
      * Get a random positive integer
      * @param {number} max - Maximum value
+     * @param {function} randomValue - Function returning a random value in range ]-1, 1[
      * @returns {number} - A random positive integer in range [0, max[
      */
-    function getInt(max) {
-        return Math.floor(helpers.changeRange(random(), -1, 1, 0, 1) * Math.floor(max));
+    function getInt(max, randomValue) {
+        return Math.floor(helpers.changeRange(randomValue(), -1, 1, 0, 1) * Math.floor(max));
     }
 
 
     /**
      * Randomly distribute feature points in a 3D volume
+     * @param {function} randomValue - Function returning a random value in range ]-1, 1[
+     * @param {number} number_of_points - Number of feature points
      * @returns {{x: number, y: number, z: number}[]} - Feature points coordinate in 3D space
      */
-    function generateFeaturePoints() {
-        return Array.from({length: NUMBER_OF_POINTS + 1}, () => {
-            return {x: getInt(width), y: getInt(height), z: getInt(width)};
+    function generateFeaturePoints(randomValue, number_of_points) {
+        return Array.from({length: number_of_points + 1}, () => {
+            return {x: getInt(width, randomValue), y: getInt(height, randomValue), z: getInt(width, randomValue)};
         });
     }
 
@@ -895,15 +893,19 @@ function worleyNoiseGenerator(width, height, options) {
      * @param {number} n - nth nearest distance to get (superior or equal to 1)
      * @param {number} x - x coordinate of the point
      * @param {number} y - y coordinate of the point
-     * @returns {{number}} - The distance betweehe point and the nth nearest feature point
+     * @param {((function({number}, {number}, {number}, {number}): {number})
+     * |(function({number}, {number}, {number}, {number}, {number}, {number}): {number}))} distanceEval - Function to evaluate distance to feature points
+     * @param {number} number_of_points - Number of feature points
+     * @param {{x: {number}, y: {number}, z: {number}}[]} featurePoints - Feature points coordinate in 3D space
+     * @returns {{number}} - The distance between the point and the nth nearest feature point
      */
-    function getNthNearestDistance(n, x, y) {
+    function getNthNearestDistance(n, x, y, distanceEval, number_of_points, featurePoints) {
         if (distances[[x, y]])
             return distances[[x, y]][n - 1];
 
         // Get distances from the given location to each seed points
-        const _distances = Array.from({length: NUMBER_OF_POINTS + 1},
-            (v, i) => distanceDimension(x, featurePoints[i].x, y, featurePoints[i].y, 0, featurePoints[i].z))
+        const _distances = Array.from({length: number_of_points + 1},
+            (v, i) => distanceEval(x, featurePoints[i].x, y, featurePoints[i].y, 0, featurePoints[i].z))
             .sort((d1, d2) => {
                 return d1 - d2;
             });
@@ -918,11 +920,13 @@ function worleyNoiseGenerator(width, height, options) {
      * Returns a RGBA pixel according to a coordinate
      * @param {number} x - x coordinate to compute the noise from
      * @param {number} y - y coordinate to compute the noise from
+     * @param {function({number}, {number}): {number}} getDist - Distance expression to use
+     * @param {boolean} colored - Put to true to have a colored image, else it will be B&W
      * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
      */
-    function getPixelColor(x, y) {
+    function getPixelColor(x, y, getDist, colored) {
         const distance = getDist(x, y);
-        if (COLORED) {
+        if (colored) {
             const R = helpers.changeRange(distance, 0, width / 6, 20, 74);
             const G = helpers.changeRange(distance, 0, width / 6, 45, 154);
             const B = helpers.changeRange(distance, 0, width / 6, 70, 216);
@@ -936,9 +940,9 @@ function worleyNoiseGenerator(width, height, options) {
     }
 
 
-    if (GET_NOISE)
+    if (options.get_noise)
         return (x, y) => helpers.changeRange(getDist(x, y), 0, width / 7, -2, 2);
-    return getPixelColor;
+    return (x, y) => getPixelColor(x, y, getDist, options.colored);
 }
 
 

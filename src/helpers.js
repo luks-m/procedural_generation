@@ -1,6 +1,6 @@
 /**
  * Convert a value from one range to another
- * @param {number} n - The value to change
+ * @param {{number}} n - The value to change
  * @param {number} min_old - Old lower bound of n
  * @param {number} max_old - Old upper bound of n
  * @param {number} min_new - New lower bound for n
