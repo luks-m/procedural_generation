@@ -2,6 +2,24 @@ const helpers = require('./helpers.js');
 const geometric = require('./geometricPredicate.js');
 const colorFunctions = require('./colors.js');
 
+/**
+ * @typedef {Object} Color
+ * @property {number} red Value of red
+ * @property {number} green Value of green
+ * @property {number} blue Value of blue
+ * @property {number} alpha Value of alpha
+ */
+
+/**
+ * @typedef {Object} SolidOptions
+ * @property {Color} color - Color to fill the image (default = TRANSPARENT)
+ */
+
+/**
+ * Create an image which is filled by a color (default = TRANSPARENT)
+ * @param {SolidOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
+ */
 function solid(options) {
     const _options = {
         color: colorFunctions.examples.TRANSPARENT,
@@ -11,11 +29,16 @@ function solid(options) {
 }
 
 /**
+ * @typedef {Object} CheckerBoardOptions
+ * @property {number} pixelPerCase The number of pixels which constitute a case
+ * @property {Color} color1 The first color of the checkerboard
+ * @property {Color} color2 The second color of the checkerboard
+ */
+
+/**
  * A checkerboard generator
- *
- * @param {number} pixelPerCase The number of pixels which constitute a case
- * @param {object} color1 The first color of the checkerboard
- * @param {object} color2 The second color of the checkerboard
+ * @param {CheckerBoardOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function checkerboard(options) {
     function _checkerboard(x, y) {
@@ -28,13 +51,17 @@ function checkerboard(options) {
     return _checkerboard;
 }
 
+/**
+ * @typedef {Object} CommonOptions
+ * @property {number} size The number of pixels which constitute a case
+ * @property {Color} color1 The first color of the checkerboard
+ * @property {Color} color2 The second color of the checkerboard
+ */
 
 /**
- * 
- * @param {*} size 
- * @param {*} color1 
- * @param {*} color2 
- * @returns 
+ * A generator of rectangle triangle
+ * @param {CommonOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function rectangleTriangle(options) {
     function _rectangleTriangle(x, y) {
@@ -47,11 +74,9 @@ function rectangleTriangle(options) {
 }
 
 /**
- * 
- * @param {*} size 
- * @param {*} color_1 
- * @param {*} color_2 
- * @returns 
+ * A generator of isocele triangle
+ * @param {CommonOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function isoscelesTriangle(options) {
     function _isoscelesTriangle(x, y) {
@@ -71,11 +96,9 @@ function isoscelesTriangle(options) {
 }
 
 /**
- * 
- * @param {*} size 
- * @param {*} color_1 
- * @param {*} color_2 
- * @returns 
+ * A generator of equilateral triangle
+ * @param {CommonOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function equilateralTriangle(options) {
     function _equilateralTriangle(x, y) {
@@ -95,11 +118,9 @@ function equilateralTriangle(options) {
 }
 
 /**
- * 
- * @param {*} size 
- * @param {*} color_1 
- * @param {*} color_2 
- * @returns 
+ * A generator of zigzag
+ * @param {CommonOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function zigzag(options) {
     function _zigzag(x, y) {
@@ -119,11 +140,9 @@ function zigzag(options) {
 }
 
 /**
- * @todo rename quadrillage
- * @param {*} size 
- * @param {*} color_1 
- * @param {*} color_2 
- * @returns 
+ * A generator of a grid image
+ * @param {CommonOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function grid(options) {
     function _grid(x, y) {
@@ -132,16 +151,13 @@ function grid(options) {
         }
         return options.color2;
     }
-
     return _grid;
 }
 
 /**
- * 
- * @param {*} size 
- * @param {*} color_1 
- * @param {*} color_2 
- * @returns 
+ * A generator of square image
+ * @param {CommonOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function square(options) {
     function _square(x, y) {
@@ -154,11 +170,9 @@ function square(options) {
 }
 
 /**
- * 
- * @param {*} size 
- * @param {*} color_1 
- * @param {*} color_2 
- * @returns 
+ * A generator of vichy pattern
+ * @param {CommonOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function vichy(options) {
     function _vichy(x, y) {
@@ -171,11 +185,9 @@ function vichy(options) {
 }
 
 /**
- * 
- * @param {*} size 
- * @param {*} color_1 
- * @param {*} color_2 
- * @returns 
+ * A generator of double vichy pattern
+ * @param {CommonOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function doubleVichy(options) {
     function _doubleVichy(x, y) {
@@ -189,11 +201,9 @@ function doubleVichy(options) {
 }
 
 /**
- * 
- * @param {*} size 
- * @param {*} color_1 
- * @param {*} color_2 
- * @returns 
+ * A generator of hourglass pattern
+ * @param {CommonOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function hourglass(options) {
     function _hourglass(x, y) {
@@ -206,12 +216,17 @@ function hourglass(options) {
 }
 
 /**
- * 
- * @param {*} size 
- * @param {*} width 
- * @param {*} color1 
- * @param {*} color2 
- * @returns 
+ * @typedef {Object} OctogonalOptions
+ * @property {number} size The number of pixels which constitute a case
+ * @property {number} width The line width
+ * @property {Color} color1 The first color of the checkerboard
+ * @property {Color} color2 The second color of the checkerboard
+ */
+
+/**
+ * A generator of octogonale form
+ * @param {OctogonalOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function octagonal(options) {
     const pred = [
@@ -230,14 +245,21 @@ function octagonal(options) {
     return _octagonal;
 }
 
+
 /**
- * 
- * @param {*} size1 
- * @param {*} size2 
- * @param {*} width 
- * @param {*} color1 
- * @param {*} color2 
- * @returns 
+ * @typedef {Object} GrandmaOptions
+ * @property {number} size1 Size for the double vichy generator
+ * @property {number} size2 Size for the octagonal generator
+ * @property {number} width The line width
+ * @property {Color} color1 The first color of the checkerboard
+ * @property {Color} color2 The second color of the checkerboard
+ */
+
+/**
+ * A generator of particular texture ressembling to old pattern
+ * Use doubleVichy generator and octagonal generator
+ * @param {GrandmaOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function grandmaTexture(options) {
     const pred1 = doubleVichy({ size: options.size1, color1: options.color1, color2: options.color2 });
@@ -254,24 +276,38 @@ function grandmaTexture(options) {
 }
 
 /**
- * @todo implement generator
- * @param {*} color1 
- * @param {*} color2 
- * @returns 
+ * @typedef {Object} BeeOptions
+ * @property {Color} color1 The first color of the checkerboard
+ * @property {Color} color2 The second color of the checkerboard
+ */
+
+/**
+ * A generator of a particular texture
+ * Use particulars values for the grandmaTexture generator
+ * @param {BeeOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function beePattern(options) {
     let size1 = 20;
     let size2 = 8.33;
     const pred = grandmaTexture({ size1: size1, size2: size2, width: 1, color1: options.color1, color2: options.color2 });
-    const f = (x, y) => { return [x % size1, y % size1]; };
-    return generator([pred], [f], options.color1, options.color2);
+
+    function compute(x, y) {
+        return pred(x % size1, y % size1);
+    }
+    return compute;
 }
 
 /**
- * 
- * @param {*} center 
- * @param {*} color 
- * @returns 
+ * @typedef {Object} VoronoiOptions
+ * @property {[[number, number], ...[number, number]]} center Array of array of point coordinates
+ * @property {[Color, ...Color]} color Array of color corresponding of the point coordinates
+ */
+
+/**
+ * Generator for Voronoi interpretation of points
+ * @param {VoronoiOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function voronoi(options) {
     function _voronoi(x, y) {
@@ -286,11 +322,16 @@ function voronoi(options) {
 }
 
 /**
- * 
- * @param {*} height 
- * @param {*} width 
- * @param {*} number 
- * @returns 
+ * @typedef {Object} VoronoiRandomOptions
+ * @property {number} number Number of point to generate
+ * @property {number} width Width of the image
+ * @property {number} height Height of the image
+ */
+
+/**
+ * Generator for Voronoi interpretation on `number` random points
+ * @param {VoronoiRandomOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function voronoiRandom(options) {
     const _options = [...Array(options.number).keys()].reduce((accumulator) => {
@@ -304,11 +345,16 @@ function voronoiRandom(options) {
 }
 
 /**
- * @todo Move to example of generator using voronoi ?
- * @param {*} height 
- * @param {*} width 
- * @param {*} size 
- * @returns 
+ * @typedef {Object} VoronoiFormsOptions
+ * @property {number} width Width of 
+ * @property {number} height Height of
+ * @property {number} size Size of
+ */
+
+/**
+ * Generator of hexagonal form using Voronoi interpretation of points
+ * @param {VoronoiFormsOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function voronoiHexagonal(options) {
     const numberPointHeight = 3 * Math.floor(options.height / options.size);
@@ -332,11 +378,9 @@ function voronoiHexagonal(options) {
 }
 
 /**
- * 
- * @param {*} height 
- * @param {*} width 
- * @param {*} size 
- * @returns 
+ * Generator of pentagonal form using Voronoi interpretation of points
+ * @param {VoronoiFormsOptions} options Set of options for this generator function
+ * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function voronoiPentagonal(options) {
     const numberPointHeight = 3 * Math.floor(options.height / options.size);
@@ -374,41 +418,6 @@ function voronoiPentagonal(options) {
     return voronoi(_options);
 }
 
-
-/////////////////////////////////////////////////////
-/**
- * @todo : REFACTOR generator function usage
- */
-/////////////////////////////////////////////////////
-function generator(generators, size, color1, color2) {
-    function getOtherColor(actualColor, color1, color2) {
-        if (colorFunctions.compareColor(actualColor, color1)) {
-            return color2;
-        }
-        return color1;
-    }
-    function getGenerators(x, y) {
-        function getColor(acc, curr) {
-            if (acc) {
-                acc = colorFunctions.compareColor(color1, curr);
-            }
-            else {
-                let new_color = getOtherColor(curr, color1, color2);
-                acc = colorFunctions.compareColor(color1, new_color);
-            }
-            return acc;
-        }
-        let color = generators.map((f, i) => { let [x1, y1] = size[i](x, y); return f(x1, y1); });
-        let bool = color.reduce((acc, curr) => getColor(acc, curr), true);
-        if ((bool && colorFunctions.compareColor(color[color.length - 1], color1)) || (!bool && !colorFunctions.compareColor(color[color.length - 1], color1))) {
-            return color[color.length - 1];
-        }
-        return getOtherColor(color[color.length - 1], color1, color2);
-    }
-
-    return getGenerators;
-}
-
 exports.solid = solid;
 exports.checkerboard = checkerboard;
 exports.rectangleTriangle = rectangleTriangle;
@@ -426,4 +435,3 @@ exports.voronoi = voronoi;
 exports.voronoiRandom = voronoiRandom;
 exports.voronoiHexagonal = voronoiHexagonal;
 exports.voronoiPentagonal = voronoiPentagonal;
-exports.generator = generator;
