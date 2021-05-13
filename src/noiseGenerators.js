@@ -472,8 +472,6 @@ function fractalNoiseGenerator(width, height, options) {
         }
     };
 
-    const fractalGen = options.fractal;
-    const noiseGen = options.fractalOptions.noiseGen;
     const noiseSeed = options.fractalOptions.noiseSeed;
     const argsList = options.fractalOptions.argsList;
     const OCTAVES = options.fractalOptions.octaves;
@@ -487,17 +485,19 @@ function fractalNoiseGenerator(width, height, options) {
 
     let maxNoiseHeight;
     let minNoiseHeight;
-    const [initial_noiseHeight, octaveNoiseTransformation] = loadArgFractalGen();
+    const [initial_noiseHeight, octaveNoiseTransformation] = loadArgFractalGen(options.fractal, options.fractalOptions.noiseGen);
 
 
-    const octaveGenerator = getOctaveGenerator();
+    const octaveGenerator = getOctaveGenerator(options.fractalOptions.noiseGen);
 
 
     /**
      * Return the type of distance to compute according to user's input
+     * @param {('fbm'|'turbulence'|'ridged')} fractalGen - Type of fractal noise to compute
+     * @param {('perlin'|'worley')} noiseGen - Noise generator to compute the noise with
      * @returns {(number|(function({number}, {number})))[]}
      */
-    function loadArgFractalGen() {
+    function loadArgFractalGen(fractalGen, noiseGen) {
         if (fractalGen === 'fbm') {
             maxNoiseHeight = 1;
             minNoiseHeight = -1;
@@ -519,9 +519,10 @@ function fractalNoiseGenerator(width, height, options) {
 
     /**
      * Returns a list of generator to use for each octave according to user's input
+     * @param {('perlin'|'worley')} noiseGen - Noise generator to compute the noise with
      * @returns {function[]} - Array of generators for each of the octave
      */
-    function getOctaveGenerator() {
+    function getOctaveGenerator(noiseGen) {
         if (noiseGen === 'worley')
             return Array.from({length: OCTAVES}, (v, i) => worleyNoiseGenerator(width * (LACUNARITY ** i), height * (LACUNARITY ** i), {
                 ...argsList,
@@ -548,9 +549,18 @@ function fractalNoiseGenerator(width, height, options) {
      * Returns the noise value at given coordinate
      * @param {number} x - x coordinate to compute the noise from
      * @param {number} y - y coordinate to compute the noise from
+     * @param {function[]} octaveGenerator - Array of generators for each of the octave
+     * @param {number} initial_noiseHeight - Initial noise height for the summation of octaves
+     * @param {function({number}, {number})} octaveNoiseTransformation - Transformation to apply to the noise value and frequency
+     * @param {number} octaves - Number of frequency octaves to generate the noise with
+     * @param {number} persistence - A multiplier that determines how quickly the amplitude increases for each successive octave
+     * @param {number} lacunarity - A multiplier that determines how quickly the frequency increases for each successive octave
+     * @param {number} initial_amplitude - Initial amplitude for the first octave
+     * @param {number} initial_frequency - Initial frequency for the first octave
      * @returns {number} - noise value between -1 and 1
      */
-    function getNoiseHeight(x, y) {
+    function getNoiseHeight(x, y, octaveGenerator, initial_noiseHeight, octaveNoiseTransformation,
+                            octaves, persistence, lacunarity, initial_amplitude, initial_frequency) {
 
         /**
          * Returns the noise value at given octave
@@ -568,9 +578,9 @@ function fractalNoiseGenerator(width, height, options) {
             return octaveNoiseTransformation(noiseValue, amplitude);
         }
 
-        const noiseHeight = Array.from({length: OCTAVES},
+        const noiseHeight = Array.from({length: octaves},
             (v, i) =>
-                getOctaveValue(i, INITIAL_AMPLITUDE * PERSISTENCE ** (i + 1), INITIAL_FREQUENCY * LACUNARITY ** i))
+                getOctaveValue(i, initial_amplitude * persistence ** (i + 1), initial_frequency * lacunarity ** i))
             .reduce((prev, curr) => prev + curr, initial_noiseHeight);
 
         if (noiseHeight > maxNoiseHeight)
@@ -586,11 +596,22 @@ function fractalNoiseGenerator(width, height, options) {
      * Returns a RGBA pixel according to a coordinate
      * @param {number} x - x coordinate to compute the noise from
      * @param {number} y - y coordinate to compute the noise from
+     * @param {function[]} octaveGenerator - Array of generators for each of the octave
+     * @param {number} initial_noiseHeight - Initial noise height for the summation of octaves
+     * @param {function({number}, {number})} octaveNoiseTransformation - Transformation to apply to the noise value and frequency
+     * @param {number} octaves - Number of frequency octaves to generate the noise with
+     * @param {number} persistence - A multiplier that determines how quickly the amplitude increases for each successive octave
+     * @param {number} lacunarity - A multiplier that determines how quickly the frequency increases for each successive octave
+     * @param {number} initial_amplitude - Initial amplitude for the first octave
+     * @param {number} initial_frequency - Initial frequency for the first octave
+     * @param {boolean} colored - Put to true to have a colored image, else it will be B&W
      * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
      */
-    function getPixelColor(x, y) {
-        const v = getNoiseHeight(x, y);
-        if (COLORED) {
+    function getPixelColor(x, y, octaveGenerator, initial_noiseHeight, octaveNoiseTransformation,
+                           octaves, persistence, lacunarity, initial_amplitude, initial_frequency, colored) {
+        const v = getNoiseHeight(x, y, octaveGenerator, initial_noiseHeight, octaveNoiseTransformation,
+            octaves, persistence, lacunarity, initial_amplitude, initial_frequency);
+        if (colored) {
             const R = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 20, 87);
             const G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
             const B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
@@ -603,9 +624,11 @@ function fractalNoiseGenerator(width, height, options) {
     }
 
     if (GET_NOISE)
-        return (x, y) => helpers.changeRange(getNoiseHeight(x, y), minNoiseHeight, maxNoiseHeight, -1, 1);
+        return (x, y) => helpers.changeRange(getNoiseHeight(x, y, octaveGenerator, initial_noiseHeight, octaveNoiseTransformation,
+            OCTAVES, PERSISTENCE, LACUNARITY, INITIAL_AMPLITUDE, INITIAL_FREQUENCY), minNoiseHeight, maxNoiseHeight, -1, 1);
     else
-        return getPixelColor;
+        return (x, y) => getPixelColor(x, y, octaveGenerator, initial_noiseHeight, octaveNoiseTransformation,
+            OCTAVES, PERSISTENCE, LACUNARITY, INITIAL_AMPLITUDE, INITIAL_FREQUENCY, COLORED);
 }
 
 //////////////////////////////////////////
