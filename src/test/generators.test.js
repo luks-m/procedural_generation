@@ -49,7 +49,7 @@ function testPerlin() {
         });
 
         test('Test of invalid Noise Type', () => {
-            const pixel = () => generators.noiseGenerator(
+            const pixel = generators.noiseGenerator(
                 {
                     noise: generators.noise.noiseGenerators.perlinNoise,
                     noiseOptions: {
@@ -61,7 +61,7 @@ function testPerlin() {
                 }
             );
 
-            expect(() => pixel()).toThrowError(Error);
+            expect(() => pixel(0, 0)).toThrowError(Error);
         });
 
         test('Test of Value Noise RGBA', () => {

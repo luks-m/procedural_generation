@@ -55,38 +55,27 @@ function perlinNoiseGenerator(width, height, options) {
         get_noise: false,
         ...options
     };
-    const SEED = options.seed;
-    const VARIANT = options.variant;
-    const SCALE = options.scale;
-    const COLORED = options.colored;
-    const GET_NOISE = options.get_noise;
-
-
-    const random = helpers.makeRandom(SEED);
-
 
     let gradients = {}; // Cache
 
-    const pixelSizeWidth = width / SCALE;
-    const pixelSizeHeight = height / SCALE;
+    const pixelSizeWidth = width / options.scale;
+    const pixelSizeHeight = height / options.scale;
 
-
-    const compute = loadNoiseType();
-
+    const random = helpers.makeRandom(options.seed);
 
     /**
      * Returns the type of distance to compute according to user's input
      * @returns {function} - Function to use to compute the noise value
      */
-    function loadNoiseType() {
-        if (VARIANT === 'value')
-            return valueNoise();
-        else if (VARIANT === 'gradient')
-            return gradientNoise();
-        else if (VARIANT === 'simplex')
-            return simplexNoise();
+    function loadNoiseType(variant, seed) {
+        if (variant === 'value')
+            return valueNoise(random);
+        else if (variant === 'gradient')
+            return gradientNoise(random);
+        else if (variant === 'simplex')
+            return simplexNoise(seed);
         else
-            throw Error(`${VARIANT} is not a valid noise type. Valid noise types are 'value', 'gradient' and 'simplex'.`);
+            throw Error(`${variant} is not a valid noise type. Valid noise types are 'value', 'gradient' and 'simplex'.`);
     }
 
 
@@ -113,25 +102,19 @@ function perlinNoiseGenerator(width, height, options) {
 
     /**
      * Tools to compute value noise
+     * @param {function} randomValue - Function returning a random value in range ]-1, 1[
      * @returns {function} - Function returning a noise value for coordinates (x, y) according to a value noise
      */
-    function valueNoise() {
-
-        /**
-         * Returns a random value in range ]-1, 1[
-         * @returns {number} - Random value
-         */
-        function randomValue() {
-            return random();
-        }
+    function valueNoise(randomValue) {
 
         /**
          * Computes the dot product of the distance and gradient vectors
          * @param {number} ix - Integer x coordinate to get gradient from
          * @param {number} iy - Integer y coordinate to get gradient from
+         * @param {function} randomValue - Function returning a random value in range ]-1, 1[
          * @returns {number} - A value in range ]-1, 1[
          */
-        function dotGridValue(ix, iy) {
+        function dotGridValue(ix, iy, randomValue) {
             // Get value from integer coordinate
             if (!gradients[[ix, iy]])
                 gradients[[ix, iy]] = randomValue();
@@ -144,9 +127,10 @@ function perlinNoiseGenerator(width, height, options) {
          * Compute the noise value for value noise
          * @param {number} x - x coordinate to compute the value from
          * @param {number} y - y coordinate to compute the value from
+         * @param {function} randomValue - Function returning a random value in range ]-1, 1[
          * @returns {number} - The value noise value
          */
-        function computeValue(x, y) {
+        function computeValue(x, y, randomValue) {
             // Determine grid cell coordinates
             const x0 = Math.floor(x);
             const x1 = x0 + 1;
@@ -159,26 +143,28 @@ function perlinNoiseGenerator(width, height, options) {
 
             // Interpolate between grid point gradients
             return interpolate(sy,
-                interpolate(sx, dotGridValue(x0, y0), dotGridValue(x1, y0)),
-                interpolate(sx, dotGridValue(x0, y1), dotGridValue(x1, y1)));
+                interpolate(sx, dotGridValue(x0, y0, randomValue), dotGridValue(x1, y0, randomValue)),
+                interpolate(sx, dotGridValue(x0, y1, randomValue), dotGridValue(x1, y1, randomValue)));
         }
 
 
-        return computeValue;
+        return (x, y) => computeValue(x, y, randomValue);
     }
 
     /**
      * Tools to compute gradient noise
+     * @param {function} randomValue - Function returning a random value in range ]-1, 1[
      * @returns {function} - Function returning a noise value for coordinates (x, y) according to a gradient noise
      */
-    function gradientNoise() {
+    function gradientNoise(randomValue) {
 
         /**
          * Returns a random 2D normalized vector
+         * @param {function} randomValue - Function returning a random value in range ]-1, 1[
          * @returns {{x: number, y: number}} - Random vector
          */
-        function randomGradient() {
-            const angle = (2 * Math.PI) * random();
+        function randomGradient(randomValue) {
+            const angle = (2 * Math.PI) * randomValue();
             return {x: Math.cos(angle), y: Math.sin(angle)}; // Polar coordinates, Norm = 1
         }
 
@@ -189,12 +175,13 @@ function perlinNoiseGenerator(width, height, options) {
          * @param {number} iy - Integer y coordinate to get gradient
          * @param {number} x - Input x coordinate
          * @param {number} y - Input y coordinate
+         * @param {function} randomValue - Function returning a random value in range ]-1, 1[
          * @returns {number} - Value in range [-1, 1]
          */
-        function dotGridGradient(ix, iy, x, y) {
+        function dotGridGradient(ix, iy, x, y, randomValue) {
             // Get gradient from integer coordinate
             if (!gradients[[ix, iy]])
-                gradients[[ix, iy]] = randomGradient();
+                gradients[[ix, iy]] = randomGradient(randomValue);
 
             // Compute the distance vector
             const dx = x - ix;
@@ -209,9 +196,10 @@ function perlinNoiseGenerator(width, height, options) {
          * Compute the noise value for gradient noise
          * @param {number} x - x coordinate to compute the value from
          * @param {number} y - y coordinate to compute the value from
+         * @param {function} randomValue - Function returning a random value in range ]-1, 1[
          * @returns {number} - The gradient noise value
          */
-        function computeGradient(x, y) {
+        function computeGradient(x, y, randomValue) {
             // Determine grid cell coordinates
             const x0 = Math.floor(x);
             const x1 = x0 + 1;
@@ -223,23 +211,22 @@ function perlinNoiseGenerator(width, height, options) {
             const sy = y - y0;
 
             // Interpolate between grid point gradients
-            const value = interpolate(sy,
-                interpolate(sx, dotGridGradient(x0, y0, x, y), dotGridGradient(x1, y0, x, y)),
-                interpolate(sx, dotGridGradient(x0, y1, x, y), dotGridGradient(x1, y1, x, y)));
-
-            return value;
+            return interpolate(sy,
+                interpolate(sx, dotGridGradient(x0, y0, x, y, randomValue), dotGridGradient(x1, y0, x, y, randomValue)),
+                interpolate(sx, dotGridGradient(x0, y1, x, y, randomValue), dotGridGradient(x1, y1, x, y, randomValue)));
         }
 
 
-        return computeGradient;
+        return (x, y) => computeGradient(x, y, randomValue);
     }
 
 
     /**
      * Tools to compute simplex noise
+     * @param {number} seed - Random generator's seed
      * @returns {function} - Function returning a noise value for coordinates (x, y) according to a simplex noise
      */
-    function simplexNoise() {
+    function simplexNoise(seed) {
         const r = 0.5;
 
         // Skewing factors for 2D simplex grid
@@ -319,9 +306,10 @@ function perlinNoiseGenerator(width, height, options) {
          * Compute the simplex value for simplex noise
          * @param {number} x - x coordinate to compute the value from
          * @param {number} y - y coordinate to compute the value from
+         * @param {number} seed - Random generator's seed
          * @returns {number} - The simplex noise value
          */
-        function computeSimplex(x, y) {
+        function computeSimplex(x, y, seed) {
             // Coordinate Skewing
 
             // Skew the input space to determine which simplex cell we're in
@@ -356,8 +344,8 @@ function perlinNoiseGenerator(width, height, options) {
             // Kernel summation
 
             // Majors the indices to 256, so as not to exceed the size of the array of permutations.
-            const ii = (SEED + ixSkewed) % 256;
-            const jj = (SEED + iySkewed) % 256;
+            const ii = (seed + ixSkewed) % 256;
+            const jj = (seed + iySkewed) % 256;
 
             // Noise contributions from each of the three corners
 
@@ -380,7 +368,7 @@ function perlinNoiseGenerator(width, height, options) {
         }
 
 
-        return computeSimplex;
+        return (x, y) => computeSimplex(x, y, seed);
     }
 
 
@@ -388,9 +376,12 @@ function perlinNoiseGenerator(width, height, options) {
      * Returns the noise value at given coordinate
      * @param {number} x - x coordinate to compute the noise from
      * @param {number} y - y coordinate to compute the noise from
+     * @param {number} pixelSizeWidth - Width size of a pixel
+     * @param {number} pixelSizeHeight - Height size of a pixel
+     * @param {function} compute - Function returning a noise value for coordinates (x, y) according to a noise variant
      * @returns {number} - noise value between -1 and 1
      */
-    function getNoiseHeight(x, y) {
+    function getNoiseHeight(x, y, pixelSizeWidth, pixelSizeHeight, compute) {
         return compute(x / pixelSizeWidth, y / pixelSizeHeight);
     }
 
@@ -399,23 +390,33 @@ function perlinNoiseGenerator(width, height, options) {
      * Returns a RGBA pixel according to a coordinate
      * @param {number} x - x coordinate to compute the noise from
      * @param {number} y - y coordinate to compute the noise from
+     * @param {number} pixelSizeWidth - Width size of a pixel
+     * @param {number} pixelSizeHeight - Height size of a pixel
+     * @param {function} compute - Function returning a noise value for coordinates (x, y) according to a noise variant
+     * @param {boolean} colored - Boolean specifying if the RGBA output should be colored
      * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
      */
-    function getPixelColor(x, y) {
-        if (COLORED) {
-            const v = (getNoiseHeight(x, y) + 0.5) * 360;
+    function getPixelColor(x, y, pixelSizeWidth, pixelSizeHeight , compute, colored) {
+        if (colored) {
+            const v = (getNoiseHeight(x, y, pixelSizeWidth, pixelSizeHeight, compute) + 0.5) * 360;
             return colors.hsl2rgb(v);
         } else {
-            const v = (getNoiseHeight(x, y) + 1) / 2 * 255;
+            const v = (getNoiseHeight(x, y, pixelSizeWidth, pixelSizeHeight, compute) + 1) / 2 * 255;
             return colors.createColor(v, v, v, 255);
         }
     }
 
 
-    if (GET_NOISE)
-        return getNoiseHeight;
+    if (options.get_noise)
+        return (x, y) => {
+            const compute = loadNoiseType(options.variant, options.seed);
+            return getNoiseHeight(x, y, pixelSizeWidth, pixelSizeHeight, compute);
+        };
     else
-        return getPixelColor;
+        return (x, y) => {
+            const compute = loadNoiseType(options.variant, options.seed);
+            return getPixelColor(x, y, pixelSizeWidth, pixelSizeHeight, compute, options.colored);
+        };
 }
 
 
