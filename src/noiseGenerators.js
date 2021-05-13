@@ -982,8 +982,6 @@ function domainWarpingFractalGenerator(width, height, options) {
     };
     const qMultiplier = options.qMultiplier;
     const rMultiplier = options.rMultiplier;
-    const COLORED = options.colored;
-    const GET_NOISE = options.get_noise;
 
 
     const maxNoiseHeight = 1;
@@ -1004,9 +1002,12 @@ function domainWarpingFractalGenerator(width, height, options) {
      * Returns the noise value at given coordinate
      * @param {number} x - x coordinate to compute the noise from
      * @param {number} y - y coordinate to compute the noise from
+     * @param {function} fractal - Fractal noise generator
+     * @param {number} qMultiplier - A multiplier for the first level distortion
+     * @param {number} rMultiplier - A multiplier for the second level distortion
      * @returns {number} - noise value between -1 and 1
      */
-    function getNoiseHeight(x, y) {
+    function getNoiseHeight(x, y, fractal, qMultiplier, rMultiplier) {
         // Offsets gotten from https://iquilezles.org/www/articles/warp/warp.htm
         const q =
             [
@@ -1029,11 +1030,15 @@ function domainWarpingFractalGenerator(width, height, options) {
      * Returns a RGBA pixel according to a coordinate
      * @param {number} x - x coordinate to compute the noise from
      * @param {number} y - y coordinate to compute the noise from
+     * @param {function} fractal - Fractal noise generator
+     * @param {number} qMultiplier - A multiplier for the first level distortion
+     * @param {number} rMultiplier - A multiplier for the second level distortion
+     * @param {boolean} colored - Put to true to have a colored image, else it will be B&W
      * @returns {{red: number, green: number, blue: number, alpha: number}} - a RGBA pixel according to a Perlin Noise
      */
-    function getPixelColor(x, y) {
-        const v = getNoiseHeight(x, y);
-        if (COLORED) {
+    function getPixelColor(x, y, fractal, qMultiplier, rMultiplier, colored) {
+        const v = getNoiseHeight(x, y, fractal, qMultiplier, rMultiplier);
+        if (colored) {
             const R = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 20, 87);
             const G = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 45, 182);
             const B = helpers.changeRange(v, minNoiseHeight, maxNoiseHeight, 70, 255);
@@ -1045,10 +1050,10 @@ function domainWarpingFractalGenerator(width, height, options) {
         }
     }
 
-    if (GET_NOISE)
-        return (x, y) => helpers.changeRange(getNoiseHeight(x, y), minNoiseHeight, maxNoiseHeight, -1, 1);
+    if (options.get_noise)
+        return (x, y) => helpers.changeRange(getNoiseHeight(x, y, fractal, qMultiplier, rMultiplier), minNoiseHeight, maxNoiseHeight, -1, 1);
     else
-        return getPixelColor;
+        return (x, y) => getPixelColor(x, y, fractal, qMultiplier, rMultiplier, options.colored);
 }
 
 //////////////////////////////////////////
