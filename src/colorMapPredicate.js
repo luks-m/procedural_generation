@@ -3,7 +3,7 @@
  * An example of 2-variable noise function which produces an effect of wave
  * @param {number} x - first variable value
  * @param {number} y - second variable value
- * @returns the noise value
+ * @returns {number} the noise value
  */
 function wave(x, y) {
     return Math.sin(x + y ** 2) * Math.sqrt(x ** 2 + y ** 2) / (10);
@@ -13,7 +13,7 @@ function wave(x, y) {
  * An example of 2-variable noise function which produces an effect of splash
  * @param {number} x - first variable value
  * @param {number} y - second variable value
- * @returns the noise value
+ * @returns {number} the noise value
  */
 function splash(x, y) {
     return Math.sin(x / 10 + y / 10) * (x ** 3) * (y ** 2);
@@ -21,9 +21,9 @@ function splash(x, y) {
 
 /**
  * An example of 2-variable noise function which produces an effect a hole and a pic around the (0,0) coordinate
- * @param {*} x - first variable value
- * @param {*} y - second variable value 
- * @returns the noise value
+ * @param {number} x - first variable value
+ * @param {number} y - second variable value
+ * @returns {number} the noise value
  */
 function pic(x, y) {
     return Math.sin(x ** 2 + 3 * y ** 2) / (0.1 + Math.sqrt(x ** 2 + y ** 2)) + (x ** 2 + 5 * y ** 2) * Math.exp(1 - (x ** 2 + y ** 2)) / 2;
@@ -33,7 +33,7 @@ function pic(x, y) {
  * Returns the fractale noise function of the MandelBrot set
  * @param {number} max - number of recursive calculation
  * @param {number} limit - the complex number modulus frontier
- * @returns {function(x,y)} function which return the noise value for the (x,y) coordinate
+ * @returns {function(number,number): number} function which return the noise value for the (x,y) coordinate
  */
 function mandelbrotSet(max, limit) {
     function mandel(x, y) {
@@ -53,7 +53,7 @@ function mandelbrotSet(max, limit) {
  * @param {number} max - number of recursive calculation
  * @param {number} limit - the complex number modulus frontier
  * @param {[number,number]} c - the initiale complex number of the recurrence sequence
- * @returns {function(x,y)} function which return the noise value for the (x,y) coordinate
+ * @returns {function(number,number): number} function which return the noise value for the (x,y) coordinate
  */
 function julia(max, limit, c) {
     function mandel(x, y) {
@@ -72,7 +72,7 @@ function julia(max, limit, c) {
  * Returns the fractale noise function of a specific Julia figure
  * @param {number} max - number of recursive calculation
  * @param {number} limit - the complex number modulus frontier
- * @returns {function(x,y)} function which return the noise value for the (x,y) coordinate
+ * @returns {function(number,number): number} function which return the noise value for the (x,y) coordinate
  */
 function juliaSquare(max, limit) {
     return julia(max, limit, [0.3, 0.5]);
@@ -82,7 +82,7 @@ function juliaSquare(max, limit) {
  * Returns the fractale noise function of a specific Julia figure
  * @param {number} max - number of recursive calculation
  * @param {number} limit - the complex number modulus frontier
- * @returns {function(x,y)} function which return the noise value for the (x,y) coordinate
+ * @returns {function(number,number): number} function which return the noise value for the (x,y) coordinate
  */
 function juliaSpi(max, limit) {
     return julia(max, limit, [0.285, 0.01]);
@@ -92,7 +92,7 @@ function juliaSpi(max, limit) {
  * Returns the fractale noise function of a specific Julia figure
  * @param {number} max - number of recursive calculation
  * @param {number} limit - the complex number modulus frontier
- * @returns {function(x,y)} function which return the noise value for the (x,y) coordinate
+ * @returns {function(number,number): number} function which return the noise value for the (x,y) coordinate
  */
 function juliaPeak(max, limit) {
     return julia(max, limit, [-1.4107, 0.0099]);
@@ -102,7 +102,7 @@ function juliaPeak(max, limit) {
  * Returns the fractale noise function of a specific Julia figure
  * @param {number} max - number of recursive calculation
  * @param {number} limit - the complex number modulus frontier
- * @returns {function(x,y)} function which return the noise value for the (x,y) coordinate
+ * @returns {function(number,number): number} function which return the noise value for the (x,y) coordinate
  */
 function juliaElec(max, limit) {
     return julia(max, limit, [-0.038, 0.9754]);
@@ -112,7 +112,7 @@ function juliaElec(max, limit) {
  * Returns the fractale noise function of a specific Julia figure
  * @param {number} max - number of recursive calculation
  * @param {number} limit - the complex number modulus frontier
- * @returns {function(x,y)} function which return the noise value for the (x,y) coordinate
+ * @returns {function(number,number): number} function which return the noise value for the (x,y) coordinate
  */
 function juliaCrown(max, limit) {
     return julia(max, limit, [-1.476, 0]);
@@ -122,7 +122,7 @@ function juliaCrown(max, limit) {
  * Returns the fractale noise function of a specific Julia figure
  * @param {number} max - number of recursive calculation
  * @param {number} limit - the complex number modulus frontier
- * @returns {function(x,y)} function which return the noise value for the (x,y) coordinate
+ * @returns {function(number,number): number} function which return the noise value for the (x,y) coordinate
  */
 function juliaBubble(max, limit) {
     return julia(max, limit, [-0.4, -0.6]);
@@ -132,7 +132,7 @@ function juliaBubble(max, limit) {
  * Returns the fractale noise function of a specific Julia figure
  * @param {number} max - number of recursive calculation
  * @param {number} limit - the complex number modulus frontier
- * @returns {function(x,y)} function which return the noise value for the (x,y) coordinate
+ * @returns {function(number,number): number} function which return the noise value for the (x,y) coordinate
  */
 function juliaDragon(max, limit) {
     return julia(max, limit, [-0.8, 0.156]);
@@ -142,8 +142,8 @@ function juliaDragon(max, limit) {
  * Returns the fractale noise of a complex function
  * @param {number} max - number of recursive calculation
  * @param {number} limit - the complex number modulus frontier
- * @param {function([number,number])=>[number,number]} f - a complex function
- * @returns {function(x,y)} function which return the noise value for the (x,y) coordinate
+ * @param {function([number,number]): [number,number]} f - a complex function
+ * @returns {function(number,number): number} function which return the noise value for the (x,y) coordinate
  */
 function fractale(max, limit, f) {
     function mandelbrotIteration(x, y) {
@@ -160,14 +160,14 @@ function fractale(max, limit, f) {
 
 /**
  * Zoom on a part of a 2D-variable noise function
- * @param {function(number,number)=>number} f - the 2D-variable noise function
+ * @param {function(number,number): number} f - the 2D-variable noise function
  * @param {number} height - the image height
  * @param {number} width - the image width
  * @param {number} xmin - the x minimum axis for the zoom
  * @param {number} xmax - the x maximum axis for the zoom
  * @param {number} ymin - the y minimum axis for the zoom 
  * @param {number} ymax - the y maximum axis for the zoom 
- * @returns {function(number,number)=>number} the 2D-variable noise function zoomed
+ * @returns {function(number,number): number} the 2D-variable noise function zoomed
  */
 function focused(f, height, width, xmin, xmax, ymin, ymax) {
     const rapport_x = (xmax - xmin) / width;
