@@ -224,9 +224,9 @@ function clear(options) {
     const _options = {
         toClear: () => true,
         ...options
-    }
+    };
     return (x, y) => {
-        if (options.toClear(x, y))
+        if (_options.toClear(x, y))
             return functionsColor.examples.TRANSPARENT;
         return options.src(x,y);
     };

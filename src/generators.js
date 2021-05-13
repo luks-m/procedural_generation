@@ -40,7 +40,7 @@ function imageDescriptorHelper(generator) {
             };
         };
     };
-};
+}
 
 /**
  * @typedef {Object} FiltersDescriptor
