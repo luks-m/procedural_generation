@@ -3,10 +3,18 @@ const examples = require('./colorMapExamples.js');
 const predicate = require('./colorMapPredicate.js');
 
 /**
+ * @typedef {Object} Color
+ * @property {number} red Value of red
+ * @property {number} green Value of green
+ * @property {number} blue Value of blue
+ * @property {number} alpha Value of alpha
+ */
+
+/**
  * Generate a gradient function between two values 
  * @param {number} min - the beginning value of the gradient
  * @param {number} max - the end value of the gradient
- * @returns {function(number,variations): gradient value} the gradient function
+ * @returns {function(number,[[number, ?number],...[number, ?number]]): number} the function computing the gradient
  */
 function multiGradient(min, max) {
     const dist = Math.abs(max - min) * 1.01; //distance intervalle
@@ -47,16 +55,16 @@ function multiGradient(min, max) {
  * @property {function(number,number): number} f - Noise function computing the noise of (x,y) point
  * @property {number} min - the beginning gradient value
  * @property {number} max - the end gradient value
- * @property {[[number,number],...,[number,number]]} redVariations - variations of red color
- * @property {[[number,number],...,[number,number]]} greenVariations - variations of green color
- * @property {[[number,number],...,[number,number]]} blueVariations - variations of blue color
- * @property {[[number,number],...,[number,number]]} alphaVariations - variations of transparency
+ * @property {[[number, ?number],...[number, ?number]]} redVariations - variations of red color
+ * @property {[[number, ?number],...[number, ?number]]} greenVariations - variations of green color
+ * @property {[[number, ?number],...[number, ?number]]} blueVariations - variations of blue color
+ * @property {[[number, ?number],...[number, ?number]]} alphaVariations - variations of transparency
  */
 
 /**
  * Apply multiGradient to each color depending on the result of f(x, y)
  * @param {ColorMapOptions} options - the function parameters
- * @returns {function(number,number): color} the color map function
+ * @returns {function(number,number): Color} the color map function
  */
 function colorMap(options) {
     const gradient = multiGradient(options.min, options.max);
