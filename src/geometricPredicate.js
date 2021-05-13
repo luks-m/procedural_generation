@@ -1,11 +1,11 @@
 /**
- * @typedef {Object} WhichParityOptions
+ * @typedef {Object} CommonXOptions
  * @property {number} x - the number to tested
  */
 
 /**
  * Checks if the parameter is an even number
- * @param {WhichParityOptions} options 
+ * @param {CommonXOptions} options 
  * @returns true if the parameter is even, false else
  */
 function isEven(options) {
@@ -14,7 +14,7 @@ function isEven(options) {
 
 /**
  * Checks if the parameter is an odd number
- * @param {WhichParityOptions} options 
+ * @param {CommonXOptions} options 
  * @returns true if the parameter is odd, false else
  */
 function isOdd(options) {
@@ -164,7 +164,7 @@ function predDiagBottomLeftTopRight(options) {//x, y, size, width) {
 /**
  * Give the number of the tile to which the pixel belongs
  * @param {PartOptions} options 
- * @returns {array [number,number]} an array where the first item is the number according the x axis and the second item is the number according the y axis
+ * @returns {[number,number]} an array where the first item is the number according the x axis and the second item is the number according the y axis
  */
 function whichPart(options) {//x, y, size) {
     return [Math.floor(options.x / options.size), Math.floor(options.y / options.size)];
