@@ -1,10 +1,18 @@
 /**
+ * @typedef {Object} Color
+ * @property {number} red Value of red
+ * @property {number} green Value of green
+ * @property {number} blue Value of blue
+ * @property {number} alpha Value of alpha
+ */
+
+/**
  * Return a dictionary containing the rgba values (<=255) representing a color
  * @param {number} _red Value of red
  * @param {number} _green Value of green
  * @param {number} _blue Value of blue
  * @param {number} _alpha Value of alpha
- * @returns {{red: number, green: number, blue: number, alpha: number}}
+ * @returns {Color}
  */
 const createColor = function (_red, _green, _blue, _alpha) {
     return { red: ~~(_red % 256), green: ~~(_green % 256), blue: ~~(_blue % 256), alpha: ~~(_alpha % 256) };
@@ -12,8 +20,8 @@ const createColor = function (_red, _green, _blue, _alpha) {
 
 /**
  * Compare two colors
- * @param {{red: number, green: number, blue: number, alpha: number}} color2 Color to compare
- * @param {{red: number, green: number, blue: number, alpha: number}} color1 Color to compare
+ * @param {Color} color2 Color to compare
+ * @param {Color} color1 Color to compare
  * @returns true if it is the same colors, false else
  */
 const compareColor = function (color1, color2) {
@@ -26,7 +34,7 @@ const compareColor = function (color1, color2) {
 /**
  * Transform an HSL color number to a RGBA color dictionary
  * @param {number} hsl an HSL color number
- * @returns {{red: number, green: number, blue: number, alpha: number}} the RGBA color corresponding to hsl
+ * @returns {Color} the RGBA color corresponding to hsl
  */
 const hsl2rgb = function (hsl) {
     const L = 0.5;
