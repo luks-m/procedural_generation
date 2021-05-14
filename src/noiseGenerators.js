@@ -429,7 +429,7 @@ function perlinNoiseGenerator(width, height, options) {
  * @typedef {Object} fractalOptionsDescriptor
  * @property {('perlin'|'worley')} [noiseGen='perlin'] - Noise generator to compute the noise with
  * @property {number} [noiseSeed=42] - Noise generator seed
- * @property {*[]} [argsList=[ ]] - Optional arguments for the noise generator, starting at the third argument of the noise generator function
+ * @property {(perlinDescriptor|worleyDescriptor)} [argsList={ }] - Optional arguments for the noise generator
  * @property {number} [octaves=2] - Number of frequency octaves to generate the noise with
  * @property {number} [persistence=0.5] - A multiplier that determines how quickly the amplitude increases for each successive octave.
  * @property {number} [lacunarity=2] - A multiplier that determines how quickly the frequency increases for each successive octave.
@@ -488,7 +488,7 @@ function fractalNoiseGenerator(width, height, options) {
     const [initial_noiseHeight, octaveNoiseTransformation] = loadArgFractalGen(options.fractal, options.fractalOptions.noiseGen);
 
 
-    const octaveGenerator = getOctaveGenerator(options.fractalOptions.noiseGen);
+    const octaveGenerator = getOctaveGenerator(width, height, options.fractalOptions.noiseGen, noiseSeed, argsList, OCTAVES, LACUNARITY);
 
 
     /**
@@ -519,24 +519,30 @@ function fractalNoiseGenerator(width, height, options) {
 
     /**
      * Returns a list of generator to use for each octave according to user's input
+     * @param {number} width - Width of the image
+     * @param {number} height - Height of the image
      * @param {('perlin'|'worley')} noiseGen - Noise generator to compute the noise with
+     * @param {number} noiseSeed - Noise generator seed
+     * @param {*[]} argsList - Optional arguments for the noise generator, starting at the third argument of the noise generator function
+     * @param {number} octaves - Number of frequency octaves to generate the noise with
+     * @param {number} lacunarity - fA multiplier that determines how quickly the frequency increases for each successive octave.
      * @returns {function[]} - Array of generators for each of the octave
      */
-    function getOctaveGenerator(noiseGen) {
+    function getOctaveGenerator(width, height, noiseGen, noiseSeed, argsList, octaves, lacunarity) {
         if (noiseGen === 'worley')
-            return Array.from({length: OCTAVES}, (v, i) => worleyNoiseGenerator(width * (LACUNARITY ** i), height * (LACUNARITY ** i), {
+            return Array.from({length: octaves}, (v, i) => worleyNoiseGenerator(width * (lacunarity ** i), height * (lacunarity ** i), {
                 ...argsList,
                 seed: i + noiseSeed,
                 get_noise: true
             }));
         else if (noiseGen === 'perlin')
-            return Array.from({length: OCTAVES}, () => perlinNoiseGenerator(width, height, {
+            return Array.from({length: octaves}, () => perlinNoiseGenerator(width, height, {
                 ...argsList,
                 seed: noiseSeed,
                 get_noise: true
             }));
         else if (noiseGen === 'white')
-            return Array.from({length: OCTAVES}, () => singleColorRandomGenerator({
+            return Array.from({length: octaves}, () => singleColorRandomGenerator({
                 seed: noiseSeed,
                 get_noise: true
             }));
