@@ -260,7 +260,7 @@ function test__repeat() {
 	    expect(filteredPixel(1,1)).toEqual(unfilteredPixel(2,1));
 	    expect(filteredPixel(240,240)).toEqual(unfilteredPixel(0,0));
 	    expect(filteredPixel(145,236)).toEqual(unfilteredPixel(162,142));
-	    //expect(filteredPixel(56,124)).toEqual(unfilteredPixel(140,82));
+	    expect(filteredPixel(56,43.7)).toEqual(unfilteredPixel(140,82));
 	});
     });
 }
