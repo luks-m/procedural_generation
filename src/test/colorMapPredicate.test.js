@@ -1,9 +1,8 @@
 const colorMap = require('./../colorMapPredicate.js');
-const colors = require('./../colors.js');
 
 function testColorMapPredicate() {
     describe('ColorMapPredicate tests', () => {
-        let epsilon = 5
+        let epsilon = 5;
         test('Test of wave', () => {
             expect(colorMap.wave(0, 0)).toBeCloseTo(0, epsilon);
             expect(colorMap.wave(2, 0)).toBeCloseTo(0.2 * Math.sin(2), epsilon);

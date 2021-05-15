@@ -5,7 +5,7 @@ function testColorMapExamples() {
     describe('ColorMapExamples tests', () => {
 
         test('Test of colorMapGreys', () => {
-            const gradient = colorMap.greys({ f: (x, y) => x, min: 0, max: 50 });
+            const gradient = colorMap.greys({ f: (x) => x, min: 0, max: 50 });
             let color1 = gradient(0, 5);
             expect(colors.compareColor(color1, colors.createColor(255, 255, 255, 255))).toEqual(true);
             let color2 = gradient(25, 5);
@@ -17,7 +17,7 @@ function testColorMapExamples() {
         });
 
         test('Test of colorMapMushroom', () => {
-            const gradient = colorMap.mushroom({ f: (x, y) => x, min: 0, max: 100 });
+            const gradient = colorMap.mushroom({ f: (x) => x, min: 0, max: 100 });
             let color1 = gradient(0, 5);
             expect(colors.compareColor(color1, colors.createColor(255, 0, 0, 255))).toEqual(true);
             let color2 = gradient(50, 5);
@@ -29,7 +29,7 @@ function testColorMapExamples() {
         });
 
         test('Test of colorMapSpring', () => {
-            const gradient = colorMap.spring({ f: (x, y) => x, min: 10, max: 0 });
+            const gradient = colorMap.spring({ f: (x) => x, min: 10, max: 0 });
             let color1 = gradient(0, 5);
             expect(colors.compareColor(color1, colors.createColor(2, 252, 0, 255))).toEqual(true);
             let color2 = gradient(10, 5);
@@ -41,7 +41,7 @@ function testColorMapExamples() {
         });
 
         test('Test of colorMapJet', () => {
-            const gradient = colorMap.jet({ f: (x, y) => y, min: 25, max: 5 });
+            const gradient = colorMap.jet({ f: (x, y) => y + 0*x, min: 25, max: 5 });
             let color1 = gradient(0, 5);
             expect(colors.compareColor(color1, colors.createColor(2, 0, 252, 255))).toEqual(true);
             let color2 = gradient(10, 25);
@@ -53,7 +53,7 @@ function testColorMapExamples() {
         });
 
         test('Test of colorMapHSL', () => {
-            const gradient = colorMap.hsl({ f: (x, y) => y, min: 0, max: 30 });
+            const gradient = colorMap.hsl({ f: (x, y) => y+0*x, min: 0, max: 30 });
             let color1 = gradient(0, 0);
             expect(colors.compareColor(color1, colors.createColor(240, 0, 97, 255))).toEqual(true);
             let color2 = gradient(10, 30);
@@ -65,7 +65,7 @@ function testColorMapExamples() {
         });
 
         test('Test of colorMapLight', () => {
-            const gradient = colorMap.light({ f: (x, y) => y, min: 0, max: 60 });
+            const gradient = colorMap.light({ f: (x, y) => y+0*x, min: 0, max: 60 });
             let color1 = gradient(0, 0);
             expect(colors.compareColor(color1, colors.createColor(0, 0, 255, 255))).toEqual(true);
             let color2 = gradient(10, 60);
@@ -77,7 +77,7 @@ function testColorMapExamples() {
         });
 
         test('Test of colorMapIsland', () => {
-            const gradient = colorMap.island({ f: (x, y) => y, min: 0, max: 200 });
+            const gradient = colorMap.island({ f: (x, y) => y+0*x, min: 0, max: 200 });
             let color1 = gradient(0, 0);
             expect(colors.compareColor(color1, colors.createColor(0, 0, 255, 255))).toEqual(true);
             let color2 = gradient(10, 200);
@@ -89,7 +89,7 @@ function testColorMapExamples() {
         });
 
         test('Test of colorMapIslandD', () => {
-            const gradient = colorMap.islandD({ f: (x, y) => y, min: -100, max: 400 });
+            const gradient = colorMap.islandD({ f: (x, y) => y+0*x, min: -100, max: 400 });
             let color1 = gradient(0, -100);
             expect(colors.compareColor(color1, colors.createColor(0, 0, 255, 255))).toEqual(true);
             let color2 = gradient(10, 400);
@@ -101,7 +101,7 @@ function testColorMapExamples() {
         });
 
         test('Test of colorMapSnow', () => {
-            const gradient = colorMap.snow({ f: (x, y) => y, min: -50, max: 50 });
+            const gradient = colorMap.snow({ f: (x, y) => y+0*x, min: -50, max: 50 });
             let color1 = gradient(0, -50);
             expect(colors.compareColor(color1, colors.createColor(0, 0, 255, 255))).toEqual(true);
             let color2 = gradient(10, 50);
@@ -113,7 +113,7 @@ function testColorMapExamples() {
         });
 
         test('Test of colorMapPurple', () => {
-            const gradient = colorMap.purple({ f: (x, y) => y, min: 0, max: 50 });
+            const gradient = colorMap.purple({ f: (x, y) => y+0*x, min: 0, max: 50 });
             let color1 = gradient(0, 0);
             expect(colors.compareColor(color1, colors.createColor(0, 0, 255, 255))).toEqual(true);
             let color2 = gradient(10, 50);
@@ -125,7 +125,7 @@ function testColorMapExamples() {
         });
 
         test('Test of colorMapHot', () => {
-            const gradient = colorMap.hot({ f: (x, y) => x, min: 10, max: 40 });
+            const gradient = colorMap.hot({ f: (x) => x, min: 10, max: 40 });
             let color1 = gradient(10, 0);
             expect(colors.compareColor(color1, colors.createColor(28, 8, 1, 255))).toEqual(true);
             let color2 = gradient(40, 50);

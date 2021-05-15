@@ -5,25 +5,25 @@ function testColorMap() {
     describe('ColorMap tests', () => {
 
         test('Test of one variation along red color with correct values', () => {
-            const gradient = colorMap.colorMap({ f: (x, y) => x, min: 0, max: 50, redVariations: [[0, 255]], greenVariations: [[0]], blueVariations: [[0]], alphaVariations: [[0]] });
+            const gradient = colorMap.colorMap({ f: (x) => x, min: 0, max: 50, redVariations: [[0, 255]], greenVariations: [[0]], blueVariations: [[0]], alphaVariations: [[0]] });
             let color = gradient(0, 5);
             expect(colors.compareColor(color, colors.createColor(0, 0, 0, 0))).toEqual(true);
         });
 
         test('Test of one variation along green color with incorrect values', () => {
-            const gradient = colorMap.colorMap({ f: (x, y) => x, min: 0, max: 50, redVariations: [[255]], greenVariations: [[0, 255]], blueVariations: [[0]], alphaVariations: [[0]] });
+            const gradient = colorMap.colorMap({ f: (x) => x, min: 0, max: 50, redVariations: [[255]], greenVariations: [[0, 255]], blueVariations: [[0]], alphaVariations: [[0]] });
             let color = gradient(55, 5);
             expect(colors.compareColor(color, colors.createColor(255, 25.5, 0, 0))).toEqual(true);
         });
 
         test('Test of one specific variation per colors with correct values', () => {
-            const gradient = colorMap.colorMap({ f: (x, y) => x, min: 0, max: 50, redVariations: [[0, 255]], greenVariations: [[0, 50]], blueVariations: [[0, 255]], alphaVariations: [[0, 100]] });
+            const gradient = colorMap.colorMap({ f: (x) => x, min: 0, max: 50, redVariations: [[0, 255]], greenVariations: [[0, 50]], blueVariations: [[0, 255]], alphaVariations: [[0, 100]] });
             let color = gradient(10, 5);
             expect(colors.compareColor(color, colors.createColor(50, 9, 50, 19))).toEqual(true);
         });
 
         test('Test of one specific variation per colors with incorrect values', () => {
-            const gradient = colorMap.colorMap({ f: (x, y) => x, min: 0, max: 50, redVariations: [[0, 80]], greenVariations: [[0, 50]], blueVariations: [[10, 255]], alphaVariations: [[5, 100]] });
+            const gradient = colorMap.colorMap({ f: (x) => x, min: 0, max: 50, redVariations: [[0, 80]], greenVariations: [[0, 50]], blueVariations: [[10, 255]], alphaVariations: [[5, 100]] });
             let color = gradient(62, 5);
             expect(colors.compareColor(color, colors.createColor(19.2, 11, 68.8, 27.8))).toEqual(true);
         });
