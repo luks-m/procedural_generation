@@ -278,7 +278,6 @@ function bulge(options) {
         let rn = 0;
         if (r !== 0)
             rn = r ** (coef);
-        console.log("x :", xx, "y :", yy, "val :", _options.src((rn * (bulgeX) + _options.bulge.x) * _options.size.width, (rn * (bulgeY) + _options.bulge.y) * _options.size.height));
         return _options.src((rn * (bulgeX) + _options.bulge.x) * _options.size.width, (rn * (bulgeY) + _options.bulge.y) * _options.size.height);
     }
     return _bulge;
@@ -369,8 +368,8 @@ function transform(options) {
  */
 
 /**
- * Limit the computing a source image between (xmin, ymin) and (xmax, ymax)
- * return a transparent color if the coordinate are not in this interval
+ * Limit computing a source image between (xmin, ymin) and (xmax, ymax)
+ * return a transparent color if the given coordinate are not in this interval
  * @param {LimitOptions} options Set of options to pass to this filter function
  * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */

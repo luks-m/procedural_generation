@@ -43,7 +43,7 @@ function solid(options) {
 function checkerboard(options) {
     function _checkerboard(x, y) {
         if ((x % (options.pixelPerCase * 2) < options.pixelPerCase && y % (options.pixelPerCase * 2) < options.pixelPerCase)
-            || (x % (options.pixelPerCase * 2) > options.pixelPerCase && y % (options.pixelPerCase * 2) > options.pixelPerCase))
+            || (x % (options.pixelPerCase * 2) >= options.pixelPerCase && y % (options.pixelPerCase * 2) >= options.pixelPerCase))
             return options.color1;
         else
             return options.color2;
@@ -346,9 +346,9 @@ function voronoiRandom(options) {
 
 /**
  * @typedef {Object} VoronoiFormsOptions
- * @property {number} width Width of 
- * @property {number} height Height of
- * @property {number} size Size of
+ * @property {number} width Width of image
+ * @property {number} height Height of image
+ * @property {number} size Size of a tile
  */
 
 /**
