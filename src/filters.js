@@ -10,7 +10,7 @@ const functionsColor = require('./colors.js');
 
 /**
  * @typedef {Object} MirrorOptions
- * @property {function(number,number): Color} generator - Function computing a color depending on a pixel coordinate
+ * @property {function(number,number): Color} src - Function computing a color depending on a pixel coordinate
  * @property {string} axe - Axes to take to apply the mirror effect ("x", "y" or "xy")
  * @property {number} width - Width of the image
  * @property {number} height - Height of the image
@@ -23,12 +23,12 @@ const functionsColor = require('./colors.js');
  */
 function mirror(options) {
     if (options.axe === "x")
-        return (x, y) => options.generator(options.width-1 - x, y);
+        return (x, y) => options.src(options.width - x, y);
     if (options.axe === "y")
-        return (x, y) => options.generator(x, options.height-1 - y);
+        return (x, y) => options.src(x, options.height - y);
     if (options.axe === "xy")
-        return (x, y) => options.generator(options.width - 1 - x, options.height-1 - y);
-    return (x, y) => options.generator(x, y);
+        return (x, y) => options.src(options.width - x, options.height - y);
+    return (x, y) => options.src(x, y);
 }
 
 /**
@@ -219,7 +219,7 @@ function minus(options) {
 /**
  * @typedef {Object} ClearOptions
  * @property {function(number,number): Color} src - Function computing a color depending on a pixel coordinate
- * @property {function(number,number): Color} toClear - Function determining if a pixel has to be transparent or not
+ * @property {function(number,number): Color} toClear - Function determining if a pixel has to be transparent or not (default is () => true)
  */
 
 /**
@@ -268,6 +268,8 @@ function bulge(options) {
     };
     const coef = _options.coef/2;
     function _bulge(x, y) {
+        let xx = x;
+        let yy = y;
         x /= _options.size.width;
         y /= _options.size.height;
         const bulgeX = x - _options.bulge.x;
@@ -276,6 +278,7 @@ function bulge(options) {
         let rn = 0;
         if (r !== 0)
             rn = r ** (coef);
+        console.log("x :", xx, "y :", yy, "val :", _options.src((rn * (bulgeX) + _options.bulge.x) * _options.size.width, (rn * (bulgeY) + _options.bulge.y) * _options.size.height));
         return _options.src((rn * (bulgeX) + _options.bulge.x) * _options.size.width, (rn * (bulgeY) + _options.bulge.y) * _options.size.height);
     }
     return _bulge;
@@ -478,17 +481,17 @@ function blackWhite(options){
  * @property {function(number,number): Color} src - Function computing a color depending on a pixel coordinate
  * @property {number} width - Width of the image
  * @property {number} height - Height of the image
- * @property {number} size - Size of the new image
+ * @property {{x: number, y: number}} size - Size of the image to repeat
  */
 
 /**
- * Repeat an image depending on a width, height and size factor
+ * Repeat an image multiples times depending on a width, height and size factor
  * @param {RepeatOptions} options Set of options to pass to this filter function
  * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function repeat(options){
-    const x_scale = options.width / options.size;
-    const y_scale = options.height / options.size;
+    const x_scale = options.width / options.size.x;
+    const y_scale = options.height / options.size.y;
     return (x, y) => options.src((x * x_scale) % (options.size * x_scale), (y * y_scale) % (options.size * y_scale));
 }
 
