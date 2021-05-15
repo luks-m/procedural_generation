@@ -66,7 +66,7 @@ function over(options) {
         const srcColor = options.src(x, y);
         const dstColor = options.dst(x, y);
         const coefAlphaOfSrc = srcColor.alpha / 255;
-        const coefAlphaOfDst = (1 - coefAlphaOfSrc) * (dstColor.alpha/255);
+        const coefAlphaOfDst = (1 - coefAlphaOfSrc) * (dstColor.alpha / 255);
 
         return functionsColor.createColor(
             coefAlphaOfSrc * srcColor.red + coefAlphaOfDst * dstColor.red,
@@ -489,7 +489,7 @@ function blackWhite(options){
 function repeat(options){
     const x_scale = options.width / options.size;
     const y_scale = options.height / options.size;
-    return (x, y) => options.src((x * x_scale) % (options.size * x_scale), (y * y_scale) % (options.size * y_scale));
+    return (x, y) => options.src((x * x_scale) % options.width, (y * y_scale) % options.height);
 }
 
 /**
