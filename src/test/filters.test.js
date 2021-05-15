@@ -258,9 +258,9 @@ function test__repeat() {
 
 	    expect(filteredPixel(0,0)).toEqual(unfilteredPixel(0,0));
 	    expect(filteredPixel(1,1)).toEqual(unfilteredPixel(2,1));
-	    expect(filteredPixel(240,240)).toEqual(unfilteredPixel(0,0));
-	    expect(filteredPixel(145,236)).toEqual(unfilteredPixel(162,142));
-	    expect(filteredPixel(56,43.7)).toEqual(unfilteredPixel(140,82));
+	    expect(filteredPixel(80,80)).toEqual(unfilteredPixel(0,0));
+	    expect(filteredPixel(64,80)).toEqual(unfilteredPixel(160,0));
+	    expect(filteredPixel(56,48)).toEqual(unfilteredPixel(140,90));
 	});
     });
 }
