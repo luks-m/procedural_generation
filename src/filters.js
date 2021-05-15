@@ -66,7 +66,7 @@ function over(options) {
         const srcColor = options.src(x, y);
         const dstColor = options.dst(x, y);
         const coefAlphaOfSrc = srcColor.alpha / 255;
-        const coefAlphaOfDst = (1 - coefAlphaOfSrc) * (dstColor.alpha/255);
+        const coefAlphaOfDst = (1 - coefAlphaOfSrc) * (dstColor.alpha / 255);
 
         return functionsColor.createColor(
             coefAlphaOfSrc * srcColor.red + coefAlphaOfDst * dstColor.red,
@@ -122,7 +122,15 @@ function out(options) {
  * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function atop(options) {
-    return over({src: inSrc(options), dst: options.dst});
+    return (x, y) => {
+        const colorSrc = options.src(x, y);
+        const colorDst = options.dst(x, y);
+        if (colorSrc.alpha > 0 && colorDst.alpha > 0)
+            return functionsColor.createColor(colorDst.red, colorDst.green, colorDst.blue, colorSrc.alpha);
+        if (colorSrc.alpha === 0)
+            return functionsColor.examples.TRANSPARENT;
+        return colorSrc;
+    };
 }
 
 /**
@@ -268,8 +276,6 @@ function bulge(options) {
     };
     const coef = _options.coef/2;
     function _bulge(x, y) {
-        let xx = x;
-        let yy = y;
         x /= _options.size.width;
         y /= _options.size.height;
         const bulgeX = x - _options.bulge.x;
@@ -491,7 +497,7 @@ function blackWhite(options){
 function repeat(options){
     const x_scale = options.width / options.size.x;
     const y_scale = options.height / options.size.y;
-    return (x, y) => options.src((x * x_scale) % (options.size * x_scale), (y * y_scale) % (options.size * y_scale));
+    return (x, y) => options.src((x * x_scale) % (options.size.x * x_scale), (y * y_scale) % (options.size.y * y_scale));
 }
 
 /**

@@ -14,5 +14,5 @@ exe:
 
 clean:
 	rm -f $$(find . -name "*~" -o  -name "*.png" -depth 1) 
-	rm -rf $$(find . -type d -name "coverage" -depth 1)
+	rm -rf $$(find . -type d -name "coverage" -depth 2)
 	rm -rf public/*
