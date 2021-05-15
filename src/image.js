@@ -41,7 +41,7 @@ function getImage(canvas, width, height) {
 
     ///////////////// Perlin Noise /////////////////////
 
-    /*
+    
     pixel = generators.noiseGenerator(
         {
             noise: generators.noise.noiseGenerators.perlinNoise,
@@ -53,7 +53,7 @@ function getImage(canvas, width, height) {
             }
         }
     );
-    */
+    
     
     ///////////////// Fractal Brownian Motion //////////
 
@@ -281,7 +281,7 @@ function getImage(canvas, width, height) {
 
     // Worley Noise
 
-
+    /*
     pixel = generators.noiseGenerator(
         {
             noise: generators.noise.noiseGenerators.worleyNoise,
@@ -296,7 +296,7 @@ function getImage(canvas, width, height) {
             }
         }
     );
-
+    */
 
     /*
     pixel = generators.noiseGenerator(
@@ -471,7 +471,7 @@ function getImage(canvas, width, height) {
 
     
     ///////////////////// Filters : /////////////////////
-
+    /*
     pixel = filters.takeColor({
         src: pixel,
         takeRed: true,
@@ -492,35 +492,22 @@ function getImage(canvas, width, height) {
         width:200,
         height: 50
     });
+    */
     //Gaussian Blur
-
-/*
-    for (let y = 43; y < 48; y++) {
-	for (let x = 29; x < 34; x++) {
-	    console.log(pixel(x,y));
-	}
-    }
-*/
-    /*
+    
     const kernel = filters.createKernel(
 	{
-	    kernelSize : 5,
+	    kernelSize : 3,
 	    sigma : 1.5
 	});
 
-    */
-    /*
+    
     pixel = filters.gaussianBlur(
 	{
-	    image : pixel,
+	    src : pixel,
 	    kernel : kernel,
-	    kernelSize : 5
+	    kernelSize : 3
 	});
-    console.log(pixel(29,45));
-    console.log(pixel(30,45));
-    console.log(pixel(31,45));
-
-    */
 
     canvas = imageGeneration(canvas, width, height, pixel);
 

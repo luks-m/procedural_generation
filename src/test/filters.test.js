@@ -5,16 +5,15 @@ const colors = require('./../colors.js');
 function test_gaussian_blur() {
 
     describe('Gaussian Blur tests', () => {
-        /*
             test('Test of even kernel size', () => {
-                expect(filters.createKernel(
+                expect(() => filters.createKernel(
                 {
                     kernelSize : 10,
                     sigma : 1.5
                 }
                 )).toThrow(Error);
             });
-        */
+	
         //Initialization of the unfiltered andfiltered pixel
         const unfiltered_pixel = generators.noiseGenerator(
             {
@@ -30,7 +29,7 @@ function test_gaussian_blur() {
 
         const kernel = filters.createKernel(
             {
-                kernelSize: 5,
+                kernelSize: 3,
                 sigma: 1.5
             });
 
@@ -38,16 +37,16 @@ function test_gaussian_blur() {
             {
                 src: unfiltered_pixel,
                 kernel: kernel,
-                kernelSize: 5
+                kernelSize: 3
             });
 
         //Tests on the pixels
         test('Test value of pixels', () => {
-            //expect(filtered_pixel(0,0)).toEqual(colors.createColor(,,,));
-            expect(filtered_pixel(31, 45)).toEqual(colors.createColor(64, 64, 64, 211));
-            //expect(filtered_pixel(200,250)).toEqual(colors.createColor(,,,));
-            //expect(filtered_pixel(211,89)).toEqual(colors.createColor(,,,));
-            //expect(filtered_pixel(250,126)).toEqual(colors.createColor(,,,));
+            expect(filtered_pixel(0,0)).toEqual(colors.createColor(60,60,60,122));
+            expect(filtered_pixel(31, 45)).toEqual(colors.createColor(39,39,39,122));
+            expect(filtered_pixel(250,250)).toEqual(colors.createColor(33,33,33,122));
+            expect(filtered_pixel(250,89)).toEqual(colors.createColor(43,43,43,122));
+            expect(filtered_pixel(114,250)).toEqual(colors.createColor(94,94,94,122));
         });
     });
 }

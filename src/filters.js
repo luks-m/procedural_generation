@@ -528,8 +528,8 @@ function anaglyphe(options){
 /**
  * Returns the scalar product of the vectors v1 and v2
  * 
- * @param {object} v1
- * @param {object} v2
+ * @param {object} v1 Array of pixels representing the image
+ * @param {object} v2 Array of values representing the kernel
  */
 function scalarProduct(options) {
     return options.v1.reduce((acc, array, index) =>
@@ -543,8 +543,8 @@ function scalarProduct(options) {
 /**
  * Returns the scalar product of two matrixes matrix1 and matrix2
  *
- * @param {object} matrix1
- * @param {object} matrix2 
+ * @param {object} matrix1 Matrix of pixels
+ * @param {object} matrix2 Kernel of Gaussian Blur
  */
 function convolution(options) {
     return options.matrix1.reduce((acc, line, index) =>
@@ -581,7 +581,7 @@ function createKernel(options) {
 function copyFunction(options) {
     return [...Array(options.kernelSize)].map(
         (line, i) => [...Array(options.kernelSize)].map(
-            (value, j) => options.image(options.x - options.kernelSize / 2 + j, options.y - options.kernelSize / 2 + i)));
+            (value, j) => options.image(options.x - Math.floor(options.kernelSize / 2) + j, options.y - Math.floor(options.kernelSize / 2) + i)));
 }
 
 /**
