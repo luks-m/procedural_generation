@@ -126,7 +126,7 @@ function test_clear() {
         test('Should return an image with transparent color only for certain value', () => {
             const toClear = (x, y) => {
                 return (x === width / 2 && y === height / 2) || (x < 0.15 * width && y < 0.15 * height) || (x >= 0.75 * width && y >= 0.75 * height);
-            }
+            };
             const options = { src: image, toClear: toClear };
             const filterToTest = filters.clear(options);
             expect(filterToTest(0, 0)).toEqual(colors.examples.TRANSPARENT);
@@ -312,7 +312,7 @@ function test_pixelate() {
             function rightPixel(x, y) {
                 // pixel = new pixel size * ratio of x by new pixel size
                 x = options.size.x * Math.floor(x / options.size.x);
-                y = options.size.y * Math.floor(y / options.size.y)
+                y = options.size.y * Math.floor(y / options.size.y);
                 return [x, y];
             }
             let [x, y] = rightPixel(0, 0);
