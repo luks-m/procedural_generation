@@ -291,15 +291,15 @@ function test_pixelate() {
 
             let [x, y] = [0, 0];
             expect(filterToTest(0, 0)).toEqual(image(x, y));
-            [x, y] = [0.15 * width, 0.15 * height];
+            [x, y] = [Math.floor(0.15 * width), Math.floor(0.15 * height)];
             expect(filterToTest(0.15 * width, 0.15 * height)).toEqual(image(x, y));
-            [x, y] = [0.15 * width, 0.75 * height];
+            [x, y] = [Math.floor(0.15 * width), Math.floor(0.75 * height)];
             expect(filterToTest(0.15 * width, 0.75 * height)).toEqual(image(x, y));
-            [x, y] = [0.5 * width, 0.5 * height];
+            [x, y] = [Math.floor(0.5 * width), Math.floor(0.5 * height)];
             expect(filterToTest(0.5 * width, 0.5 * height)).toEqual(image(x, y));
-            [x, y] = [0.75 * width, 0.75 * height];
+            [x, y] = [Math.floor(0.75 * width), Math.floor(0.75 * height)];
             expect(filterToTest(0.75 * width, 0.75 * height)).toEqual(image(x, y));
-            [x, y] = [0.75 * width, 0.15 * height];
+            [x, y] = [Math.floor(0.75 * width), Math.floor(0.15 * height)];
             expect(filterToTest(0.75 * width, 0.15 * height)).toEqual(image(x, y));
             [x, y] = [width, height];
             expect(filterToTest(width, height)).toEqual(image(x, y));
