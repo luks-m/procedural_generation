@@ -82,12 +82,12 @@ function isoscelesTriangle(options) {
     function _isoscelesTriangle(x, y) {
         const halfSize = options.size / 2;
         if (geometric.isEven({ x: (y - y % options.size) / options.size })) {
-            if (x % options.size < (halfSize - y % halfSize) || x % options.size > (halfSize + y % halfSize)) {
+            if (x % options.size < (halfSize - (y % options.size)/2) || x % options.size > (halfSize + (y % options.size)/2)) {
                 return options.color1;
             }
             return options.color2;
         }
-        else if (x % options.size > (halfSize - (options.size - y) % halfSize) || x % options.size < (halfSize + (options.size - y) % halfSize)) {
+        else if (x % options.size > (halfSize - ((options.size - y) % options.size)/2) || x % options.size < (halfSize + ((options.size - y) % options.size)/2)) {
             return options.color1;
         }
         return options.color2;
@@ -104,12 +104,12 @@ function equilateralTriangle(options) {
     function _equilateralTriangle(x, y) {
         const halfSize = options.size / 2;
         if (geometric.isEven({ x: (y - y % options.size) / options.size })) {
-            if (x % options.size < (halfSize - y % halfSize) || x % options.size > (halfSize + y % halfSize)) {
+            if (x % options.size < (halfSize - (y % options.size)/2) || x % options.size > (halfSize + (y % options.size)/2)) {
                 return options.color1;
             }
             return options.color2;
         }
-        if (x % options.size > (y % halfSize) && x % options.size < (options.size - y % halfSize)) {
+        if (x % options.size > ((y % options.size)/2) && x % options.size < (options.size - (y % options.size)/2)) {
             return options.color1;
         }
         return options.color2;
