@@ -225,6 +225,27 @@ function testWhichPart() {
     });
 }
 
+function testIsSquareDiag() {
+    describe('IsSquareDiag tests', () => {
+        test('Test if (0,0) is on the corner of 50-size tile', () => {
+            expect(geometric.isSquareDiag({ x: 0, y: 0, size: 50 })).toStrictEqual(true);
+        });
+	test('Test if (50,0) is on the corner of 50-size tile', () => {
+            expect(geometric.isSquareDiag({ x: 50, y: 0, size: 50 })).toStrictEqual(true);
+        });
+	test('Test if (33,33) is on the corner of 33-size tile', () => {
+            expect(geometric.isSquareDiag({ x: 33, y: 33, size: 33 })).toStrictEqual(true);
+        });
+	test('Test if (26,33) is not on the corner of 33-size tile', () => {
+            expect(geometric.isSquareDiag({ x: 26, y: 33, size: 33 })).toStrictEqual(false);
+        });	
+	test('Test if (15,12) is not on the corner of 22-size tile', () => {
+            expect(geometric.isSquareDiag({ x: 15, y: 12, size: 22 })).toStrictEqual(false);
+        });
+        
+    });
+}
+
 testIsEven();
 testIsOdd();
 testSameParity();
@@ -241,3 +262,4 @@ testPredCornerBottomLeft();
 testPredDiagBottomRightTopLeft();
 testPredDiagBottomLeftTopRight();
 testWhichPart();
+testIsSquareDiag();

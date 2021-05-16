@@ -831,6 +831,170 @@ function testZigzag() {
     });
 }
 
+function testGrid() {
+    describe('Grid test', () => {
+
+        test('Test of pixel color', () => {
+            let color1 = colors.examples.BROWN;
+            let color2 = colors.examples.WHITE;
+            const pixel = generators.tilings.grid(
+                {
+                    color1: color1,
+                    color2: color2,
+                    size: 10
+                }
+            );
+            expect(colors.compareColor(pixel(0, 0), color1)).toBe(true);
+            expect(colors.compareColor(pixel(0, 5), color2)).toBe(true);
+            expect(colors.compareColor(pixel(0, 10), color2)).toBe(true);
+            expect(colors.compareColor(pixel(10, 0), color2)).toBe(true);
+            expect(colors.compareColor(pixel(10, 45), color1)).toBe(true);
+            expect(colors.compareColor(pixel(5, 0), color2)).toBe(true);
+            expect(colors.compareColor(pixel(10, 80), color2)).toBe(true);
+            expect(colors.compareColor(pixel(20, 40), color1)).toBe(true);
+
+            expect(colors.compareColor(pixel(48, 56), color1)).toBe(true);
+            expect(colors.compareColor(pixel(32, 28), color1)).toBe(true);
+            expect(colors.compareColor(pixel(5, 5), color1)).toBe(true);
+            expect(colors.compareColor(pixel(156, 298), color1)).toBe(true);
+
+        });
+    });
+}
+
+function testSquare() {
+    describe('Square test', () => {
+
+        test('Test of pixel color', () => {
+            let color1 = colors.examples.BROWN;
+            let color2 = colors.examples.WHITE;
+            const pixel = generators.tilings.square(
+                {
+                    color1: color1,
+                    color2: color2,
+                    size: 50
+                }
+            );
+            expect(colors.compareColor(pixel(0, 0), color1)).toBe(true);
+            expect(colors.compareColor(pixel(0, 49), color1)).toBe(true);
+            expect(colors.compareColor(pixel(25, 25), color1)).toBe(true);
+            expect(colors.compareColor(pixel(49, 0), color1)).toBe(true);
+            expect(colors.compareColor(pixel(49, 45), color1)).toBe(true);
+            expect(colors.compareColor(pixel(55, 0), color2)).toBe(true);
+            expect(colors.compareColor(pixel(15, 82), color2)).toBe(true);
+            expect(colors.compareColor(pixel(20, 56), color2)).toBe(true);
+
+            expect(colors.compareColor(pixel(80, 56), color1)).toBe(true);
+            expect(colors.compareColor(pixel(70, 125), color2)).toBe(true);
+            expect(colors.compareColor(pixel(5, 5), color1)).toBe(true);
+            expect(colors.compareColor(pixel(249, 222), color1)).toBe(true);
+
+        });
+    });
+}
+
+
+function testDoubleVichy() {
+    describe('DoubleVichy test', () => {
+
+        test('Test of pixel color', () => {
+            let color1 = colors.examples.BLACK;
+            let color2 = colors.examples.WHITE;
+            const pixel = generators.tilings.doubleVichy(
+                {
+                    color1: color1,
+                    color2: color2,
+                    size: 10
+                }
+            );
+            expect(colors.compareColor(pixel(0, 0), color2)).toBe(true);
+            expect(colors.compareColor(pixel(1, 0), color1)).toBe(true);
+            expect(colors.compareColor(pixel(2, 0), color2)).toBe(true);
+            expect(colors.compareColor(pixel(3, 0), color1)).toBe(true);
+            expect(colors.compareColor(pixel(4, 0), color2)).toBe(true);
+            expect(colors.compareColor(pixel(5, 0), color2)).toBe(true);
+            expect(colors.compareColor(pixel(6, 0), color1)).toBe(true);
+            expect(colors.compareColor(pixel(0, 1), color1)).toBe(true);
+
+            expect(colors.compareColor(pixel(0, 2), color2)).toBe(true);
+            expect(colors.compareColor(pixel(1, 2), color1)).toBe(true);
+            expect(colors.compareColor(pixel(2, 2), color2)).toBe(true);
+            expect(colors.compareColor(pixel(3, 3), color2)).toBe(true);
+
+        });
+    });
+}
+
+
+function testHourglass() {
+    describe('DoubleVichy test', () => {
+
+        test('Test of pixel color', () => {
+            let color1 = colors.examples.BLACK;
+            let color2 = colors.examples.WHITE;
+            const pixel = generators.tilings.hourglass(
+                {
+                    color1: color1,
+                    color2: color2,
+                    size: 20
+                }
+            );
+            expect(colors.compareColor(pixel(10, 1), color2)).toBe(true);
+            expect(colors.compareColor(pixel(10, 10), color1)).toBe(true);
+            expect(colors.compareColor(pixel(0, 0), color1)).toBe(true);
+            expect(colors.compareColor(pixel(19, 0), color1)).toBe(true);
+            expect(colors.compareColor(pixel(0, 10), color1)).toBe(true);
+            expect(colors.compareColor(pixel(19, 10), color1)).toBe(true);
+            expect(colors.compareColor(pixel(18, 19), color2)).toBe(true);
+            expect(colors.compareColor(pixel(5, 18), color2)).toBe(true);
+
+            expect(colors.compareColor(pixel(0, 21), color2)).toBe(true);
+            expect(colors.compareColor(pixel(21, 22), color2)).toBe(true);
+            expect(colors.compareColor(pixel(10, 22), color1)).toBe(true);
+            expect(colors.compareColor(pixel(10, 39), color1)).toBe(true);
+            expect(colors.compareColor(pixel(0, 30), color1)).toBe(true);
+            expect(colors.compareColor(pixel(19, 31), color1)).toBe(true);
+            expect(colors.compareColor(pixel(0, 39), color2)).toBe(true);
+            expect(colors.compareColor(pixel(19, 38), color2)).toBe(true);
+        });
+    });
+}
+
+function testOctagonal() {
+    describe('DoubleVichy test', () => {
+
+        test('Test of pixel color', () => {
+            let color1 = colors.examples.PURPLE;
+            let color2 = colors.examples.RED;
+            const pixel = generators.tilings.octagonal(
+                {
+                    color1: color1,
+                    color2: color2,
+                    size: 50,
+		    width:2
+                }
+            );
+            expect(colors.compareColor(pixel(0, 0), color2)).toBe(true);
+            expect(colors.compareColor(pixel(2, 10), color2)).toBe(true);
+            expect(colors.compareColor(pixel(0, 17), color1)).toBe(true);
+            expect(colors.compareColor(pixel(0, 20), color1)).toBe(true);
+            expect(colors.compareColor(pixel(2, 40), color2)).toBe(true);
+            expect(colors.compareColor(pixel(25, 49), color1)).toBe(true);
+            expect(colors.compareColor(pixel(48, 48), color2)).toBe(true);
+            expect(colors.compareColor(pixel(42, 42), color1)).toBe(true);
+
+            expect(colors.compareColor(pixel(60, 25), color2)).toBe(true);
+            expect(colors.compareColor(pixel(22, 32), color2)).toBe(true);
+            expect(colors.compareColor(pixel(0, 75), color1)).toBe(true);
+            expect(colors.compareColor(pixel(50, 25), color1)).toBe(true);
+            expect(colors.compareColor(pixel(0, 50), color2)).toBe(true);
+            expect(colors.compareColor(pixel(75, 51), color1)).toBe(true);
+            expect(colors.compareColor(pixel(8, 8), color1)).toBe(true);
+            expect(colors.compareColor(pixel(8, 42), color1)).toBe(true);
+        });
+    });
+}
+
 testWhite();
 testPerlin();
 testWorley();
@@ -842,3 +1006,8 @@ testRectangleTriangle();
 testIsoscelesTriangle();
 testEquilateralTriangle();
 testZigzag();
+testGrid();
+testSquare();
+testDoubleVichy();
+testHourglass();
+testOctagonal();

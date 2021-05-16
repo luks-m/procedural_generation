@@ -171,7 +171,7 @@ function whichPart(options) {
 }
 
 /**
- * Checks if the pixel is on a tile border
+ * Checks if the pixel is on a tile corner
  * @param {PartOptions} options 
  * @returns {boolean} true if the pixel is on a border, false else
  */
