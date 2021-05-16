@@ -326,6 +326,7 @@ function voronoi(options) {
  * @property {number} number Number of point to generate
  * @property {number} width Width of the image
  * @property {number} height Height of the image
+ * @property {number} seed Seed of random
  */
 
 /**
@@ -334,10 +335,11 @@ function voronoi(options) {
  * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function voronoiRandom(options) {
+    const rand = helpers.makeRandom(options.seed);
     const _options = [...Array(options.number).keys()].reduce((accumulator) => {
         return {
-            center: [...accumulator.center, [Math.random() * options.width, Math.random() * options.height]],
-            color: [...accumulator.color, colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255)]
+            center: [...accumulator.center, [Math.abs(rand()) * options.width, Math.abs(rand()) * options.height]],
+            color: [...accumulator.color, colorFunctions.createColor(255 * Math.abs(rand()), 255 * Math.abs(rand()), 255 * Math.abs(rand()), 255)]
         };
     }, { center: [], color: [] });
 
@@ -349,6 +351,7 @@ function voronoiRandom(options) {
  * @property {number} width Width of image
  * @property {number} height Height of image
  * @property {number} size Size of a tile
+ * @property {number} seed Seed of random
  */
 
 /**
@@ -357,6 +360,7 @@ function voronoiRandom(options) {
  * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function voronoiHexagonal(options) {
+    const rand = helpers.makeRandom(options.seed);
     const numberPointHeight = 3 * Math.floor(options.height / options.size);
     const numberPointWidth = 3 * Math.floor(options.width / options.size);
     const iterable = [...Array(numberPointHeight).keys()].map(() => [...Array(numberPointWidth).keys()]);
@@ -369,7 +373,7 @@ function voronoiHexagonal(options) {
             );
             return {
                 center: [...acc.center, center],
-                color: [...acc.color, colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255)]
+                color: [...acc.color, colorFunctions.createColor(255 * Math.abs(rand()), 255 * Math.abs(rand()), 255 * Math.abs(rand()), 255)]
             };
         }, accumulator),
         { center: [], color: [] }
@@ -383,6 +387,7 @@ function voronoiHexagonal(options) {
  * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
 function voronoiPentagonal(options) {
+    const rand = helpers.makeRandom(options.seed);
     const numberPointHeight = 3 * Math.floor(options.height / options.size);
     const numberPointWidth = 3 * Math.floor(options.width / options.size);
     const iterable = [...Array(numberPointHeight).keys()].map(() => [...Array(numberPointWidth).keys()]);
@@ -406,10 +411,10 @@ function voronoiPentagonal(options) {
                 center: centers,
                 color: [
                     ...acc.color,
-                    colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255),
-                    colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255),
-                    colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255),
-                    colorFunctions.createColor(255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255)
+                    colorFunctions.createColor(255 * Math.abs(rand()), 255 * Math.abs(rand()), 255 * Math.abs(rand()), 255),
+                    colorFunctions.createColor(255 * Math.abs(rand()), 255 * Math.abs(rand()), 255 * Math.abs(rand()), 255),
+                    colorFunctions.createColor(255 * Math.abs(rand()), 255 * Math.abs(rand()), 255 * Math.abs(rand()), 255),
+                    colorFunctions.createColor(255 * Math.abs(rand()), 255 * Math.abs(rand()), 255 * Math.abs(rand()), 255)
                 ]
             };
         }, accumulator),
