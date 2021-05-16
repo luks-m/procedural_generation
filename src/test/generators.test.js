@@ -138,17 +138,17 @@ function testWorley() {
 
         test('Test of invalid distance type', () => {
             const pixel = () => generators.noiseGenerator({
-                    noise: generators.noise.noiseGenerators.worleyNoise,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        three_dimensions: true,
-                        colored: true,
-                        seed: 43,
-                        type: "f1 - f2",
-                        distance: "euclidean"
-                    }
+                noise: generators.noise.noiseGenerators.worleyNoise,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    three_dimensions: true,
+                    colored: true,
+                    seed: 43,
+                    type: "f1 - f2",
+                    distance: "euclidean"
                 }
+            }
             );
 
             expect(() => pixel()).toThrowError(Error);
@@ -156,17 +156,17 @@ function testWorley() {
 
         test('Test of invalid distance formula', () => {
             const pixel = () => generators.noiseGenerator({
-                    noise: generators.noise.noiseGenerators.worleyNoise,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        three_dimensions: true,
-                        colored: true,
-                        seed: 43,
-                        type: "f2",
-                        distance: "linear"
-                    }
+                noise: generators.noise.noiseGenerators.worleyNoise,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    three_dimensions: true,
+                    colored: true,
+                    seed: 43,
+                    type: "f2",
+                    distance: "linear"
                 }
+            }
             );
 
             expect(() => pixel()).toThrowError(Error);
@@ -174,16 +174,16 @@ function testWorley() {
 
         test('Test with 2D Euclidean distance formula RGBA', () => {
             const pixel = generators.noiseGenerator({
-                    noise: generators.noise.noiseGenerators.worleyNoise,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        three_dimensions: false,
-                        seed: 43,
-                        type: "f2 - f1",
-                        distance: "euclidean"
-                    }
+                noise: generators.noise.noiseGenerators.worleyNoise,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    three_dimensions: false,
+                    seed: 43,
+                    type: "f2 - f1",
+                    distance: "euclidean"
                 }
+            }
             );
 
             expect(pixel(0, 0)).toStrictEqual(colors.createColor(84, 84, 84, 255));
@@ -197,17 +197,17 @@ function testWorley() {
 
         test('Test with 3D Euclidean distance formula RGBA', () => {
             const pixel = generators.noiseGenerator({
-                    noise: generators.noise.noiseGenerators.worleyNoise,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        three_dimensions: true,
-                        colored: true,
-                        seed: 43,
-                        type: "f2 - f1",
-                        distance: "euclidean"
-                    }
+                noise: generators.noise.noiseGenerators.worleyNoise,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    three_dimensions: true,
+                    colored: true,
+                    seed: 43,
+                    type: "f2 - f1",
+                    distance: "euclidean"
                 }
+            }
             );
 
             expect(pixel(0, 0)).toStrictEqual(colors.createColor(50, 107, 153, 255));
@@ -221,16 +221,16 @@ function testWorley() {
 
         test('Test with 2D Chebyshev distance formula RGBA', () => {
             const pixel = generators.noiseGenerator({
-                    noise: generators.noise.noiseGenerators.worleyNoise,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        three_dimensions: false,
-                        seed: 43,
-                        type: "f2 - f1",
-                        distance: "chebyshev"
-                    }
+                noise: generators.noise.noiseGenerators.worleyNoise,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    three_dimensions: false,
+                    seed: 43,
+                    type: "f2 - f1",
+                    distance: "chebyshev"
                 }
+            }
             );
 
             expect(pixel(0, 0)).toStrictEqual(colors.createColor(28, 28, 28, 255));
@@ -244,16 +244,16 @@ function testWorley() {
 
         test('Test with 3D Chebyshev distance formula RGBA', () => {
             const pixel = generators.noiseGenerator({
-                    noise: generators.noise.noiseGenerators.worleyNoise,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        three_dimensions: true,
-                        seed: 43,
-                        type: "f2 - f1",
-                        distance: "chebyshev"
-                    }
+                noise: generators.noise.noiseGenerators.worleyNoise,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    three_dimensions: true,
+                    seed: 43,
+                    type: "f2 - f1",
+                    distance: "chebyshev"
                 }
+            }
             );
 
             expect(pixel(0, 0)).toStrictEqual(colors.createColor(199, 199, 199, 255));
@@ -267,16 +267,16 @@ function testWorley() {
 
         test('Test with 2D Manhattan distance formula RGBA', () => {
             const pixel = generators.noiseGenerator({
-                    noise: generators.noise.noiseGenerators.worleyNoise,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        three_dimensions: false,
-                        seed: 43,
-                        type: "f2 - f1",
-                        distance: "manhattan"
-                    }
+                noise: generators.noise.noiseGenerators.worleyNoise,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    three_dimensions: false,
+                    seed: 43,
+                    type: "f2 - f1",
+                    distance: "manhattan"
                 }
+            }
             );
 
             expect(pixel(0, 0)).toStrictEqual(colors.createColor(107, 107, 107, 255));
@@ -290,16 +290,16 @@ function testWorley() {
 
         test('Test with 3D Manhattan distance formula RGBA', () => {
             const pixel = generators.noiseGenerator({
-                    noise: generators.noise.noiseGenerators.worleyNoise,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        three_dimensions: true,
-                        seed: 43,
-                        type: "f2 - f1",
-                        distance: "manhattan"
-                    }
+                noise: generators.noise.noiseGenerators.worleyNoise,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    three_dimensions: true,
+                    seed: 43,
+                    type: "f2 - f1",
+                    distance: "manhattan"
                 }
+            }
             );
 
             expect(pixel(0, 0)).toStrictEqual(colors.createColor(249, 249, 249, 255));
@@ -313,17 +313,17 @@ function testWorley() {
 
         test('Test with f1 distance type RGBA', () => {
             const pixel = generators.noiseGenerator({
-                    noise: generators.noise.noiseGenerators.worleyNoise,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        three_dimensions: false,
-                        seed: 43,
-                        type: "f1",
-                        distance: "euclidean",
-                        colored: false
-                    }
+                noise: generators.noise.noiseGenerators.worleyNoise,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    three_dimensions: false,
+                    seed: 43,
+                    type: "f1",
+                    distance: "euclidean",
+                    colored: false
                 }
+            }
             );
 
             expect(pixel(0, 0)).toStrictEqual(colors.createColor(255, 255, 255, 255));
@@ -342,17 +342,17 @@ function testFractal() {
 
         test('Test of invalid Noise Gen', () => {
             const pixel = () => generators.noiseGenerator({
-                    noise: generators.noise.noiseFractals.fractal,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        fractal: 'fbm',
-                        fractalOptions: {
-                            noiseGen: "simplex",
-                            noiseSeed: 2567,
-                        }
+                noise: generators.noise.noiseFractals.fractal,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    fractal: 'fbm',
+                    fractalOptions: {
+                        noiseGen: "simplex",
+                        noiseSeed: 2567,
                     }
                 }
+            }
             );
 
             expect(() => pixel()).toThrowError(Error);
@@ -360,17 +360,17 @@ function testFractal() {
 
         test('Test of invalid Fractal Gen', () => {
             const pixel = () => generators.noiseGenerator({
-                    noise: generators.noise.noiseFractals.fractal,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        fractal: 'fractal brownian motion',
-                        fractalOptions: {
-                            noiseGen: "perlin",
-                            noiseSeed: 2567,
-                        }
+                noise: generators.noise.noiseFractals.fractal,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    fractal: 'fractal brownian motion',
+                    fractalOptions: {
+                        noiseGen: "perlin",
+                        noiseSeed: 2567,
                     }
                 }
+            }
             );
 
             expect(() => pixel()).toThrowError(Error);
@@ -378,26 +378,26 @@ function testFractal() {
 
         test('Test of Colored Fractal Brownian Motion Perlin Noise RGBA', () => {
             const pixel = generators.noiseGenerator({
-                    noise: generators.noise.noiseFractals.fractal,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        fractal: 'fbm',
-                        fractalOptions: {
-                            noiseGen: "perlin",
-                            noiseSeed: 2567,
-                            argsList: {
-                                variant: "simplex"
-                            },
-                            octaves: 5,
-                            persistence: 0.5,
-                            lacunarity: 2,
-                            initial_amplitude: 2,
-                            initial_frequency: 0.2,
-                            colored: true
-                        }
+                noise: generators.noise.noiseFractals.fractal,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    fractal: 'fbm',
+                    fractalOptions: {
+                        noiseGen: "perlin",
+                        noiseSeed: 2567,
+                        argsList: {
+                            variant: "simplex"
+                        },
+                        octaves: 5,
+                        persistence: 0.5,
+                        lacunarity: 2,
+                        initial_amplitude: 2,
+                        initial_frequency: 0.2,
+                        colored: true
                     }
                 }
+            }
             );
 
             expect(pixel(0, 0)).toStrictEqual(colors.createColor(53, 113, 162, 255));
@@ -411,17 +411,17 @@ function testFractal() {
 
         test('Test of Fractal Brownian Motion White Noise RGBA', () => {
             const pixel = generators.noiseGenerator({
-                    noise: generators.noise.noiseFractals.fractal,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        fractal: 'fbm',
-                        fractalOptions: {
-                            noiseGen: "white",
-                            noiseSeed: 2567,
-                        }
+                noise: generators.noise.noiseFractals.fractal,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    fractal: 'fbm',
+                    fractalOptions: {
+                        noiseGen: "white",
+                        noiseSeed: 2567,
                     }
                 }
+            }
             );
 
             expect(pixel(0, 0)).toStrictEqual(colors.createColor(145, 145, 145, 255));
@@ -535,22 +535,22 @@ function testWarping() {
 
         test('Test with turbulence RGBA', () => {
             const pixel = generators.noiseGenerator({
-                    noise: generators.noise.noiseFractals.warp,
-                    noiseOptions: {
-                        width: 250,
-                        height: 250,
-                        fractalGen: {
-                            fractal: 'turbulence',
-                            fractalOptions: {
-                                noiseGen: "perlin",
-                                noiseSeed: 44
-                            }
-                        },
-                        qMultiplier: 10,
-                        rMultiplier: 10,
-                        colored: true
-                    }
+                noise: generators.noise.noiseFractals.warp,
+                noiseOptions: {
+                    width: 250,
+                    height: 250,
+                    fractalGen: {
+                        fractal: 'turbulence',
+                        fractalOptions: {
+                            noiseGen: "perlin",
+                            noiseSeed: 44
+                        }
+                    },
+                    qMultiplier: 10,
+                    rMultiplier: 10,
+                    colored: true
                 }
+            }
             );
 
             expect(pixel(0, 0)).toStrictEqual(colors.createColor(37, 80, 118, 255));
@@ -594,60 +594,60 @@ function testWarping() {
         });
 
         test('Test with Ridged Noise', () => {
-        const pixel = generators.noiseGenerator(
-            {
-                noise: generators.noise.noiseFractals.warp,
-                noiseOptions: {
-                    width: 250,
-                    height: 250,
-                    fractalGen: {
-                        fractal: 'fbm',
-                        fractalOptions: {
-                            noiseGen: "perlin",
-                            noiseSeed: 44,
-                            octaves: 2
-                        }
-                    },
-                    qMultiplier: 40,
-                    rMultiplier: 20,
-                    colored: false,
-                    get_noise: true
+            const pixel = generators.noiseGenerator(
+                {
+                    noise: generators.noise.noiseFractals.warp,
+                    noiseOptions: {
+                        width: 250,
+                        height: 250,
+                        fractalGen: {
+                            fractal: 'fbm',
+                            fractalOptions: {
+                                noiseGen: "perlin",
+                                noiseSeed: 44,
+                                octaves: 2
+                            }
+                        },
+                        qMultiplier: 40,
+                        rMultiplier: 20,
+                        colored: false,
+                        get_noise: true
+                    }
                 }
-            }
-        );
+            );
 
-        expect(pixel(0, 0)).toBeCloseTo(0.17603096787500627, 5);
-        expect(pixel(0, 50)).toBeCloseTo(-0.0979108862368786, 5);
-        expect(pixel(50, 100)).toBeCloseTo(-0.1349315654896065, 5);
-        expect(pixel(100, 150)).toBeCloseTo(-0.399575353727722, 5);
-        expect(pixel(150, 200)).toBeCloseTo(0.12860428567776205, 5);
-        expect(pixel(200, 250)).toBeCloseTo(-0.18383164850042522, 5);
-        expect(pixel(250, 250)).toBeCloseTo(-0.33499878263902927, 5);
-    });
+            expect(pixel(0, 0)).toBeCloseTo(0.17603096787500627, 5);
+            expect(pixel(0, 50)).toBeCloseTo(-0.0979108862368786, 5);
+            expect(pixel(50, 100)).toBeCloseTo(-0.1349315654896065, 5);
+            expect(pixel(100, 150)).toBeCloseTo(-0.399575353727722, 5);
+            expect(pixel(150, 200)).toBeCloseTo(0.12860428567776205, 5);
+            expect(pixel(200, 250)).toBeCloseTo(-0.18383164850042522, 5);
+            expect(pixel(250, 250)).toBeCloseTo(-0.33499878263902927, 5);
+        });
 
         test('Test with undefined fractalGen', () => {
-        const pixel = generators.noiseGenerator(
-            {
-                noise: generators.noise.noiseFractals.warp,
-                noiseOptions: {
-                    width: 250,
-                    height: 250,
-                    qMultiplier: 40,
-                    rMultiplier: 20,
-                    colored: false,
-                    get_noise: true
+            const pixel = generators.noiseGenerator(
+                {
+                    noise: generators.noise.noiseFractals.warp,
+                    noiseOptions: {
+                        width: 250,
+                        height: 250,
+                        qMultiplier: 40,
+                        rMultiplier: 20,
+                        colored: false,
+                        get_noise: true
+                    }
                 }
-            }
-        );
+            );
 
-        expect(pixel(0, 0)).toBeCloseTo(0.4930100065586931, 5);
-        expect(pixel(0, 50)).toBeCloseTo(0.2752129257376601, 5);
-        expect(pixel(50, 100)).toBeCloseTo(-0.17137430263865838, 5);
-        expect(pixel(100, 150)).toBeCloseTo(0.04886057828493007, 5);
-        expect(pixel(150, 200)).toBeCloseTo(0.15641398928841266, 5);
-        expect(pixel(200, 250)).toBeCloseTo(-0.03519979894665326, 5);
-        expect(pixel(250, 250)).toBeCloseTo(-0.0605074223292269, 5);
-    });
+            expect(pixel(0, 0)).toBeCloseTo(0.4930100065586931, 5);
+            expect(pixel(0, 50)).toBeCloseTo(0.2752129257376601, 5);
+            expect(pixel(50, 100)).toBeCloseTo(-0.17137430263865838, 5);
+            expect(pixel(100, 150)).toBeCloseTo(0.04886057828493007, 5);
+            expect(pixel(150, 200)).toBeCloseTo(0.15641398928841266, 5);
+            expect(pixel(200, 250)).toBeCloseTo(-0.03519979894665326, 5);
+            expect(pixel(250, 250)).toBeCloseTo(-0.0605074223292269, 5);
+        });
     });
 }
 
@@ -655,24 +655,24 @@ function testSolid() {
     describe('Solid test', () => {
 
         test('Test of pixel color', () => {
-	    let color1 = colors.createColor(122, 22, 56, 86);
-	    const pixel1 = generators.tilings.solid(
-		{
+            let color1 = colors.createColor(122, 22, 56, 86);
+            const pixel1 = generators.tilings.solid(
+                {
                     color: color1,
-		}
+                }
             );
-            expect(colors.compareColor(pixel1(0, 0),color1)).toBe(true);
-            expect(colors.compareColor(pixel1(56, 49),color1)).toBe(true);
-            expect(colors.compareColor(pixel1(250, 850),color1)).toBe(true);
-	    let color2 = colors.createColor(250, 0, 150, 255);
-	    const pixel2 = generators.tilings.solid(
-		{
+            expect(colors.compareColor(pixel1(0, 0), color1)).toBe(true);
+            expect(colors.compareColor(pixel1(56, 49), color1)).toBe(true);
+            expect(colors.compareColor(pixel1(250, 850), color1)).toBe(true);
+            let color2 = colors.createColor(250, 0, 150, 255);
+            const pixel2 = generators.tilings.solid(
+                {
                     color: color2,
-		}
+                }
             );
-            expect(colors.compareColor(pixel2(0, 0),color2)).toBe(true);
-            expect(colors.compareColor(pixel2(56,49),color2)).toBe(true);
-            expect(colors.compareColor(pixel2(23, 85),color2)).toBe(true);
+            expect(colors.compareColor(pixel2(0, 0), color2)).toBe(true);
+            expect(colors.compareColor(pixel2(56, 49), color2)).toBe(true);
+            expect(colors.compareColor(pixel2(23, 85), color2)).toBe(true);
         });
     });
 }
@@ -707,22 +707,22 @@ function testRectangleTriangle() {
     describe('RectangleTriangle test', () => {
 
         test('Test of pixel color', () => {
-	    let color1 = colors.examples.BLACK ;
-	    let color2 = colors.examples.WHITE ;
-	    const pixel = generators.tilings.rectangleTriangle(
-		{
+            let color1 = colors.examples.BLACK;
+            let color2 = colors.examples.WHITE;
+            const pixel = generators.tilings.rectangleTriangle(
+                {
                     color1: color1,
-		    color2: color2,
-		    size: 80
-		}
+                    color2: color2,
+                    size: 80
+                }
             );
-            expect(colors.compareColor(pixel(0, 10),color1)).toBe(true);
-            expect(colors.compareColor(pixel(50, 10),color2)).toBe(true);
-            expect(colors.compareColor(pixel(70, 79),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(90, 20),color1)).toBe(true);
-            expect(colors.compareColor(pixel(90, 88),color2)).toBe(true);
-            expect(colors.compareColor(pixel(90,70),color1)).toBe(true);
-	    
+            expect(colors.compareColor(pixel(0, 10), color1)).toBe(true);
+            expect(colors.compareColor(pixel(50, 10), color2)).toBe(true);
+            expect(colors.compareColor(pixel(70, 79), color1)).toBe(true);
+            expect(colors.compareColor(pixel(90, 20), color1)).toBe(true);
+            expect(colors.compareColor(pixel(90, 88), color2)).toBe(true);
+            expect(colors.compareColor(pixel(90, 70), color1)).toBe(true);
+
         });
     });
 }
@@ -731,34 +731,34 @@ function testIsoscelesTriangle() {
     describe('IsoscelesTriangle test', () => {
 
         test('Test of pixel color', () => {
-	    let color1 = colors.examples.BLUE ;
-	    let color2 = colors.examples.RED ;
-	    const pixel = generators.tilings.isoscelesTriangle(
-		{
+            let color1 = colors.examples.BLUE;
+            let color2 = colors.examples.RED;
+            const pixel = generators.tilings.isoscelesTriangle(
+                {
                     color1: color1,
-		    color2: color2,
-		    size: 50
-		}
+                    color2: color2,
+                    size: 50
+                }
             );
-            expect(colors.compareColor(pixel(25, 25),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(25, 10),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(10,48),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(40, 49),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(10, 5),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(40, 5),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(5, 25),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(45, 25),color1)).toBe(true);
+            expect(colors.compareColor(pixel(25, 25), color2)).toBe(true);
+            expect(colors.compareColor(pixel(25, 10), color2)).toBe(true);
+            expect(colors.compareColor(pixel(10, 48), color2)).toBe(true);
+            expect(colors.compareColor(pixel(40, 49), color2)).toBe(true);
+            expect(colors.compareColor(pixel(10, 5), color1)).toBe(true);
+            expect(colors.compareColor(pixel(40, 5), color1)).toBe(true);
+            expect(colors.compareColor(pixel(5, 25), color1)).toBe(true);
+            expect(colors.compareColor(pixel(45, 25), color1)).toBe(true);
 
-	    expect(colors.compareColor(pixel(75, 25),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(75, 10),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(60, 49),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(90, 49),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(10, 55),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(40, 55),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(5, 75),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(45, 75),color1)).toBe(true);
-            
-	    
+            expect(colors.compareColor(pixel(75, 25), color2)).toBe(true);
+            expect(colors.compareColor(pixel(75, 10), color2)).toBe(true);
+            expect(colors.compareColor(pixel(60, 49), color2)).toBe(true);
+            expect(colors.compareColor(pixel(90, 49), color2)).toBe(true);
+            expect(colors.compareColor(pixel(10, 55), color1)).toBe(true);
+            expect(colors.compareColor(pixel(40, 55), color1)).toBe(true);
+            expect(colors.compareColor(pixel(5, 75), color1)).toBe(true);
+            expect(colors.compareColor(pixel(45, 75), color1)).toBe(true);
+
+
         });
     });
 }
@@ -767,34 +767,34 @@ function testEquilateralTriangle() {
     describe('EquilateralTriangle test', () => {
 
         test('Test of pixel color', () => {
-	    let color1 = colors.examples.BLACK ;
-	    let color2 = colors.examples.RED ;
-	    const pixel = generators.tilings.equilateralTriangle(
-		{
+            let color1 = colors.examples.BLACK;
+            let color2 = colors.examples.RED;
+            const pixel = generators.tilings.equilateralTriangle(
+                {
                     color1: color1,
-		    color2: color2,
-		    size: 100
-		}
+                    color2: color2,
+                    size: 100
+                }
             );
-            expect(colors.compareColor(pixel(50, 50),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(50, 20),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(20,96),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(80, 98),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(20, 10),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(80, 10),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(10, 50),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(90, 50),color1)).toBe(true);
+            expect(colors.compareColor(pixel(50, 50), color2)).toBe(true);
+            expect(colors.compareColor(pixel(50, 20), color2)).toBe(true);
+            expect(colors.compareColor(pixel(20, 96), color2)).toBe(true);
+            expect(colors.compareColor(pixel(80, 98), color2)).toBe(true);
+            expect(colors.compareColor(pixel(20, 10), color1)).toBe(true);
+            expect(colors.compareColor(pixel(80, 10), color1)).toBe(true);
+            expect(colors.compareColor(pixel(10, 50), color1)).toBe(true);
+            expect(colors.compareColor(pixel(90, 50), color1)).toBe(true);
 
-	    expect(colors.compareColor(pixel(100, 50),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(100, 20),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(70, 50),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(130, 98),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(20, 60),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(80, 60),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(10, 100),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(90, 100),color1)).toBe(true);
-            
-	    
+            expect(colors.compareColor(pixel(100, 50), color1)).toBe(true);
+            expect(colors.compareColor(pixel(100, 20), color1)).toBe(true);
+            expect(colors.compareColor(pixel(70, 50), color2)).toBe(true);
+            expect(colors.compareColor(pixel(130, 98), color2)).toBe(true);
+            expect(colors.compareColor(pixel(20, 60), color2)).toBe(true);
+            expect(colors.compareColor(pixel(80, 60), color2)).toBe(true);
+            expect(colors.compareColor(pixel(10, 100), color1)).toBe(true);
+            expect(colors.compareColor(pixel(90, 100), color1)).toBe(true);
+
+
         });
     });
 }
@@ -804,29 +804,29 @@ function testZigzag() {
     describe('Zigzag test', () => {
 
         test('Test of pixel color', () => {
-	    let color1 = colors.examples.YELLOW ;
-	    let color2 = colors.examples.PURPLE ;
-	    const pixel = generators.tilings.zigzag(
-		{
+            let color1 = colors.examples.YELLOW;
+            let color2 = colors.examples.PURPLE;
+            const pixel = generators.tilings.zigzag(
+                {
                     color1: color1,
-		    color2: color2,
-		    size: 80
-		}
+                    color2: color2,
+                    size: 80
+                }
             );
-            expect(colors.compareColor(pixel(0, 0),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(0, 70),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(5, 40),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(78, 10),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(40, 40),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(40, 10),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(10, 80),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(78, 80),color2)).toBe(true);
-	    
-	    expect(colors.compareColor(pixel(40, 90),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(45, 150),color1)).toBe(true);
-	    expect(colors.compareColor(pixel(10, 100),color2)).toBe(true);
-	    expect(colors.compareColor(pixel(70, 100),color2)).toBe(true);
-	    
+            expect(colors.compareColor(pixel(0, 0), color1)).toBe(true);
+            expect(colors.compareColor(pixel(0, 70), color1)).toBe(true);
+            expect(colors.compareColor(pixel(5, 40), color1)).toBe(true);
+            expect(colors.compareColor(pixel(78, 10), color1)).toBe(true);
+            expect(colors.compareColor(pixel(40, 40), color2)).toBe(true);
+            expect(colors.compareColor(pixel(40, 10), color2)).toBe(true);
+            expect(colors.compareColor(pixel(10, 80), color2)).toBe(true);
+            expect(colors.compareColor(pixel(78, 80), color2)).toBe(true);
+
+            expect(colors.compareColor(pixel(40, 90), color1)).toBe(true);
+            expect(colors.compareColor(pixel(45, 150), color1)).toBe(true);
+            expect(colors.compareColor(pixel(10, 100), color2)).toBe(true);
+            expect(colors.compareColor(pixel(70, 100), color2)).toBe(true);
+
         });
     });
 }
