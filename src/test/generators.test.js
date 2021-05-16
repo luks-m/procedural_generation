@@ -651,6 +651,32 @@ function testWarping() {
     });
 }
 
+function testSolid() {
+    describe('Solid test', () => {
+
+        test('Test of pixel color', () => {
+	    let color1 = colors.createColor(122, 22, 56, 86);
+	    const pixel1 = generators.tilings.solid(
+		{
+                    color: color1,
+		}
+            );
+            expect(colors.compareColor(pixel1(0, 0),color1)).toBe(true);
+            expect(colors.compareColor(pixel1(56, 49),color1)).toBe(true);
+            expect(colors.compareColor(pixel1(250, 850),color1)).toBe(true);
+	    let color2 = colors.createColor(250, 0, 150, 255);
+	    const pixel2 = generators.tilings.solid(
+		{
+                    color: color2,
+		}
+            );
+            expect(colors.compareColor(pixel2(0, 0),color2)).toBe(true);
+            expect(colors.compareColor(pixel2(56,49),color2)).toBe(true);
+            expect(colors.compareColor(pixel2(23, 85),color2)).toBe(true);
+        });
+    });
+}
+
 function testCheckerboard() {
     describe('Checkerboard test', () => {
         const pixel = generators.tilings.checkerboard(
@@ -677,9 +703,142 @@ function testCheckerboard() {
     });
 }
 
+function testRectangleTriangle() {
+    describe('RectangleTriangle test', () => {
+
+        test('Test of pixel color', () => {
+	    let color1 = colors.examples.BLACK ;
+	    let color2 = colors.examples.WHITE ;
+	    const pixel = generators.tilings.rectangleTriangle(
+		{
+                    color1: color1,
+		    color2: color2,
+		    size: 80
+		}
+            );
+            expect(colors.compareColor(pixel(0, 10),color1)).toBe(true);
+            expect(colors.compareColor(pixel(50, 10),color2)).toBe(true);
+            expect(colors.compareColor(pixel(70, 79),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(90, 20),color1)).toBe(true);
+            expect(colors.compareColor(pixel(90, 88),color2)).toBe(true);
+            expect(colors.compareColor(pixel(90,70),color1)).toBe(true);
+	    
+        });
+    });
+}
+
+function testIsoscelesTriangle() {
+    describe('IsoscelesTriangle test', () => {
+
+        test('Test of pixel color', () => {
+	    let color1 = colors.examples.BLUE ;
+	    let color2 = colors.examples.RED ;
+	    const pixel = generators.tilings.isoscelesTriangle(
+		{
+                    color1: color1,
+		    color2: color2,
+		    size: 50
+		}
+            );
+            expect(colors.compareColor(pixel(25, 25),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(25, 10),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(10,48),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(40, 49),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(10, 5),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(40, 5),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(5, 25),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(45, 25),color1)).toBe(true);
+
+	    expect(colors.compareColor(pixel(75, 25),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(75, 10),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(60, 49),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(90, 49),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(10, 55),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(40, 55),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(5, 75),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(45, 75),color1)).toBe(true);
+            
+	    
+        });
+    });
+}
+
+function testEquilateralTriangle() {
+    describe('EquilateralTriangle test', () => {
+
+        test('Test of pixel color', () => {
+	    let color1 = colors.examples.BLACK ;
+	    let color2 = colors.examples.RED ;
+	    const pixel = generators.tilings.equilateralTriangle(
+		{
+                    color1: color1,
+		    color2: color2,
+		    size: 100
+		}
+            );
+            expect(colors.compareColor(pixel(50, 50),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(50, 20),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(20,96),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(80, 98),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(20, 10),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(80, 10),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(10, 50),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(90, 50),color1)).toBe(true);
+
+	    expect(colors.compareColor(pixel(100, 50),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(100, 20),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(70, 50),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(130, 98),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(20, 60),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(80, 60),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(10, 100),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(90, 100),color1)).toBe(true);
+            
+	    
+        });
+    });
+}
+
+
+function testZigzag() {
+    describe('Zigzag test', () => {
+
+        test('Test of pixel color', () => {
+	    let color1 = colors.examples.YELLOW ;
+	    let color2 = colors.examples.PURPLE ;
+	    const pixel = generators.tilings.zigzag(
+		{
+                    color1: color1,
+		    color2: color2,
+		    size: 80
+		}
+            );
+            expect(colors.compareColor(pixel(0, 0),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(0, 70),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(5, 40),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(78, 10),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(40, 40),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(40, 10),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(10, 80),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(78, 80),color2)).toBe(true);
+	    
+	    expect(colors.compareColor(pixel(40, 90),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(45, 150),color1)).toBe(true);
+	    expect(colors.compareColor(pixel(10, 100),color2)).toBe(true);
+	    expect(colors.compareColor(pixel(70, 100),color2)).toBe(true);
+	    
+        });
+    });
+}
+
 testWhite();
 testPerlin();
 testWorley();
 testFractal();
 testWarping();
+testSolid();
 testCheckerboard();
+testRectangleTriangle();
+testIsoscelesTriangle();
+testEquilateralTriangle();
+testZigzag();
