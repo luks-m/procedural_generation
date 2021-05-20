@@ -160,7 +160,8 @@ function getImage(canvas, width, height) {
                 filter: filters.anaglyphe,
                 filter_options: {
                     dx: 3,
-                    dy: 2
+                    dy: 2,
+                    color: colors.examples.TRANSPARENT
                 }
             }
         }
