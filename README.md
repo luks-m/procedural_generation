@@ -25,14 +25,14 @@ Open the image.js file in the src directory. Uncomment a generators or a filters
 ```shell
 $ make exe
 ```
-to produce an the image as canvas.png in the project root directory
+to produce the image as canvas.png in the project root directory
 
 else you can run
 
 ```shell
 $ make gen
 ```
-to produce an page at public/index.html
+to produce a page with the image at public/index.html
 
 # Generators
 
