@@ -6,7 +6,7 @@
 
 # Description
 
-The objective of the project is to implement functionally a collection of image generators and image filters in order to make procedural generation of textures. The code is broken down into two distinct parts:
+The objective of this project is to implement functionally a collection of image generators and image filters in order to make procedural generation of textures. The code is broken down into two distinct parts:
 - A set of image generators
 - A set of image filters
 
@@ -15,16 +15,17 @@ The objective of the project is to implement functionally a collection of image 
 - The ```make``` command 
 - canvas package
 - jest package
+- browserify package
 - Standard JS libraries
 
 # How to produce an image
 
-Open the image.js file in the src directory. Uncomment a generators or a filters between line 35 and line 884. Write the variable name og the generator /filter choiced as input of the function "generators.generate(...)" line 907. Then go to the root of the project directory and run
+Open the image.js file in the src directory. Uncomment a generators or a filters between line 35 and line 884. Write the variable name or the chosen generator / filter as input of the function "generators.generate(...)" line 907. Then go to the root of the project directory and run
 
 ```shell
 $ make exe
 ```
-to produce an the image as canvas.png on the project root
+to produce an the image as canvas.png in the project root directory
 
 else you can run
 
@@ -37,12 +38,12 @@ to produce an page at public/index.html
 
 ## Noise generators
 
-- Explication: a set of noise generator like Perlin noise, Worley noise 
+- Explication: a set of noise generator like Perlin noise or Worley noise 
 - Path from root: ```./src/noiseGenerators.js```
 
 ## Tiling generators
 
-- Explication: a set of tiling gnerator like chessBoard or Voronoi patterns
+- Explication: a set of tiling generator like chessBoard or Voronoi patterns
 - Path from root: ```./src/tilingGenerators.js```
 
 ## Color gradient
@@ -52,7 +53,7 @@ to produce an page at public/index.html
 
 # Filters
 
-- Explication: a set of filters like a 3d-filter, a zoom filter or image compositions
+- Explication: a set of filters like a 3d-filter, a zoom filter or even image compositions filters
 - Path from root: ```./src/filter.js```
 
 # How to run tests
