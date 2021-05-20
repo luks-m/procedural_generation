@@ -85,7 +85,7 @@ function generate(descriptor) {
     let generator = _descriptor.src.img(_descriptor.src.options);
     
     function apply(dictionary, generator) {
-        return Object.values(dictionary).reduce((accumulator, value, i) => {
+        return Object.values(dictionary).reduce((accumulator, value) => {
             return value.filter({...value.filter_options, src: accumulator});
         }, generator);
     }

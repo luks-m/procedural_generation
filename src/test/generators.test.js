@@ -971,7 +971,7 @@ function testOctagonal() {
                     color1: color1,
                     color2: color2,
                     size: 50,
-		    width:2
+                    width: 2
                 }
             );
             expect(colors.compareColor(pixel(0, 0), color2)).toBe(true);
