@@ -8,16 +8,16 @@ function imageGeneration(canvas, width, height, getPixelColor) {
     let image = context.createImageData(width, height);
 
     let n = 0; // Index inside the image array
-    // const percentageGeneratedByOnePixel = ((1 / (height * width)) * 100);
-    // let progress = 0;
+    const percentageGeneratedByOnePixel = ((1 / (height * width)) * 100);
+    let progress = 0;
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++, n += 4) {
-            // progress += percentageGeneratedByOnePixel;
-            // if (progress.toFixed(2) % 2.5 === 0) {
-            //     process.stdout.clearLine();
-            //     process.stdout.cursorTo(0);
-            //     process.stdout.write(`Generating Image: ${progress.toFixed(2)}%`);
-            // }
+            progress += percentageGeneratedByOnePixel;
+            if (progress.toFixed(2) % 2.5 === 0) {
+                process.stdout.clearLine();
+                process.stdout.cursorTo(0);
+                process.stdout.write(`Generating Image: ${progress.toFixed(2)}%`);
+            }
             const pixelColor = getPixelColor(x, y);
             image.data[n] = pixelColor.red;
             image.data[n + 1] = pixelColor.green;
@@ -33,7 +33,301 @@ function imageGeneration(canvas, width, height, getPixelColor) {
 function getImage(canvas, width, height) {
 
     let pixel;
-    
+    /*
+    const dsdfg = {
+        src: {
+            img: generators.noiseGenerator,
+            options: {
+                noise: generators.noise.noiseFractals.warp,
+                noiseOptions: {
+                    width: width,
+                    height: height,
+                    fractalGen: {
+                        fractal: 'ridged',
+                        fractalOptions: {
+                            noiseGen: "perlin",
+                            noiseSeed: 1338,
+                            argsList: {
+                                variant: "simplex"
+                            },
+                            octaves: 3,
+                        }
+                    },
+                    qMultiplier: 4,
+                    rMultiplier: 10,
+                    colored: true
+                }
+            },
+            filters: {
+                1: {
+                    filter:
+                }
+            }
+        }
+    };
+    */
+
+    const planet = {
+        src: {
+            img: generators.colorMap.colorMap,
+            options: {
+                f: generators.colorMap.predicate.focused(
+                    (x, y) => {
+                        if (Math.sqrt(x ** 2 + y ** 2) < 75) {
+                            return x ** 2 + y ** 2;
+                        }
+                        return 75 ** 2;
+                    },
+                    height, width, -150, 150, -150, 150),
+                min: 0,
+                max: 75 ** 2,
+                redVariations: [[255, 20], [20, 0]],
+                greenVariations: [[255, 20], [20, 0]],
+                blueVariations: [[255, 20], [20, 0]],
+                alphaVariations: [[255], [0]]
+            },
+            filters: {
+                1: {
+                    filter: filters.bulge,
+                    filter_options: {
+                        size: {
+                            width: width,
+                            height: height
+                        },
+                        coef: 0.5
+                    }
+                }
+            }
+        },
+        linker: {
+            composition: filters.composition.multiply,
+        },
+        dst: {
+            src: {
+                img: generators.colorMap.examples.hot,
+                options: {
+                    f: generators.noiseGenerator(
+                        {
+                            noise: generators.noise.noiseFractals.fractal,
+                            noiseOptions: {
+                                width: width,
+                                height: height,
+                                fractal: 'turbulence',
+                                fractalOptions: {
+                                    noiseGen: "perlin",
+                                    noiseSeed: 1338,
+                                    argsList: {
+                                        variant: "simplex",
+                                        scale: 16
+                                    },
+                                    octaves: 6,
+                                    get_noise: true,
+                                    initial_frequency: 0.2,
+                                    initial_amplitude: 1.2,
+                                }
+                            }
+                        }
+                    ),
+                    min: -1,
+                    max: 1
+                }
+            }
+        }
+    };
+
+    const stars = {
+        src: {
+            img: generators.colorMap.colorMap,
+            options: {
+                f: generators.noiseGenerator(
+                    {
+                        noise: generators.noise.noiseFractals.warp,
+                        noiseOptions: {
+                            width: width,
+                            height: height,
+                            fractalGen: {
+                                fractal: 'turbulence',
+                                fractalOptions: {
+                                    noiseGen: "perlin",
+                                    noiseSeed: 1339,
+                                    argsList: {
+                                        variant: "simplex",
+                                        scale: 48
+                                    },
+                                    octaves: 4,
+                                    initial_frequency: 0.3,
+                                    initial_amplitude: 3,
+                                    lacunarity: 3,
+                                    frequency: 0.7
+                                }
+                            },
+                            qMultiplier: 100,
+                            rMultiplier: 100,
+                            colored: false,
+                            get_noise: true
+                        }
+                    }
+                ),
+                min: 1,
+                max: -1,
+                redVariations: [[0], [0], [0], [0], [0], [0], [0, 255], [255]],
+                greenVariations: [[0], [0], [0], [0], [0], [0], [0, 255], [255]],
+                blueVariations: [[0], [0], [0], [0], [0], [0], [0, 255], [255]],
+                alphaVariations: [[255]]
+            }
+        }
+    }
+
+    /*
+    pixel = generators.noiseGenerator(
+        {
+            noise: generators.noise.noiseFractals.warp,
+            noiseOptions: {
+                width: width,
+                height: height,
+                fractalGen: {
+                    fractal: 'turbulence',
+                    fractalOptions: {
+                        noiseGen: "perlin",
+                        noiseSeed: 1339,
+                        argsList: {
+                            variant: "simplex",
+                            scale: 48
+                        },
+                        octaves: 4,
+                        initial_frequency: 0.3,
+                        initial_amplitude: 3,
+                        lacunarity: 3,
+                        frequency: 0.7
+                    }
+                },
+                qMultiplier: 100,
+                rMultiplier: 100,
+                colored: false,
+                get_noise: true
+            }
+        }
+    );
+    */
+    /*
+    pixel = generators.colorMap.colorMap(
+        {
+            f: pixel,
+            min: 1,
+            max: -1,
+            redVariations: [[0], [0], [0], [0], [0], [0], [0, 255], [255]],
+            greenVariations: [[0], [0], [0], [0], [0], [0], [0, 255], [255]],
+            blueVariations: [[0], [0], [0], [0], [0], [0], [0, 255], [255]],
+            alphaVariations: [[255]]
+        }
+    )
+    */
+
+
+    const starsXplanet = {
+        src: {
+            img: () => generators.generate(planet),
+        },
+        linker: {
+            composition: filters.composition.over
+        },
+        dst: {
+            src: {
+                img: () => generators.generate(stars)
+            }
+        },
+        filters: {
+            1: {
+                filter: filters.anaglyphe,
+                filter_options: {
+                    dx: 3,
+                    dy: 2
+                }
+            }
+        }
+    }
+
+    /*
+    const asteroid = {
+        src: {
+            img: generators.colorMap.colorMap,
+            options: {
+                f: generators.colorMap.predicate.focused(
+                    (x, y) => {
+                        if (Math.sqrt(x ** 2 + y ** 2) < 25){
+                            return x ** 2 + y ** 2;
+                        }
+                        return 25 ** 2;
+                    },
+                    height, width, -150, 100, -100, 150),
+                min: 0,
+                max: 25 ** 2,
+                redVariations:[[255, 20], [20, 0]],
+                greenVariations:[[255, 20], [20, 0]],
+                blueVariations:[[255, 20], [20, 0]],
+                alphaVariations:[[255], [0]]
+            },
+            filters: {
+                1: {
+                    filter: filters.bulge,
+                    filter_options: {
+                        size: {
+                            width: width,
+                            height: height
+                        },
+                        coef: 0.5
+                    }
+                }
+            }
+        },
+        linker: {
+            composition: filters.composition.multiply,
+        },
+        dst: {
+            src: {
+                img: generators.colorMap.colorMap,
+                options: {
+                    f: generators.noiseGenerator(
+                        {
+                            noise: generators.noise.noiseFractals.warp,
+                            noiseOptions: {
+                                width: width,
+                                height: height,
+                                fractalGen: {
+                                    fractal: 'turbulence',
+                                    fractalOptions: {
+                                        noiseGen: "perlin",
+                                        noiseSeed: 1339,
+                                        argsList: {
+                                            variant: "simplex",
+                                            scale: 8
+                                        },
+                                        octaves: 4,
+                                        initial_frequency: 0.5,
+                                        initial_amplitude: 3,
+                                        lacunarity: 2,
+                                        frequency: 0.7
+                                    }
+                                },
+                                qMultiplier: 75,
+                                rMultiplier: 75,
+                                colored: false,
+                                get_noise: true
+                            }
+                        }
+                    ),
+                    min: 1,
+                    max: -1,
+                    redVariations: [[0], [0], [0], [0], [0, 255], [255]],
+                    greenVariations: [[0], [0], [0], [0], [0, 255], [255]],
+                    blueVariations: [[0], [0], [0], [0], [0, 255], [255]],
+                    alphaVariations: [[255]]
+                }
+            }
+        }
+    };
+    */
+
 
     ////////////////////////////////////////////////////
     ///////////////// NOISE Generators /////////////////
@@ -41,7 +335,7 @@ function getImage(canvas, width, height) {
 
     ///////////////// Perlin Noise /////////////////////
 
-    
+    /*
     pixel = generators.noiseGenerator(
         {
             noise: generators.noise.noiseGenerators.perlinNoise,
@@ -53,8 +347,8 @@ function getImage(canvas, width, height) {
             }
         }
     );
-    
-    
+    */
+
     ///////////////// Fractal Brownian Motion //////////
 
     /*
@@ -317,31 +611,11 @@ function getImage(canvas, width, height) {
 
     // Domain Warping
 
-    /*
-    pixel = generators.noiseGenerator(
-        {
-            noise: generators.noise.noiseFractals.warp,
-            noiseOptions: {
-                width: width,
-                height: height,
-                fractalGen: {
-                    fractal: 'ridged',
-                    fractalOptions: {
-                        noiseGen: "perlin",
-                        noiseSeed: 1338,
-                        argsList: {
-                            variant: "simplex"
-                        },
-                        octaves: 3,
-                    }
-                },
-                qMultiplier: 4,
-                rMultiplier: 10,
-                colored: true
-            }
-        }
-    );
-    */
+
+    /*pixel = filters.negative({
+        src: pixel
+    })*/
+
 
     /*
     pixel = generators.noiseGenerator(
@@ -469,7 +743,7 @@ function getImage(canvas, width, height) {
     */
     //Bee
 
-    
+
     ///////////////////// Filters : /////////////////////
     /*
     pixel = filters.takeColor({
@@ -494,7 +768,7 @@ function getImage(canvas, width, height) {
     });
     */
     //Gaussian Blur
-    
+    /*
     const kernel = filters.createKernel(
 	{
 	    kernelSize : 3,
@@ -508,7 +782,17 @@ function getImage(canvas, width, height) {
 	    kernel : kernel,
 	    kernelSize : 3
 	});
+    */
 
+    /*
+    pixel = generators.generate(
+        {
+
+        }
+    );
+    */
+
+    pixel = generators.generate(starsXplanet);
     canvas = imageGeneration(canvas, width, height, pixel);
 
     return canvas;

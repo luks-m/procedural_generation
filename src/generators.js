@@ -86,7 +86,6 @@ function generate(descriptor) {
     
     function apply(dictionary, generator) {
         return Object.values(dictionary).reduce((accumulator, value, i) => {
-            console.log(i, value);
             return value.filter({...value.filter_options, src: accumulator});
         }, generator);
     }
