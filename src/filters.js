@@ -262,8 +262,7 @@ const composition = { operation, multiply, screen, divide, add, minus, atop, out
  */
 
 /**
- * Return a transparent color for a pixel coordinate depending on the truth value of toClear function,
- * the color of the src image else
+ * Return the implosion or explosion version of an image depending on coef value
  * @param {BulgeOptions} options Set of options to pass to this filter function
  * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
@@ -490,7 +489,7 @@ function blackWhite(options){
  */
 
 /**
- * Repeat an image multiples times depending on a width, height and size factor
+ * Repeat an image multiple times depending on a width, height and size factor
  * @param {RepeatOptions} options Set of options to pass to this filter function
  * @returns {function(number,number): Color} Function computing a color depending on a pixel coordinate
  */
