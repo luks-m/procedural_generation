@@ -4,7 +4,7 @@ const { createCanvas } = require('canvas');
 const getImage = require('./image.js');
 
 
-const width = 1024, height = 768;
+const width = 250, height = 250;
 let canvas = createCanvas(width, height);
 
 canvas = getImage.getImage(canvas, width, height);
