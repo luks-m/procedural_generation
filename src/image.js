@@ -77,18 +77,19 @@ function getImage(canvas, width, height) {
                             noiseOptions: {
                                 width: width,
                                 height: height,
-                                fractal: 'turbulence',
+                                fractal: 'fbm',
                                 fractalOptions: {
                                     noiseGen: "perlin",
-                                    noiseSeed: 1338,
                                     argsList: {
                                         variant: "simplex",
-                                        scale: 16
+                                        scale: 12
                                     },
-                                    octaves: 6,
-                                    get_noise: true,
-                                    initial_frequency: 0.2,
-                                    initial_amplitude: 1.2,
+                                    octaves: 4,
+                                    persistence: 0.5,
+                                    lacunarity: 2,
+                                    initial_amplitude: 3,
+                                    initial_frequency: 0.3,
+                                    get_noise: true
                                 }
                             }
                         }
