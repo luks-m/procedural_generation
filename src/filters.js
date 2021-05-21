@@ -616,7 +616,7 @@ function gaussianBlur(options) {
                     }),
                 matrix2: options.kernel
             });
-        return functionsColor.createColor(results[0], results[1], results[2], results[3]);
+        return functionsColor.createColor(results[0], results[1], results[2], options.src(x,y).alpha);
     }
     return blurIntern;
 }
